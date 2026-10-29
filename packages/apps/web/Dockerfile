@@ -19,6 +19,10 @@ COPY packages/shared/ui packages/shared/ui
 COPY packages/apps/tsconfig.app.base.json packages/apps/tsconfig.node.base.json packages/apps/
 COPY packages/apps/web packages/apps/web
 
+ARG VITE_API_URL=
+ARG VITE_INGEST_URL=
+ENV VITE_API_URL=$VITE_API_URL VITE_INGEST_URL=$VITE_INGEST_URL
+
 RUN pnpm --filter @condor/web build
 
 FROM nginx:alpine

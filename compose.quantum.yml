@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: condor
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: condor
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+
+  storage:
+    image: rustfs/rustfs:latest
+    environment:
+      RUSTFS_VOLUMES: /data
+      RUSTFS_ACCESS_KEY: ${STORAGE_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${STORAGE_SECRET_KEY}
+    volumes:
+      - storage-data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: packages/apps/api/Dockerfile
+    environment:
+      PORT: 4100
+      LOG_LEVEL: info
+      LOG_PRETTY: "false"
+      DATABASE_URL: postgres://condor:${POSTGRES_PASSWORD}@postgres:5432/condor
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGIN: ${WEB_URL}
+      STORAGE_ENDPOINT: http://storage:9000
+      STORAGE_REGION: us-east-1
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY}
+      STORAGE_BUCKET: condor
+      STORAGE_PUBLIC_URL: http://storage:9000
+      TRUST_GEO_HEADERS: ${TRUST_GEO_HEADERS:-false}
+      GEOIP_DATABASE: ${GEOIP_DATABASE:-}
+    volumes:
+      - ${GEOIP_HOST_DIR:-/srv/condor/geoip}:/geoip:ro
+    ports:
+      - "4100"
+    depends_on:
+      - postgres
+      - redis
+      - storage
+
+  web:
+    build:
+      context: .
+      dockerfile: packages/apps/web/Dockerfile
+      args:
+        VITE_API_URL: ${API_URL}
+        VITE_INGEST_URL: ${API_URL}
+    ports:
+      - "80"
+    depends_on:
+      - api
+
+volumes:
+  postgres-data:
+  redis-data:
+  storage-data:
