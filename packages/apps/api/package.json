@@ -1,0 +1,42 @@
+{
+  "name": "@condor/api",
+  "type": "module",
+  "scripts": {
+    "dev": "vite-node --watch src/server.ts",
+    "lint": "oxlint --deny-warnings",
+    "start": "vite-node src/server.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "seed": "vite-node scripts/seed.ts",
+    "set-password": "vite-node scripts/set-password.ts"
+  },
+  "dependencies": {
+    "@condor/contracts": "workspace:*",
+    "@condor/readable": "workspace:*",
+    "@fastify/cors": "^11.3.0",
+    "bullmq": "^5.80.6",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.12.5",
+    "ioredis": "^5.11.1",
+    "pino": "^10.3.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^1.1.0",
+    "typia": "^12.1.1",
+    "@aws-sdk/client-s3": "^3.1089.0",
+    "@fastify/websocket": "11.3.0",
+    "pg": "^8.22.0",
+    "bowser": "2.14.1",
+    "maxmind": "5.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/pg": "^8.20.0",
+    "@typia/unplugin": "^12.1.1",
+    "oxlint": "^1.71.0",
+    "pino-pretty": "^13.1.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.5",
+    "vite-node": "^6.0.0",
+    "vitest": "^4.1.10"
+  }
+}
