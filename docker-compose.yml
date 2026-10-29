@@ -1,0 +1,85 @@
+name: condor
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: condor
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: condor
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U condor -d condor"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  storage:
+    image: rustfs/rustfs:latest
+    restart: unless-stopped
+    environment:
+      RUSTFS_VOLUMES: /data
+      RUSTFS_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-condor}
+      RUSTFS_SECRET_KEY: ${STORAGE_SECRET_KEY:?set STORAGE_SECRET_KEY in .env}
+    volumes:
+      - storage-data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: packages/apps/api/Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: "4100"
+      LOG_LEVEL: info
+      LOG_PRETTY: "false"
+      DATABASE_URL: postgres://condor:${POSTGRES_PASSWORD}@postgres:5432/condor
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      JWT_SECRET: ${CONDOR_JWT_SECRET:?set CONDOR_JWT_SECRET in .env}
+      STORAGE_ENDPOINT: http://storage:9000
+      STORAGE_REGION: us-east-1
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-condor}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY:?set STORAGE_SECRET_KEY in .env}
+      STORAGE_BUCKET: condor
+      STORAGE_PUBLIC_URL: http://storage:9000/condor
+      TRUST_GEO_HEADERS: ${TRUST_GEO_HEADERS:-false}
+      GEOIP_DATABASE: ${GEOIP_DATABASE:-}
+    volumes:
+      - ./geoip:/geoip:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      storage:
+        condition: service_started
+
+  web:
+    build:
+      context: .
+      dockerfile: packages/apps/web/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${CONDOR_PORT:-8080}:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres-data:
+  redis-data:
+  storage-data:
