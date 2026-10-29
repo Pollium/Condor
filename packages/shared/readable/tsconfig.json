@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./lib/*"],
+      "@tests/*": ["./tests/*"]
+    }
+  },
+  "include": ["lib", "tests", "vite.config.ts"]
+}
