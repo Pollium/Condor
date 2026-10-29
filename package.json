@@ -1,0 +1,15 @@
+{
+  "name": "condor",
+  "private": true,
+  "scripts": {
+    "infra": "docker compose -f docker-compose.dev.yml up -d --wait",
+    "dev": "pnpm infra && pnpm --parallel --filter @condor/api --filter @condor/browser --filter @condor/web dev",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present --workspace-concurrency=1 test"
+  },
+  "devDependencies": {
+    "playwright-core": "1.64.0",
+    "typescript": "~6.0.2"
+  }
+}
