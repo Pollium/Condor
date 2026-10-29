@@ -1,0 +1,36 @@
+{
+  "name": "@condor/browser",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Condor browser SDK: pageviews, clicks, errors, web vitals and session replay for any web app",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && vite build --config vite.snippet.config.ts && tsc -p tsconfig.build.json",
+    "lint": "oxlint --deny-warnings",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@rrweb/record": "2.1.7",
+    "web-vitals": "6.2.2"
+  },
+  "devDependencies": {
+    "@condor/contracts": "workspace:*",
+    "happy-dom": "^20.11.1",
+    "oxlint": "^1.71.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
+  }
+}
