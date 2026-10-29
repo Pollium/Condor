@@ -11,7 +11,6 @@ COPY packages/shared/ui/package.json packages/shared/ui/
 COPY packages/sdk/browser/package.json packages/sdk/browser/
 COPY packages/apps/api/package.json packages/apps/api/
 COPY packages/apps/web/package.json packages/apps/web/
-COPY examples/store/package.json examples/store/
 
 RUN pnpm install --frozen-lockfile --filter @condor/web...
 

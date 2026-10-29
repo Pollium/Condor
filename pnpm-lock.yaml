@@ -15,19 +15,6 @@ importers:
         specifier: ~6.0.2
         version: 6.0.3
 
-  examples/store:
-    dependencies:
-      '@condor/browser':
-        specifier: workspace:*
-        version: link:../../packages/sdk/browser
-    devDependencies:
-      typescript:
-        specifier: ~6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.1.5
-        version: 8.3.5(@types/node@26.6.6)(jiti@2.7.0)
-
   packages/apps/api:
     dependencies:
       '@aws-sdk/client-s3':

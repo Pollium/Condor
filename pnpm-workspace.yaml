@@ -2,7 +2,6 @@ packages:
     - packages/apps/*
     - packages/shared/*
     - packages/sdk/*
-    - examples/*
 
 linkWorkspacePackages: true
 

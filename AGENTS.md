@@ -11,7 +11,6 @@ into with one script tag. pnpm monorepo with two apps:
 | `packages/shared/readable` (`@condor/readable`) | the HTTP/WS/queue framework: `Application`, module discovery, decorators, errors, `BaseModel`, JWT, queues, object storage | — |
 | `packages/shared/contracts` (`@condor/contracts`) | every wire type and route table, one folder per domain | — |
 | `packages/shared/ui` (`@condor/ui`) | the frontend plumbing: api client (`call`), `useQuery`/`useMutation`, socket channel, session and theme stores, route discovery | — |
-| `examples/store` (`@condor/example-store`) | a fictional store instrumented with the SDK, used for end-to-end checks | 5191 |
 
 Modules are auto-discovered from the filesystem by folder convention — there is no registry file
 to edit. Modules talk to each other through services, models and `eventBus`; nothing in Condor
