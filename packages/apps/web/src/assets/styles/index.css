@@ -1,0 +1,145 @@
+@layer theme, base, carbon, components, utilities;
+
+@import "tailwindcss";
+@import "@carbon/styles/css/styles.min.css" layer(carbon);
+@import "@fontsource/ibm-plex-sans/300.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+
+@source "./";
+
+:root {
+    --canvas: var(--cds-background);
+    --sidebar: var(--cds-layer-01);
+    --card: var(--cds-layer-01);
+    --fill: var(--cds-layer-hover-01);
+    --fill-strong: var(--cds-layer-selected-01);
+    --label-2: var(--cds-text-secondary);
+    --label-3: var(--cds-text-placeholder);
+    --toolbar: var(--cds-background);
+    --background: var(--cds-background);
+    --foreground: var(--cds-text-primary);
+    --muted: var(--cds-text-secondary);
+    --accent: var(--cds-interactive);
+    --success: var(--cds-support-success);
+    --warning: var(--cds-support-warning);
+    --danger: var(--cds-support-error);
+    --overlay: var(--cds-layer-02);
+    --overlay-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    --separator: var(--cds-border-subtle-01);
+    --border: var(--cds-border-strong-01);
+    --focus: var(--cds-focus);
+    --segment: var(--cds-layer-selected-01);
+    --segment-foreground: var(--cds-text-primary);
+}
+
+@theme inline {
+    --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --color-canvas: var(--canvas);
+    --color-sidebar: var(--sidebar);
+    --color-card: var(--card);
+    --color-fill: var(--fill);
+    --color-fill-strong: var(--fill-strong);
+    --color-label-2: var(--label-2);
+    --color-label-3: var(--label-3);
+    --color-toolbar: var(--toolbar);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-muted: var(--muted);
+    --color-accent: var(--accent);
+    --color-success: var(--success);
+    --color-warning: var(--warning);
+    --color-danger: var(--danger);
+    --color-overlay: var(--overlay);
+    --color-separator: var(--separator);
+    --color-border: var(--border);
+    --color-focus: var(--focus);
+    --color-segment: var(--segment);
+    --color-segment-foreground: var(--segment-foreground);
+    --radius-sm: 0;
+    --radius-md: 0;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
+    --radius-3xl: 0;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    background: var(--canvas);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--fill-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@layer components {
+    .list-plain .cds--contained-list__header {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .slider-bare .cds--slider-container {
+        width: 100%;
+    }
+
+    .slider-bare .cds--slider {
+        flex: 1 1 auto;
+        min-width: 0;
+        margin: 0;
+    }
+
+    .slider-bare .cds--slider__range-label {
+        display: none;
+    }
+
+    .accordion-flush .cds--accordion__content {
+        padding-inline-end: 1rem;
+    }
+
+    .segmented-fit .cds--content-switcher-btn {
+        flex: 0 0 auto;
+        width: auto;
+    }
+
+    .nav-count .cds--side-nav__link-text {
+        flex: 1;
+    }
+
+    .combo-inline .cds--list-box,
+    .combo-inline .cds--text-input {
+        background-color: transparent;
+        border-block-end-color: transparent;
+    }
+
+    .combo-inline .cds--list-box:hover {
+        background-color: var(--cds-field-hover);
+    }
+
+    .combo-inline .cds--text-input::placeholder {
+        color: var(--cds-text-primary);
+    }
+}

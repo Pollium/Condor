@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.app.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../shared/contracts" },
+    { "path": "../../shared/ui" }
+  ]
+}
