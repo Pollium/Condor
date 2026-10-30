@@ -4,6 +4,8 @@ import { Funnel } from '@condor/contracts/funnels/domain';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 import { useState } from 'react';
 import { canEdit, useMe } from '@/modules/auth/hooks/use-me';
+import SegmentMenu from '@/modules/events/components/SegmentMenu';
+import { useSegmentQuery } from '@/modules/events/hooks/use-segment';
 import { funnelsApi } from '@/modules/funnels/api/api';
 import FunnelDelete from '@/modules/funnels/components/FunnelDelete';
 import FunnelEditor from '@/modules/funnels/components/FunnelEditor';
@@ -30,7 +32,8 @@ const FunnelsPage = () => {
     const list = funnels.data ?? [];
     const funnel = list.find((entry) => entry.id === chosen) ?? list[0];
     const windowHours = hours ?? funnel?.windowHours ?? 24;
-    const results = useQuery(funnelsApi.results, [funnel ? project.id : undefined, funnel?.id, { period, windowHours }]);
+    const segment = useSegmentQuery(project.id);
+    const results = useQuery(funnelsApi.results, [funnel ? project.id : undefined, funnel?.id, { period, windowHours, ...segment }]);
 
     const pick = (id: string | null) => {
         setChosen(id);
@@ -78,6 +81,7 @@ const FunnelsPage = () => {
             <PageHeader title='Embudos' hint={funnel ? `${funnel.steps.length} pasos` : undefined}>
                 {funnel ? (
                     <>
+                        <SegmentMenu projectId={project.id} />
                         <ToolbarMenu label='Embudo' choices={list.map((entry) => ({ value: entry.id, label: entry.name }))} value={funnel.id} onChange={pick} />
                         <ToolbarMenu label='Ventana de conversión' choices={windowChoices(windowHours)} value={String(windowHours)} onChange={(value) => setHours(Number(value))} />
                     </>

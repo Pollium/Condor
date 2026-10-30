@@ -4,6 +4,8 @@ import { Screen } from '@carbon/icons-react';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import SegmentMenu from '@/modules/events/components/SegmentMenu';
+import { useSegmentQuery } from '@/modules/events/hooks/use-segment';
 import QuickLook from '@/modules/sessions/components/QuickLook';
 import SessionList from '@/modules/sessions/components/SessionList';
 import SessionToolbar from '@/modules/sessions/components/SessionToolbar';
@@ -26,7 +28,8 @@ const SessionsPage = () => {
     const period = usePeriodStore((store) => store.period);
     const [params, setParams] = useSearchParams();
     const state = useMemo(() => readState(params), [params]);
-    const query = useMemo(() => toQuery(state, period), [state, period]);
+    const segment = useSegmentQuery(project.id);
+    const query = useMemo(() => ({ ...toQuery(state, period), ...segment }), [state, period, segment]);
     const list = useQuery(sessionsApi.list, [project.id, query]);
     const key = JSON.stringify([project.id, query]);
     const [live, setLive] = useState<{ key: string; rows: SessionSummary[] }>({ key, rows: [] });
@@ -70,6 +73,7 @@ const SessionsPage = () => {
         <div className='w-full'>
             <PageHeader title='Sesiones'>
                 <SessionToolbar state={state} total={total} onChange={change} />
+                <SegmentMenu projectId={project.id} />
             </PageHeader>
 
             {scope ? (

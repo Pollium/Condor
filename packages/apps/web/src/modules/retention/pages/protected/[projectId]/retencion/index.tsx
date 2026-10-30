@@ -3,6 +3,8 @@ import { Calendar, WarningAlt } from '@carbon/icons-react';
 import { RetentionGrain } from '@condor/contracts/retention/domain';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 import { useState } from 'react';
+import SegmentMenu from '@/modules/events/components/SegmentMenu';
+import { useSegmentQuery } from '@/modules/events/hooks/use-segment';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import { retentionApi } from '@/modules/retention/api/api';
 import CohortGrid from '@/modules/retention/components/CohortGrid';
@@ -30,7 +32,8 @@ const RetentionPage = () => {
     const [grain, setGrain] = useState<RetentionGrain>('week');
     const [returnEvent, setReturnEvent] = useState(ANY_VISIT);
     const events = useQuery(retentionApi.events, [project.id]);
-    const retention = useQuery(retentionApi.retention, [project.id, { grain, cohorts: COHORTS[grain], returnEvent: returnEvent || undefined }]);
+    const segment = useSegmentQuery(project.id);
+    const retention = useQuery(retentionApi.retention, [project.id, { grain, cohorts: COHORTS[grain], returnEvent: returnEvent || undefined, ...segment }]);
     const returns: Choice<string>[] = [
         { value: ANY_VISIT, label: 'Cualquier visita' },
         ...(events.data?.slices ?? []).map((slice) => ({ value: slice.id, label: slice.label }))
@@ -80,6 +83,7 @@ const RetentionPage = () => {
     return (
         <div className='w-full'>
             <PageHeader title='Retención' hint='Personas que vuelven tras su primera visita'>
+                <SegmentMenu projectId={project.id} />
                 <ToolbarMenu label='Cuenta como regreso' choices={returns} value={returnEvent} onChange={setReturnEvent} />
                 <ToolbarMenu label='Agrupar por' choices={GRAINS} value={grain} onChange={setGrain} />
             </PageHeader>

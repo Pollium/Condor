@@ -9,6 +9,8 @@ export interface StepDraft{
     kind: FunnelStepKind;
     match: string;
     label: string;
+    whereKey: string;
+    whereValue: string;
 }
 
 const KINDS: Choice<FunnelStepKind>[] = [
@@ -33,7 +35,7 @@ const FunnelStepField = ({ draft, index, known, removable, onChange, onRemove }:
         <legend className='sr-only'>Paso {index + 1}</legend>
         <div className='flex items-center gap-3'>
             <span className='flex-1 text-[0.875rem] text-foreground'>Paso {index + 1}</span>
-            <Segmented label={`Tipo del paso ${index + 1}`} choices={KINDS} value={draft.kind} onChange={(kind) => onChange({ kind, match: '' })} />
+            <Segmented label={`Tipo del paso ${index + 1}`} choices={KINDS} value={draft.kind} onChange={(kind) => onChange({ kind, match: '', whereKey: '', whereValue: '' })} />
             <IconButton kind='ghost' size='sm' label='Quitar paso' align='left' disabled={!removable} onClick={onRemove}>
                 <TrashCan />
             </IconButton>
@@ -64,6 +66,28 @@ const FunnelStepField = ({ draft, index, known, removable, onChange, onRemove }:
                 onChange={(event) => onChange({ label: event.target.value })}
             />
         </div>
+        {draft.kind === 'event' ? (
+            <div className='grid gap-3 sm:grid-cols-2'>
+                <TextInput
+                    id={`step-${draft.key}-where-key`}
+                    labelText='Solo si la propiedad'
+                    helperText='Opcional; por ejemplo plan'
+                    placeholder='plan'
+                    maxLength={64}
+                    value={draft.whereKey}
+                    onChange={(event) => onChange({ whereKey: event.target.value })}
+                />
+                <TextInput
+                    id={`step-${draft.key}-where-value`}
+                    labelText='vale'
+                    helperText='El valor exacto que envía tu app'
+                    placeholder='pro'
+                    maxLength={256}
+                    value={draft.whereValue}
+                    onChange={(event) => onChange({ whereValue: event.target.value })}
+                />
+            </div>
+        ) : null}
     </fieldset>
 );
 

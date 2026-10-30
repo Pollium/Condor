@@ -14,10 +14,23 @@ import { errorCopy } from '@/shared/utils/error-copy';
 const MIN_STEPS = 2;
 const MAX_STEPS = 8;
 
-const blank = (kind: StepDraft['kind']): StepDraft => ({ key: crypto.randomUUID(), kind, match: '', label: '' });
+const blank = (kind: StepDraft['kind']): StepDraft => ({ key: crypto.randomUUID(), kind, match: '', label: '', whereKey: '', whereValue: '' });
 
 const draftsOf = (funnel: Funnel | null): StepDraft[] =>
-    funnel ? funnel.steps.map((step) => ({ ...step, key: crypto.randomUUID() })) : [blank('page'), blank('event')];
+    funnel
+        ? funnel.steps.map((step) => ({
+            key: crypto.randomUUID(),
+            kind: step.kind,
+            match: step.match,
+            label: step.label,
+            whereKey: step.where?.key ?? '',
+            whereValue: step.where?.value ?? ''
+        }))
+        : [blank('page'), blank('event')];
+
+const filled = (draft: StepDraft): boolean => draft.whereKey.trim() !== '' && draft.whereValue.trim() !== '';
+
+const halfFilled = (draft: StepDraft): boolean => (draft.whereKey.trim() === '') !== (draft.whereValue.trim() === '');
 
 const copy = errorCopy({ 'Funnel::NotFound': 'Este embudo ya no existe.' });
 
@@ -38,7 +51,7 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
     const saving = create.loading || update.loading;
     const error = copy(create.error ?? update.error);
     const choices = windowChoices(Number(hours));
-    const valid = name.trim() !== '' && drafts.length >= MIN_STEPS && drafts.every((draft) => draft.match.trim() !== '');
+    const valid = name.trim() !== '' && drafts.length >= MIN_STEPS && drafts.every((draft) => draft.match.trim() !== '' && !halfFilled(draft));
 
     const change = (key: string, patch: Partial<StepDraft>) =>
         setDrafts((current) => current.map((draft) => (draft.key === key ? { ...draft, ...patch } : draft)));
@@ -51,7 +64,8 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
             steps: drafts.map((draft) => ({
                 kind: draft.kind,
                 match: draft.match.trim(),
-                label: (draft.label.trim() || draft.match.trim()).slice(0, 80)
+                label: (draft.label.trim() || draft.match.trim()).slice(0, 80),
+                ...(draft.kind === 'event' && filled(draft) ? { where: { key: draft.whereKey.trim(), value: draft.whereValue.trim() } } : {})
             }))
         };
         const saved = funnel ? update.run(projectId, funnel.id, body) : create.run(projectId, body);
