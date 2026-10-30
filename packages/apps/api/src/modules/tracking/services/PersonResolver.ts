@@ -36,6 +36,20 @@ export default class PersonResolverService{
         const stamps = job.events.map((event) => event.timestamp);
         const people = tableRef(manager, Person).table;
 
+        if(job.sessionId === null && job.userId !== null){
+            const [[known]] = await manager.query<[Person[], number]>(`
+                UPDATE ${people} AS person SET
+                    "firstSeenAt" = LEAST(person."firstSeenAt", $3),
+                    "lastSeenAt" = GREATEST(person."lastSeenAt", $4),
+                    "updatedAt" = now()
+                WHERE person.id = (
+                    SELECT id FROM ${people} WHERE "projectId" = $1 AND "userId" = $2 ORDER BY "lastSeenAt" DESC LIMIT 1
+                )
+                RETURNING *
+            `, [job.projectId, job.userId, new Date(Math.min(...stamps)), new Date(Math.max(...stamps))]);
+            if(known !== undefined) return manager.create(Person, known);
+        }
+
         const [row] = await manager.query<Person[]>(`
             INSERT INTO ${people} AS person ("projectId", "anonymousId", "firstSeenAt", "lastSeenAt")
             VALUES ($1, $2, $3, $4)

@@ -21,23 +21,25 @@ export default class BatchIngestionService{
         const project = await Project.findOneBy({ id: job.projectId });
         if(project === null) return;
 
-        await Project.getRepository().manager.transaction((manager) => this.#write(manager, job, project));
+        const sessionId = await Project.getRepository().manager.transaction((manager) => this.#write(manager, job, project));
         if(job.events.length > 0) await this.#activity.touch(project.id, new Date(job.receivedAt));
 
-        eventBus.emit('tracking.batch.ingested', { projectId: project.id, sessionId: job.sessionId });
+        eventBus.emit('tracking.batch.ingested', { projectId: project.id, sessionId });
     }
 
-    async #write(manager: EntityManager, job: IngestBatchJob, project: Project){
+    async #write(manager: EntityManager, job: IngestBatchJob, project: Project): Promise<string | null>{
         if(job.events.length === 0){
             await this.#sessions.touch(manager, job);
-            return;
+            return job.sessionId;
         }
 
         const person = await this.#people.resolve(manager, job);
-        const fresh = await this.#events.insert(manager, job, person.id);
-        if(fresh.length === 0) return;
+        const placed = job.sessionId === null ? { ...job, sessionId: await this.#sessions.live(manager, job, person) } : job;
+        const fresh = await this.#events.insert(manager, placed, person.id);
+        if(fresh.length === 0) return placed.sessionId;
 
-        await this.#issues.group(manager, job, fresh);
-        await this.#sessions.write(manager, job, person, this.#tally.of(fresh, project.settings.conversionEvent));
+        await this.#issues.group(manager, placed, fresh);
+        await this.#sessions.write(manager, placed, person, this.#tally.of(fresh, project.settings.conversionEvent));
+        return placed.sessionId;
     }
 }
