@@ -1,6 +1,7 @@
 import { PlayFilledAlt, Restart } from '@carbon/icons-react';
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { Player } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 
 interface ReplayStageProps{
     player: Player;
@@ -41,13 +42,13 @@ const ReplayStage = ({ player, address, fit = 0.62 }: ReplayStageProps) => {
                 />
                 <button
                     type='button'
-                    aria-label={playing ? 'Pausar' : 'Reproducir'}
+                    aria-label={playing ? copy.controls.pause : copy.controls.play}
                     onClick={toggle}
                     className='absolute inset-0 cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--cds-focus)]'
                 />
                 {skipping ? (
                     <div className='pointer-events-none absolute left-1/2 top-4 -translate-x-1/2 whitespace-nowrap bg-overlay px-4 py-2 text-[0.8125rem] text-foreground shadow-[var(--overlay-shadow)]'>
-                        Saltando un tramo sin actividad
+                        {copy.replay.skipping}
                     </div>
                 ) : null}
                 {!playing ? (

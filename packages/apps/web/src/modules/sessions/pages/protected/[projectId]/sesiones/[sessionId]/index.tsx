@@ -9,16 +9,18 @@ import SessionStats from '@/modules/sessions/components/SessionStats';
 import { sessionsApi } from '@/modules/sessions/api/api';
 import { useRecording } from '@/modules/sessions/hooks/use-recording';
 import { useReplayer } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 import { DEVICE_LABELS, join, personName, place } from '@/modules/sessions/utils/labels';
 import { pageAt } from '@/modules/sessions/utils/timeline';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
+import { copy as shared } from '@/shared/i18n';
 import { errorCopy } from '@/shared/utils/error-copy';
 import { fmt } from '@/shared/utils/format';
 import { viewPath } from '@/shared/utils/views';
 
-const failure = errorCopy({ 'Session::NotFound': 'Esta sesión ya no existe o pertenece a otra app.' });
+const failure = errorCopy({ 'Session::NotFound': copy.errors.notFound });
 
 const IGNORED = 'input, textarea, select, button, a, [contenteditable], [role="listbox"], [role="combobox"], [role="menu"], [role="tab"], [role="dialog"]';
 
@@ -31,7 +33,7 @@ const ReplayPage = () => {
     const { recording, state, lead, marks } = useRecording(project.id, session);
     const player = useReplayer(recording, Math.max(0, Number(params.get('t')) || 0) * 1000);
     const [copied, setCopied] = useState(false);
-    const back = { to: viewPath(project.id, 'sesiones'), label: 'Sesiones' };
+    const back = { to: viewPath(project.id, 'sesiones'), label: shared.views.sessions };
     const { toggle, ready } = player;
 
     useEffect(() => {
@@ -48,15 +50,15 @@ const ReplayPage = () => {
     if(!session){
         return (
             <div className='w-full'>
-                <PageHeader back={back} title='Sesión' />
-                {detail.error ? <EmptyState icon={Screen} title='No pudimos abrir la sesión' description={failure(detail.error) ?? undefined} /> : null}
+                <PageHeader back={back} title={copy.session.title} />
+                {detail.error ? <EmptyState icon={Screen} title={copy.session.openFailed} description={failure(detail.error) ?? undefined} /> : null}
             </div>
         );
     }
 
     const page = pageAt(session.timeline, player.ready ? player.time + lead : null);
 
-    const copy = async () => {
+    const copyLink = async () => {
         const link = new URL(window.location.href);
         link.search = player.ready ? `?t=${Math.floor(player.time / 1000)}` : '';
         try{
@@ -73,10 +75,10 @@ const ReplayPage = () => {
             <PageHeader
                 back={back}
                 title={personName(session)}
-                hint={join(session.email ?? (session.userId ? null : session.anonymousId), place(session), DEVICE_LABELS[session.device], session.os, session.browser, `${fmt.day(session.startedAt)} ${fmt.time(session.startedAt)}`, session.live && 'En vivo')}
+                hint={join(session.email ?? (session.userId ? null : session.anonymousId), place(session), DEVICE_LABELS[session.device], session.os, session.browser, `${fmt.day(session.startedAt)} ${fmt.time(session.startedAt)}`, session.live && copy.live)}
             >
-                <Button kind='ghost' size='sm' renderIcon={Link} onClick={copy}>
-                    {copied ? 'Enlace copiado' : 'Copiar enlace'}
+                <Button kind='ghost' size='sm' renderIcon={Link} onClick={copyLink}>
+                    {copied ? copy.session.linkCopied : copy.session.copyLink}
                 </Button>
             </PageHeader>
 

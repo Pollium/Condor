@@ -2,9 +2,11 @@ import { SessionSummary } from '@condor/contracts/sessions/domain';
 import { Screen } from '@carbon/icons-react';
 import type { KeyboardEvent } from 'react';
 import ActivityStrip from '@/modules/sessions/components/ActivityStrip';
+import { copy } from '@/modules/sessions/i18n';
 import { DEVICE_LABELS, initials, join, personName, place } from '@/modules/sessions/utils/labels';
 import EmptyState from '@/shared/components/EmptyState';
 import { RowList } from '@/shared/components/RowList';
+import { copy as shared } from '@/shared/i18n';
 import { fmt } from '@/shared/utils/format';
 
 interface SessionListProps{
@@ -14,15 +16,13 @@ interface SessionListProps{
     onPeek: (session: SessionSummary) => void;
 }
 
-const plural = (value: number, one: string, many: string) => (value ? `${fmt.n(value)} ${value === 1 ? one : many}` : null);
-
 const notes = (session: SessionSummary) => join(
-    session.live && 'En vivo',
-    plural(session.signals.errors, 'error', 'errores'),
-    session.signals.rage > 0 && 'Clics de rabia',
-    session.signals.dead > 0 && 'Clics muertos',
-    session.converted && 'Convirtió',
-    !session.hasReplay && 'Sin grabación'
+    session.live && copy.live,
+    session.signals.errors > 0 && copy.counts.errors(session.signals.errors),
+    session.signals.rage > 0 && copy.sessionList.rage,
+    session.signals.dead > 0 && copy.sessionList.dead,
+    session.converted && copy.sessionList.converted,
+    !session.hasReplay && copy.sessionList.noReplay
 );
 
 const SessionList = ({ sessions, narrowed, onOpen, onPeek }: SessionListProps) => {
@@ -39,15 +39,15 @@ const SessionList = ({ sessions, narrowed, onOpen, onPeek }: SessionListProps) =
     return (
         <div onKeyDownCapture={peek}>
             <RowList
-                label='Sesiones'
+                label={shared.views.sessions}
                 onOpen={onOpen}
                 valueClassName='max-w-[42%] sm:w-60 sm:max-w-none'
                 empty={
                     <EmptyState
                         compact
                         icon={Screen}
-                        title={narrowed ? 'Ninguna sesión coincide' : 'Todavía no hay sesiones'}
-                        description={narrowed ? 'Quita algún filtro o busca otra cosa.' : 'Las sesiones aparecen aquí en cuanto el sitio envía su primer evento.'}
+                        title={narrowed ? copy.sessionList.noMatch : copy.sessionList.empty}
+                        description={narrowed ? copy.sessionList.noMatchHint : copy.sessionList.emptyHint}
                     />
                 }
                 rows={sessions.map((session) => ({
@@ -60,7 +60,7 @@ const SessionList = ({ sessions, narrowed, onOpen, onPeek }: SessionListProps) =
                         </span>
                     ),
                     title: personName(session),
-                    subtitle: join(session.live ? `en ${session.currentPath ?? session.entryPath ?? '/'}` : fmt.ago(session.startedAt), place(session), DEVICE_LABELS[session.device], session.os, session.browser, `${fmt.n(session.pageviews)} ${session.pageviews === 1 ? 'página' : 'páginas'}`),
+                    subtitle: join(session.live ? copy.sessionList.at(session.currentPath ?? session.entryPath ?? '/') : fmt.ago(session.startedAt), place(session), DEVICE_LABELS[session.device], session.os, session.browser, copy.pages(session.pageviews)),
                     trailing: (
                         <span className='hidden md:block'>
                             <ActivityStrip values={session.activity} />
