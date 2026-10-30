@@ -1,4 +1,5 @@
 import { Journey, JOURNEY_EXIT, JOURNEY_OTHER } from '@condor/contracts/journeys/domain';
+import { copy } from '@/modules/journeys/i18n';
 
 export const HEIGHT = 440;
 export const TOP = 34;
@@ -33,7 +34,7 @@ const toneOf = (path: string): NodeTone => (path === JOURNEY_EXIT ? 'exit' : pat
 
 const RANK: Record<NodeTone, number> = { page: 0, other: 1, exit: 2 };
 
-export const nodeLabel = (path: string) => (path === JOURNEY_EXIT ? 'Salida' : path === JOURNEY_OTHER ? 'Otras páginas' : path);
+export const nodeLabel = (path: string) => (path === JOURNEY_EXIT ? copy.nodes.exit : path === JOURNEY_OTHER ? copy.nodes.other : path);
 
 export const columnStride = (width: number, steps: number) => (width - LABEL_SPACE - NODE_WIDTH) / Math.max(1, steps - 1);
 

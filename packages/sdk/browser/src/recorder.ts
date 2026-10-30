@@ -38,7 +38,7 @@ export default class Recorder{
         this.#stop = record({
             emit: (event) => this.#collect(event),
             maskAllInputs: settings.maskInputs,
-            ...(settings.maskText ? { maskTextSelector: '*' } : {}),
+            maskTextSelector: settings.maskText ? '*' : '[data-condor-mask]',
             blockSelector: ['[data-condor-block]', settings.blockSelector].filter(Boolean).join(', '),
             maskTextClass: 'condor-mask',
             sampling: { mousemove: 50, scroll: 150, input: 'last' },

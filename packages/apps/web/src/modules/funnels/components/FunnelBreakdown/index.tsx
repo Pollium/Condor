@@ -1,6 +1,7 @@
 import { FunnelResult } from '@condor/contracts/funnels/domain';
 import { Section } from '@/shared/components/Page';
 import { RowList } from '@/shared/components/RowList';
+import { copy } from '@/modules/funnels/i18n';
 import { DEVICES, median } from '@/modules/funnels/utils/funnel-copy';
 import { fmt } from '@/shared/utils/format';
 
@@ -17,9 +18,9 @@ const FunnelBreakdown = ({ result }: { result: FunnelResult }) => {
 
     return (
         <div className='grid gap-x-12 gap-y-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]'>
-            <Section title='Pasos'>
+            <Section title={copy.breakdown.steps}>
                 <RowList
-                    label='Pasos del embudo'
+                    label={copy.breakdown.stepsLabel}
                     rows={result.steps.map((step, index) => ({
                         id: `${index}`,
                         text: step.label,
@@ -27,22 +28,22 @@ const FunnelBreakdown = ({ result }: { result: FunnelResult }) => {
                         title: step.label,
                         subtitle: index === 0
                             ? step.match
-                            : `${step.match} · ${fmt.n(result.steps[index - 1].people - step.people)} abandonan · mediana ${median(step.medianSeconds)}`,
+                            : copy.breakdown.stepDetail(step.match, result.steps[index - 1].people - step.people, median(step.medianSeconds)),
                         value: fmt.n(step.people),
-                        meta: index === 0 ? 'Inicio' : `${fmt.pct(step.fromPrevious)} del anterior`
+                        meta: index === 0 ? copy.breakdown.start : copy.breakdown.ofPrevious(fmt.pct(step.fromPrevious))
                     }))}
                 />
             </Section>
 
-            <Section title='Conversión por dispositivo'>
+            <Section title={copy.breakdown.devices}>
                 <RowList
-                    label='Conversión por dispositivo'
-                    empty={<p className='text-[0.875rem] text-label-2'>Aún nadie entra al embudo en este periodo.</p>}
+                    label={copy.breakdown.devices}
+                    empty={<p className='text-[0.875rem] text-label-2'>{copy.breakdown.noDevices}</p>}
                     rows={devices.map((entry) => ({
                         id: entry.device,
                         text: DEVICES[entry.device],
                         title: DEVICES[entry.device],
-                        subtitle: `${fmt.n(entry.start)} entran · ${fmt.n(entry.end)} llegan a «${last.label}»`,
+                        subtitle: copy.breakdown.deviceDetail(entry.start, entry.end, last.label),
                         value: fmt.pct(entry.rate)
                     }))}
                 />

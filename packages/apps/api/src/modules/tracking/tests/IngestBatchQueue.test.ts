@@ -172,6 +172,41 @@ describe('IngestBatchQueue', () => {
         expect(await Session.countBy({ projectId: project.id })).toBe(0);
     });
 
+    it('puts a server event for a signed-in user into the session they are browsing', async () => {
+        const project = await trackingSeed.project({ settings: { ...DEFAULT_SETTINGS, conversionEvent: 'subscription_started' } });
+        const queue = new IngestBatchQueue();
+        const browsing = trackingSeed.batch(project, [
+            trackingSeed.pageview('/settings/plan', secondsAgo(120)),
+            trackingSeed.identify('user-81', secondsAgo(110), { name: 'Camila Rojas' })
+        ]);
+        await queue.process(browsing);
+
+        const server = { ...trackingSeed.serverBatch(project, [trackingSeed.custom('subscription_started', secondsAgo(10), { value: 9990 })]), anonymousId: 'user-81', userId: 'user-81' };
+        await queue.process(server);
+
+        expect(await Event.findOneByOrFail({ id: server.events[0].id })).toMatchObject({ sessionId: browsing.sessionId });
+        expect(await Session.findOneByOrFail({ id: browsing.sessionId })).toMatchObject({ events: 3, converted: true });
+        expect(await Person.countBy({ projectId: project.id })).toBe(1);
+    });
+
+    it('keeps a server event out of a session the user left long ago', async () => {
+        const project = await trackingSeed.project();
+        const queue = new IngestBatchQueue();
+        const earlier = trackingSeed.batch(project, [
+            trackingSeed.pageview('/', secondsAgo(7200)),
+            trackingSeed.identify('user-81', secondsAgo(7190), {})
+        ]);
+        await queue.process(earlier);
+
+        const server = { ...trackingSeed.serverBatch(project, [trackingSeed.custom('course_generated', secondsAgo(10))]), anonymousId: 'user-81', userId: 'user-81' };
+        await queue.process(server);
+
+        const event = await Event.findOneByOrFail({ id: server.events[0].id });
+        expect(event.sessionId).toBeNull();
+        expect(event.personId).toBe((await Person.findOneByOrFail({ anonymousId: earlier.anonymousId })).id);
+        expect(await Session.countBy({ projectId: project.id })).toBe(1);
+    });
+
     it('leaves a session of another project untouched when its id is replayed', async () => {
         const project = await trackingSeed.project();
         const intruder = await trackingSeed.project();

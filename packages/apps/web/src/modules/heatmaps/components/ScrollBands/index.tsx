@@ -1,4 +1,5 @@
 import { ScrollReach } from '@condor/contracts/heatmaps/domain';
+import { copy } from '@/modules/heatmaps/i18n';
 import { fmt } from '@/shared/utils/format';
 
 interface ScrollBandsProps{
@@ -25,7 +26,7 @@ const ScrollBands = ({ reach, height }: ScrollBandsProps) => {
             {half ? (
                 <div className='absolute inset-x-0' style={{ top: (half.depth / 100) * height }}>
                     <div className='h-px w-full bg-black/50' />
-                    <span className={`${PILL} left-3 top-2`}>La mitad llega hasta aquí</span>
+                    <span className={`${PILL} left-3 top-2`}>{copy.frame.half}</span>
                 </div>
             ) : null}
         </div>

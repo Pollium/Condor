@@ -1,5 +1,7 @@
 import { Kpi, KpiKey } from '@condor/contracts/overview/domain';
 import { Period } from '@condor/contracts/shared/period';
+import { copy } from '@/modules/overview/i18n';
+import { intlLocale } from '@/shared/i18n/locale';
 import { fmt } from '@/shared/utils/format';
 
 interface KpiView{
@@ -10,24 +12,19 @@ interface KpiView{
     rising: 'good' | 'bad';
 }
 
-const decimal = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 1 });
-const weekday = new Intl.DateTimeFormat('es-CL', { weekday: 'short', day: 'numeric' });
+const decimal = new Intl.NumberFormat(intlLocale, { maximumFractionDigits: 1 });
+const weekday = new Intl.DateTimeFormat(intlLocale, { weekday: 'short', day: 'numeric' });
 
 export const KPI_VIEWS: Record<KpiKey, KpiView> = {
-    sessions: { label: 'Sesiones', kind: 'bar', format: fmt.n, axis: fmt.k, rising: 'good' },
-    people: { label: 'Personas', kind: 'bar', format: fmt.n, axis: fmt.k, rising: 'good' },
-    duration: { label: 'Duración media', kind: 'line', format: fmt.duration, axis: fmt.duration, rising: 'good' },
-    bounce: { label: 'Rebote', kind: 'line', format: fmt.pct, axis: fmt.pct, rising: 'bad' },
-    frustrated: { label: 'Sesiones frustradas', kind: 'line', format: fmt.pct, axis: fmt.pct, rising: 'bad' },
-    errors: { label: 'Errores JS', kind: 'bar', format: fmt.n, axis: fmt.k, rising: 'bad' }
+    sessions: { label: copy.kpis.sessions, kind: 'bar', format: fmt.n, axis: fmt.k, rising: 'good' },
+    people: { label: copy.kpis.people, kind: 'bar', format: fmt.n, axis: fmt.k, rising: 'good' },
+    duration: { label: copy.kpis.duration, kind: 'line', format: fmt.duration, axis: fmt.duration, rising: 'good' },
+    bounce: { label: copy.kpis.bounce, kind: 'line', format: fmt.pct, axis: fmt.pct, rising: 'bad' },
+    frustrated: { label: copy.kpis.frustrated, kind: 'line', format: fmt.pct, axis: fmt.pct, rising: 'bad' },
+    errors: { label: copy.kpis.errors, kind: 'bar', format: fmt.n, axis: fmt.k, rising: 'bad' }
 };
 
-export const PERIOD_HINT: Record<Period, string> = {
-    '24h': 'últimas 24 horas',
-    '7d': 'últimos 7 días',
-    '30d': 'últimos 30 días',
-    '90d': 'últimos 90 días'
-};
+export const PERIOD_HINT: Record<Period, string> = copy.periods;
 
 export const deltaOf = (kpi: Kpi) => kpi.previous === 0 ? null : kpi.value / kpi.previous - 1;
 
@@ -39,10 +36,16 @@ export const deltaTone = (kpi: Kpi) => {
 
 export const deltaText = (kpi: Kpi) => {
     const delta = deltaOf(kpi);
-    return delta === null ? 'Sin periodo anterior' : fmt.signed(delta);
+    return delta === null ? copy.noPrevious : fmt.signed(delta);
+};
+
+const dayParts = (bucket: string) => {
+    const parts = weekday.formatToParts(new Date(bucket));
+    const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((entry) => entry.type === type)?.value ?? '';
+    return `${part('weekday')} ${part('day')}`;
 };
 
 export const bucketLabel = (period: Period, bucket: string) =>
-    period === '24h' ? bucket.slice(11, 16) : weekday.format(new Date(bucket)).replace(',', '');
+    period === '24h' ? bucket.slice(11, 16) : dayParts(bucket);
 
 export const oneDecimal = (value: number) => decimal.format(value);

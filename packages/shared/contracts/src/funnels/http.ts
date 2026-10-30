@@ -12,6 +12,20 @@ export interface FunnelStepInput{
      * @maxLength 80
      */
     label: string;
+    where?: StepPropertyInput;
+}
+
+export interface StepPropertyInput{
+    /**
+     * @minLength 1
+     * @maxLength 64
+     */
+    key: string;
+    /**
+     * @minLength 1
+     * @maxLength 256
+     */
+    value: string;
 }
 
 export interface CreateFunnelInput{

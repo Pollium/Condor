@@ -51,10 +51,10 @@ describe('SessionController', () => {
         expectError(await request(ctx.app, sessionRoutes.list, { as: await actor('viewer'), params: { projectId: randomUUID() } }), 404, 'Project::NotFound');
     });
 
-    it('filters by device, country, signal, conversion, identity, replay, person and period', async () => {
+    it('filters by device, country, signal, conversion, identity, replay, person, period and segment', async () => {
         const project = await seed.project();
         const anonymous = await seed.person(project);
-        const known = await seed.person(project, { userId: 'user-7' });
+        const known = await seed.person(project, { userId: 'user-7', traits: { plan: 'pro' } });
         const mobile = await seed.session(project, anonymous, { device: 'mobile', country: 'AR', rageClicks: 2 });
         const buyer = await seed.session(project, known, { converted: true, hasReplay: true, userId: 'user-7' });
         const ancient = await seed.session(project, anonymous, { startedAt: minutesAgo(40 * 24 * 60), uturns: 1 });
@@ -68,6 +68,8 @@ describe('SessionController', () => {
         expect(await listOf(ctx.app, project, { replay: 'true' })).toEqual([buyer.id]);
         expect((await listOf(ctx.app, project, { personId: anonymous.id })).sort()).toEqual([mobile.id, ancient.id].sort());
         expect(await listOf(ctx.app, project, { period: '30d', device: 'desktop' })).toEqual([buyer.id]);
+        expect(await listOf(ctx.app, project, { traitKey: 'plan', traitValue: 'pro' })).toEqual([buyer.id]);
+        expect(await listOf(ctx.app, project, { traitKey: 'plan', traitValue: 'free' })).toEqual([]);
         expectError(await request(ctx.app, sessionRoutes.list, { as: await actor('viewer'), params: { projectId: project.id }, query: { sort: 'loudest' } }), 400, 'Request::ValidationFailed');
     });
 

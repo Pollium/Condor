@@ -6,6 +6,7 @@ import ReplayView from '@/modules/sessions/components/ReplayView';
 import { sessionsApi } from '@/modules/sessions/api/api';
 import { useRecording } from '@/modules/sessions/hooks/use-recording';
 import { useReplayer } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 import { DEVICE_LABELS, join, personName, place } from '@/modules/sessions/utils/labels';
 import { pageAt } from '@/modules/sessions/utils/timeline';
 import Modal from '@/shared/components/Modal';
@@ -33,7 +34,7 @@ const QuickLook = ({ projectId, host, session, onClose, onOpen }: QuickLookProps
                         {join(place(session), DEVICE_LABELS[session.device], session.os, fmt.duration(session.duration))}
                     </p>
                     <Button size='sm' onClick={onOpen}>
-                        Abrir sesión
+                        {copy.quickLook.open}
                     </Button>
                 </div>
             </div>

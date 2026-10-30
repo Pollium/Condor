@@ -11,6 +11,7 @@ import { CreateFunnelInput, UpdateFunnelInput } from '@condor/contracts/funnels/
 import { funnelRoutes } from '@condor/contracts/funnels/routes';
 import { CurrentProject } from '@/modules/projects/middlewares/CurrentProject';
 import { EditorRoute, MemberRoute } from '@/shared/access/role-route';
+import { parseSegment } from '@/shared/http/segment';
 import { IntegerRange, parseInteger } from '@/shared/http/query-params';
 import { parsePeriod } from '@/shared/time/period-window';
 
@@ -56,11 +57,14 @@ export default class FunnelController extends BaseController{
         @CurrentProject() project: Project,
         @IdParam('funnelId') funnelId: string,
         @Query('period') period: string | undefined,
-        @Query('windowHours') windowHours: string | undefined
+        @Query('windowHours') windowHours: string | undefined,
+        @Query('traitKey') traitKey: string | undefined,
+        @Query('traitValue') traitValue: string | undefined
     ){
         return this.#results.read(project, funnelId, {
             period: parsePeriod(period),
-            windowHours: parseInteger('windowHours', windowHours, WINDOW_HOURS)
+            windowHours: parseInteger('windowHours', windowHours, WINDOW_HOURS),
+            segment: parseSegment(traitKey, traitValue)
         });
     }
 }

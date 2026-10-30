@@ -2,6 +2,8 @@ import { Modal } from '@carbon/react';
 import Portal from '@/shared/components/Portal';
 import { useSaveProject } from '@/modules/projects/hooks/use-save-project';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
+import { copy } from '@/modules/projects/i18n';
+import { copy as shared } from '@/shared/i18n';
 
 interface RotateKeyProps{
     open: boolean;
@@ -22,21 +24,20 @@ const RotateKey = ({ open, onClose }: RotateKeyProps) => {
                 open={open}
                 danger
                 size='sm'
-                modalHeading='¿Rotar la clave pública?'
-                primaryButtonText='Rotar la clave'
-                secondaryButtonText='Cancelar'
-                closeButtonLabel='Cerrar'
+                modalHeading={copy.rotateKey.heading}
+                primaryButtonText={copy.rotateKey.confirm}
+                secondaryButtonText={copy.cancel}
+                closeButtonLabel={shared.close}
                 loadingStatus={status === 'saving' ? 'active' : 'inactive'}
-                loadingDescription='Rotando…'
+                loadingDescription={copy.rotateKey.rotating}
                 onRequestSubmit={submit}
                 onRequestClose={onClose}
             >
                 <div className='flex flex-col gap-3 text-[0.875rem]'>
                     <p>
-                        {project.name} recibirá una clave nueva. La actual, <span className='font-mono'>{project.publicKey}</span>, deja de funcionar en cuanto confirmes:
-                        los eventos y grabaciones que la usen se rechazan.
+                        {copy.rotateKey.lead(project.name)}<span className='font-mono'>{project.publicKey}</span>{copy.rotateKey.tail}
                     </p>
-                    <p className='text-label-2'>Actualiza el fragmento en tu sitio o tu backend justo después.</p>
+                    <p className='text-label-2'>{copy.rotateKey.update}</p>
                     {error ? <p className='text-danger'>{error}</p> : null}
                 </div>
             </Modal>

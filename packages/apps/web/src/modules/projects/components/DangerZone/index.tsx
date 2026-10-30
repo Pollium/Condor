@@ -3,6 +3,8 @@ import Portal from '@/shared/components/Portal';
 import { Group, Row } from '@/modules/projects/components/SettingsRows';
 import { projectsApi } from '@/modules/projects/api/api';
 import { useProject, useWorkspace } from '@/modules/projects/hooks/use-workspace';
+import { copy } from '@/modules/projects/i18n';
+import { copy as shared } from '@/shared/i18n';
 import { errorCopy } from '@/shared/utils/error-copy';
 import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useState } from 'react';
@@ -34,10 +36,10 @@ const DangerZone = ({ disabled }: { disabled: boolean }) => {
     };
 
     return (
-        <Group title='Zona de peligro' note='Eliminar la app borra sus eventos, sesiones y grabaciones. No se puede deshacer.'>
-            <Row label='Eliminar la app' detail={`${project.name} · ${project.host}`}>
+        <Group title={copy.danger.title} note={copy.danger.note}>
+            <Row label={copy.danger.remove} detail={`${project.name} · ${project.host}`}>
                 <Button kind='danger--ghost' size='sm' disabled={disabled} onClick={() => setOpen(true)} className='-mr-4'>
-                    Eliminar
+                    {copy.danger.removeAction}
                 </Button>
             </Row>
             <Portal>
@@ -45,21 +47,21 @@ const DangerZone = ({ disabled }: { disabled: boolean }) => {
                     open={open}
                     danger
                     size='sm'
-                    modalHeading={`¿Eliminar ${project.name}?`}
-                    primaryButtonText='Eliminar la app'
-                    secondaryButtonText='Cancelar'
-                    closeButtonLabel='Cerrar'
+                    modalHeading={copy.danger.heading(project.name)}
+                    primaryButtonText={copy.danger.remove}
+                    secondaryButtonText={copy.cancel}
+                    closeButtonLabel={shared.close}
                     primaryButtonDisabled={!matches}
                     loadingStatus={remove.loading ? 'active' : 'inactive'}
-                    loadingDescription='Eliminando…'
+                    loadingDescription={copy.danger.removing}
                     onRequestSubmit={submit}
                     onRequestClose={close}
                 >
                     <div className='flex flex-col gap-4 text-[0.875rem]'>
-                        <p>Se borran para siempre todos los datos de {project.host}. El fragmento instalado deja de enviar eventos.</p>
+                        <p>{copy.danger.warning(project.host)}</p>
                         <TextInput
                             id='delete-confirm'
-                            labelText={`Escribe ${project.name} para confirmar`}
+                            labelText={copy.danger.confirm(project.name)}
                             value={typed}
                             onChange={(event) => setTyped(event.target.value)}
                             autoComplete='off'

@@ -5,11 +5,13 @@ import { useState } from 'react';
 import { journeysApi } from '@/modules/journeys/api/api';
 import JourneyView from '@/modules/journeys/components/JourneyView';
 import StartPicker from '@/modules/journeys/components/StartPicker';
+import { copy } from '@/modules/journeys/i18n';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
 import type { Choice } from '@/shared/components/Segmented';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
+import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
 import { errorCopy } from '@/shared/utils/error-copy';
 
@@ -17,15 +19,15 @@ type Steps = '3' | '4' | '5' | '6';
 type Exits = 'true' | 'false';
 
 const STEPS: Choice<Steps>[] = [
-    { value: '3', label: '3 pasos' },
-    { value: '4', label: '4 pasos' },
-    { value: '5', label: '5 pasos' },
-    { value: '6', label: '6 pasos' }
+    { value: '3', label: copy.page.steps(3) },
+    { value: '4', label: copy.page.steps(4) },
+    { value: '5', label: copy.page.steps(5) },
+    { value: '6', label: copy.page.steps(6) }
 ];
 
 const EXITS: Choice<Exits>[] = [
-    { value: 'true', label: 'Con salidas' },
-    { value: 'false', label: 'Sin salidas' }
+    { value: 'true', label: copy.page.withExits },
+    { value: 'false', label: copy.page.withoutExits }
 ];
 
 const JourneysPage = () => {
@@ -39,18 +41,18 @@ const JourneysPage = () => {
     const body = () => {
         if(journey.error && !journey.data){
             return (
-                <EmptyState icon={WarningAlt} title='No pudimos cargar los recorridos' description={errorCopy()(journey.error) ?? undefined}>
-                    <Button kind='tertiary' size='sm' onClick={journey.reload}>Reintentar</Button>
+                <EmptyState icon={WarningAlt} title={copy.page.loadFailed} description={errorCopy()(journey.error) ?? undefined}>
+                    <Button kind='tertiary' size='sm' onClick={journey.reload}>{copy.page.retry}</Button>
                 </EmptyState>
             );
         }
-        if(!journey.data) return <InlineLoading description='Siguiendo las sesiones…' />;
+        if(!journey.data) return <InlineLoading description={copy.page.loading} />;
         if(!journey.data.sessions){
             return (
                 <EmptyState
                     icon={Flow}
-                    title={start ? `Ninguna sesión empieza en ${start}` : 'Aún no hay recorridos en este periodo'}
-                    description={start ? 'Prueba con otra página de inicio o un periodo más largo.' : 'Cuando las personas naveguen por tu app verás aquí el camino que siguen entre páginas.'}
+                    title={start ? copy.page.noneFrom(start) : copy.page.emptyTitle}
+                    description={start ? copy.page.noneFromHint : copy.page.emptyHint}
                 />
             );
         }
@@ -59,10 +61,10 @@ const JourneysPage = () => {
 
     return (
         <div className='w-full'>
-            <PageHeader title='Recorridos' hint={start ? `Desde ${start}` : undefined}>
+            <PageHeader title={shared.views.journeys} hint={start ? copy.page.from(start) : undefined}>
                 <StartPicker projectId={project.id} value={start} onChange={setStart} />
-                <ToolbarMenu label='Pasos' choices={STEPS} value={steps} onChange={setSteps} />
-                <ToolbarMenu label='Salidas' choices={EXITS} value={exits} onChange={setExits} />
+                <ToolbarMenu label={copy.page.stepsLabel} choices={STEPS} value={steps} onChange={setSteps} />
+                <ToolbarMenu label={copy.page.exitsLabel} choices={EXITS} value={exits} onChange={setExits} />
             </PageHeader>
 
             {body()}

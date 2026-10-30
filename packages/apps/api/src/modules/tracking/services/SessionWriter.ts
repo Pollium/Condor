@@ -4,6 +4,7 @@ import Session from '@/modules/sessions/models/Session';
 import { tableRef } from '@readable/utils/models/table-ref';
 import { IngestBatchJob } from '@/modules/tracking/contracts/domain/queue';
 import { SessionBatch, SessionTally } from '../contracts/domain/ingest';
+import { config } from '@/shared/config';
 import { EntityManager } from 'typeorm';
 
 export default class SessionWriterService{
@@ -21,6 +22,18 @@ export default class SessionWriterService{
         }
 
         await this.#extend(manager, batch, tally);
+    }
+
+    async live(manager: EntityManager, job: IngestBatchJob, person: Person): Promise<string | null>{
+        const since = Math.min(...job.events.map((event) => event.timestamp)) - config.sessionGapMs;
+        const [session] = await manager.query<Pick<Session, 'id'>[]>(`
+            SELECT id FROM ${tableRef(manager, Session).table}
+            WHERE "projectId" = $1 AND "personKey" = $2 AND "endedAt" >= $3
+            ORDER BY "endedAt" DESC
+            LIMIT 1
+        `, [job.projectId, person.userId ?? person.anonymousId, new Date(since)]);
+
+        return session?.id ?? null;
     }
 
     async touch(manager: EntityManager, job: IngestBatchJob){

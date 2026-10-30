@@ -118,7 +118,7 @@ export default class CollectService{
     async batch(body: WireBatch, client: Client): Promise<IngestReceipt>{
         const project = await projectDirectory.resolve(body.key);
         const agent = parseUserAgent(client.headers['user-agent'], config.allowHeadless);
-        if(agent.isBot) return { accepted: 0 };
+        if(agent.isBot && body.sessionId !== undefined) return { accepted: 0 };
 
         const receivedAt = Date.now();
         const skew = receivedAt - body.sentAt;

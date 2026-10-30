@@ -3,6 +3,7 @@ import BlurInput from '@/modules/projects/components/BlurInput';
 import { Group, Row } from '@/modules/projects/components/SettingsRows';
 import { useSaveProject } from '@/modules/projects/hooks/use-save-project';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
+import { copy } from '@/modules/projects/i18n';
 import { TIMEZONES, TINTS } from '@/modules/projects/utils/tints';
 import { translate } from '@/shared/utils/carbon-translate';
 
@@ -11,13 +12,13 @@ const AppGroup = ({ disabled }: { disabled: boolean }) => {
     const { status, error, settings, details } = useSaveProject();
 
     return (
-        <Group title='App' status={status} error={error} note='La zona horaria decide dónde empieza cada día en los gráficos y en el estado de abajo.'>
+        <Group title={copy.app.title} status={status} error={error} note={copy.app.note}>
             <div className='grid gap-x-6 sm:grid-cols-2'>
-                <BlurInput id='app-name' label='Nombre' value={project.name} disabled={disabled} required onSave={(name) => details({ name })} />
-                <BlurInput id='app-host' label='Dominio' value={project.host} disabled={disabled} required mono onSave={(host) => details({ host })} />
+                <BlurInput id='app-name' label={copy.app.name} value={project.name} disabled={disabled} required onSave={(name) => details({ name })} />
+                <BlurInput id='app-host' label={copy.app.domain} value={project.host} disabled={disabled} required mono onSave={(host) => details({ host })} />
             </div>
-            <Row label='Color'>
-                <div role='radiogroup' aria-label='Color' className='flex flex-wrap gap-1.5'>
+            <Row label={copy.app.color}>
+                <div role='radiogroup' aria-label={copy.app.color} className='flex flex-wrap gap-1.5'>
                     {TINTS.map((tint) => (
                         <button
                             key={tint}
@@ -35,7 +36,7 @@ const AppGroup = ({ disabled }: { disabled: boolean }) => {
             </Row>
             <ComboBox
                 id='app-timezone'
-                titleText='Zona horaria'
+                titleText={copy.app.timezone}
                 size='md'
                 items={TIMEZONES}
                 selectedItem={project.settings.timezone}

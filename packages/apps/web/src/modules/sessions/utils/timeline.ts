@@ -1,4 +1,6 @@
 import { SessionEvent } from '@condor/contracts/sessions/domain';
+import { copy } from '@/modules/sessions/i18n';
+import { intlLocale } from '@/shared/i18n/locale';
 
 export interface Described{
     title: string;
@@ -6,7 +8,13 @@ export interface Described{
     danger: boolean;
 }
 
-const RATINGS: Record<string, string> = { good: 'bueno', 'needs-improvement': 'mejorable', poor: 'lento' };
+const RATINGS: Record<string, string> = {
+    good: copy.timeline.ratings.good,
+    'needs-improvement': copy.timeline.ratings.needsImprovement,
+    poor: copy.timeline.ratings.poor
+};
+
+const shift = new Intl.NumberFormat(intlLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const value = (entry: unknown): string => (typeof entry === 'object' && entry !== null ? JSON.stringify(entry) : String(entry));
 
@@ -18,9 +26,9 @@ const props = (entry: SessionEvent): string | null => {
 };
 
 const vital = (entry: SessionEvent): string => {
-    if(entry.value === null) return entry.name ?? 'Métrica';
-    const amount = entry.name === 'CLS' ? entry.value.toFixed(2).replace('.', ',') : `${Math.round(entry.value)} ms`;
-    return `${entry.name ?? 'Métrica'} ${amount}`;
+    if(entry.value === null) return entry.name ?? copy.timeline.metric;
+    const amount = entry.name === 'CLS' ? shift.format(entry.value) : `${Math.round(entry.value)} ms`;
+    return `${entry.name ?? copy.timeline.metric} ${amount}`;
 };
 
 export const TIMELINE_TYPES = new Set(['pageview', 'click', 'custom', 'error', 'vital', 'identify']);
@@ -28,25 +36,25 @@ export const TIMELINE_TYPES = new Set(['pageview', 'click', 'custom', 'error', '
 export const describe = (entry: SessionEvent): Described => {
     switch(entry.type){
         case 'pageview':
-            return { title: `Abre ${entry.path}`, detail: entry.title, danger: false };
+            return { title: copy.timeline.opens(entry.path), detail: entry.title, danger: false };
         case 'click': {
-            const kind = entry.rage ? 'Clic de rabia' : entry.dead ? 'Clic muerto' : 'Clic';
+            const kind = entry.rage ? copy.timeline.rageClick : entry.dead ? copy.timeline.deadClick : copy.timeline.click;
             return {
-                title: entry.text ? `${kind} en «${entry.text}»` : kind,
+                title: entry.text ? copy.timeline.clickOn(kind, entry.text) : kind,
                 detail: entry.selector,
                 danger: entry.rage
             };
         }
         case 'error':
-            return { title: entry.text ?? 'Error', detail: [label(entry.props?.errorType), label(entry.props?.source), entry.path].filter(Boolean).join(' · '), danger: true };
+            return { title: entry.text ?? copy.timeline.error, detail: [label(entry.props?.errorType), label(entry.props?.source), entry.path].filter(Boolean).join(' · '), danger: true };
         case 'vital': {
             const rating = typeof entry.props?.rating === 'string' ? RATINGS[entry.props.rating] : undefined;
-            return { title: vital(entry), detail: [rating ? `Resultado ${rating}` : null, entry.path].filter(Boolean).join(' · '), danger: false };
+            return { title: vital(entry), detail: [rating, entry.path].filter(Boolean).join(' · '), danger: false };
         }
         case 'identify':
-            return { title: 'Se identifica', detail: props(entry), danger: false };
+            return { title: copy.timeline.identifies, detail: props(entry), danger: false };
         default:
-            return { title: entry.name ?? 'Evento', detail: props(entry), danger: false };
+            return { title: entry.name ?? copy.timeline.event, detail: props(entry), danger: false };
     }
 };
 

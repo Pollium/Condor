@@ -1,6 +1,7 @@
 import { IssueDetail as Detail, IssueStatus } from '@condor/contracts/issues/domain';
 import { InlineNotification } from '@carbon/react';
 import IssueActions from '@/modules/issues/components/IssueActions';
+import { copy } from '@/modules/issues/i18n';
 import { hourlyBars, shortSource, STATES } from '@/modules/issues/utils/issue-copy';
 import { BarsChart } from '@/shared/components/Charts';
 import Code from '@/shared/components/Code';
@@ -32,17 +33,17 @@ const IssueDetail = ({ issue, editable, busy, failure, onStatus }: IssueDetailPr
             {failure ? <InlineNotification kind='error' lowContrast hideCloseButton title={failure} /> : null}
 
             <StatRow columns={4}>
-                <StatTile label='Ocurrencias' value={fmt.n(issue.occurrences)} />
-                <StatTile label='Sesiones' value={fmt.n(issue.sessions)} />
-                <StatTile label='Personas' value={fmt.n(issue.people)} />
-                <StatTile label='Desde' value={fmt.day(issue.firstSeenAt)} hint={`Última vez ${fmt.ago(issue.lastSeenAt)}`} />
+                <StatTile label={copy.detail.occurrences} value={fmt.n(issue.occurrences)} />
+                <StatTile label={copy.detail.sessions} value={fmt.n(issue.sessions)} />
+                <StatTile label={copy.detail.people} value={fmt.n(issue.people)} />
+                <StatTile label={copy.detail.since} value={fmt.day(issue.firstSeenAt)} hint={copy.detail.lastSeen(fmt.ago(issue.lastSeenAt))} />
             </StatRow>
 
-            <Section title='Últimas 24 horas'>
-                <BarsChart data={hourlyBars(issue.hourly)} unit='Ocurrencias' className='h-40' />
+            <Section title={copy.detail.lastDay}>
+                <BarsChart data={hourlyBars(issue.hourly)} unit={copy.detail.occurrences} className='h-40' />
             </Section>
 
-            <Section title='Traza'>
+            <Section title={copy.detail.trace}>
                 <Code>{issue.stack ?? `${issue.errorType}: ${issue.message}`}</Code>
             </Section>
         </section>

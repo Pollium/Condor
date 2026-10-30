@@ -12,6 +12,7 @@ workers and answers every question the web asks. Read [../AGENTS.md](../AGENTS.m
 | `tracking` | the workers that turn a queued batch into sessions, people, events and grouped errors, index replay chunks and enforce retention |
 | `projects` | apps, their public keys and settings |
 | `sessions`, `overview`, `heatmaps`, `funnels`, `journeys`, `retention`, `issues`, `search` | the queries behind each web page |
+| `events` | the event explorer (custom events, their series, properties and values) and the trait catalog the segment menu lists |
 | `live` | the `/live` websocket: people online and live sessions per project |
 
 Modules talk to each other through services, models and `eventBus`, never over HTTP.
@@ -46,8 +47,18 @@ parameter, never interpolated.
   forgets it on `project.changed`, which `eventBus` carries to every api replica.
 - The collector is the only public path: `publicPaths: ['/i/']` in `src/core/Application.ts`
   answers any origin there without credentials, and everything else only `CORS_ORIGIN`.
+- Bot filtering applies to browser batches only (they carry a `sessionId`). A server batch is
+  authenticated by the project key and kept whatever its User-Agent.
 - The SDK posts `text/plain`, because `navigator.sendBeacon` and a no-preflight `fetch` cannot send
   `application/json` cross-origin; `src/core/json-body.ts` parses both as JSON.
+
+## Segments
+
+`?traitKey=plan&traitValue=pro` narrows sessions, retention, funnels and the event explorer to the
+people whose `traits ->> key` equals the value (`parseSegment`, `src/shared/http/segment.ts`). Traits
+are what `identify` sent, from the browser or the server, merged per person. A funnel step can also
+require an event property (`where: { key, value }`). Funnels read the person, not the session, so a
+step a server sent outside any session still counts.
 
 ## Access
 

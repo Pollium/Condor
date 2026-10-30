@@ -1,5 +1,6 @@
 import { Tooltip as HintTip } from '@carbon/react';
 import { Retention } from '@condor/contracts/retention/domain';
+import { copy } from '@/modules/retention/i18n';
 import { cohortLabel, UNIT } from '@/modules/retention/utils/cohort-copy';
 import { fmt } from '@/shared/utils/format';
 import { heatFill } from '@/shared/utils/heat';
@@ -12,7 +13,7 @@ const CohortGrid = ({ retention }: { retention: Retention }) => {
         <div className='overflow-x-auto'>
             <div className='grid min-w-[44rem] gap-1' style={{ gridTemplateColumns: `6.5rem 5rem repeat(${columns}, minmax(2.75rem, 1fr))` }}>
                 <span className='text-[0.75rem] text-muted'>{unit.column}</span>
-                <span className='pr-2 text-right text-[0.75rem] text-muted'>Personas</span>
+                <span className='pr-2 text-right text-[0.75rem] text-muted'>{copy.grid.people}</span>
                 {Array.from({ length: columns }, (_, index) => (
                     <span key={index} className='text-center text-[0.75rem] text-muted'>
                         {unit.short}{index}
@@ -28,7 +29,7 @@ const CohortGrid = ({ retention }: { retention: Retention }) => {
                             return (
                                 <HintTip
                                     key={index}
-                                    label={`${fmt.n(Math.round(cohort.size * value))} de ${fmt.n(cohort.size)} personas en ${unit.one} ${index}`}
+                                    label={copy.grid.cell(Math.round(cohort.size * value), cohort.size, unit.one, index)}
                                     enterDelayMs={150}
                                     autoAlign
                                     className='min-w-0'

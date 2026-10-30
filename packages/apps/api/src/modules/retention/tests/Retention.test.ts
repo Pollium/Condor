@@ -13,8 +13,8 @@ const ISO_DAY = 10;
 
 const day = (daysAgo: number): string => utcDayStart(daysAgo).toISOString().slice(0, ISO_DAY);
 
-const visitor = async (project: Project, firstDaysAgo: number, returnDaysAgo: number[]): Promise<Person> => {
-    const person = await seed.person(project, { firstSeenAt: utcAt(firstDaysAgo, 12) });
+const visitor = async (project: Project, firstDaysAgo: number, returnDaysAgo: number[], traits = {}): Promise<Person> => {
+    const person = await seed.person(project, { firstSeenAt: utcAt(firstDaysAgo, 12), traits });
     await seed.session(project, person, { startedAt: utcAt(firstDaysAgo, 12) });
     for(const daysAgo of returnDaysAgo){
         await seed.session(project, person, { startedAt: utcDayStart(daysAgo) });
@@ -50,6 +50,21 @@ describe('RetentionController', () => {
             { start: day(0), size: 0, values: [0] }
         ]);
         expect(retention.average).toEqual([1, 0.4, expect.closeTo(2 / 3)]);
+    });
+
+    it('builds the cohorts from the people in a segment only', async () => {
+        const project = await seed.project();
+        await visitor(project, 2, [1], { plan: 'pro' });
+        await visitor(project, 2, [], { plan: 'pro' });
+        await visitor(project, 2, [1, 0], { plan: 'free' });
+
+        const res = await request(ctx.app, retentionRoutes.retention, {
+            as: await actor('viewer'),
+            params: { projectId: project.id },
+            query: { grain: 'day', cohorts: 3, traitKey: 'plan', traitValue: 'pro' }
+        });
+
+        expect(res.data().cohorts[0]).toEqual({ start: day(2), size: 2, values: [1, 0.5, 0] });
     });
 
     it('counts a custom return event instead of any session', async () => {

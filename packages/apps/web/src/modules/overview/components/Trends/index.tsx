@@ -2,6 +2,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@carbon/react';
 import { KpiKey, Summary } from '@condor/contracts/overview/domain';
 import { useState } from 'react';
 import AudienceChart from '@/modules/overview/components/AudienceChart';
+import { copy } from '@/modules/overview/i18n';
 import { bucketLabel, deltaText, deltaTone, KPI_VIEWS } from '@/modules/overview/utils/kpis';
 import { Legend } from '@/shared/components/Page';
 import { TrendChart } from '@/shared/components/Charts';
@@ -19,8 +20,8 @@ const Trend = ({ summary, selected }: { summary: Summary; selected: KpiKey }) =>
             <AudienceChart buckets={summary.audience.map((point, index) => ({ label: labels[index] ?? '', ...point }))} />
             <Legend
                 items={[
-                    { label: 'Recurrentes', className: 'bg-accent' },
-                    { label: 'Nuevas', className: 'bg-fill-strong' }
+                    { label: copy.audience.returning, className: 'bg-accent' },
+                    { label: copy.audience.fresh, className: 'bg-fill-strong' }
                 ]}
             />
         </div>
@@ -34,7 +35,7 @@ const Trends = ({ summary }: { summary: Summary }) => {
     return (
         <section className='min-w-0'>
             <Tabs selectedIndex={index} onChange={({ selectedIndex }) => setSelected(summary.kpis[selectedIndex].key)}>
-                <TabList aria-label='Indicador' className='max-h-none'>
+                <TabList aria-label={copy.trends.indicator} className='max-h-none'>
                     {summary.kpis.map((kpi) => (
                         <Tab key={kpi.key} className='min-w-[9.5rem] py-3'>
                             <span className='flex flex-col items-start'>

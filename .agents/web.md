@@ -1,6 +1,7 @@
 # Web (`packages/apps/web`)
 
-React 19 + Vite + IBM Carbon (`@carbon/react`, `@carbon/icons-react`) + Tailwind v4 utilities, all copy in Spanish.
+React 19 + Vite + IBM Carbon (`@carbon/react`, `@carbon/icons-react`) + Tailwind v4 utilities, with every word of copy in
+Spanish, English and Portuguese.
 
 ## Layout of `src/`
 
@@ -12,6 +13,7 @@ shared/                 never imports app/ or modules/
                         Code, Modal, ActionMenu, EmptyState, WorldMap, Charts (BarsChart, TrendChart, SessionsChart, WeekHeatmap, Sparkline)
     store/              period.ts (usePeriodStore: '24h'|'7d'|'30d'|'90d'), toolbar.ts (portal target for PageHeader)
     utils/              format.ts (fmt.n/k/pct/clock/duration/signed/ago/day/time), error-copy.ts, views.ts, chart-style.ts, heat.ts
+    i18n/               locale.ts (locale, intlLocale, pick) and the shared words (views, close, copy, errors, Carbon ids)
 ```
 
 - A page file is `modules/<m>/pages/protected/[projectId]/<segment>/index.tsx`; `[x]` becomes `:x`. Pages render inside the
@@ -24,7 +26,13 @@ shared/                 never imports app/ or modules/
   wire types come from `@condor/contracts/<domain>/**`. Never hard-code a URL, never fake data.
 - Live: `useLive(projectId, onSession?)` from `@/modules/live/hooks/use-live` (count, pages, and `live.session` frames).
 - Roles: `useMe()` / `canEdit(user)` from `@/modules/auth/hooks/use-me`; viewers see everything read-only.
-- Errors to copy: `errorCopy({...})(error)` from `@/shared/utils/error-copy`.
+- Copy: never write a user-visible string in a component. Each module (and `app/`, `shared/`) owns `i18n/es.ts` (the source,
+  a plain object), `en.ts` and `pt.ts` (typed `typeof es`, so a missing key fails `tsc`) and `index.ts`
+  (`export const copy = pick({ es, en, pt })`). Read it as `copy.section.key`; interpolation and plurals are typed functions
+  in the dictionary. Format with `fmt` or with `Intl` on `intlLocale` from `@/shared/i18n/locale`, never a hard-coded locale.
+  The locale comes from `?lang=`, then the saved choice, then the browser (`@condor/ui/utils/session/locale`). Switching it
+  reloads the page, so module-level constants may read `copy`. Route segments stay Spanish; they are ids, not copy.
+- Errors to copy: `errorCopy({...})(error)` from `@/shared/utils/error-copy`, with the messages taken from the module's `copy`.
 - Style: 4 spaces, single quotes, semicolons, `if(`/`}else{` with no space, `interface Name{`, `@/` imports (no relative imports),
   kebab-case file names except `Component/index.tsx`, no comments, no `!important`.
 - Carbon BEM selectors contain `__`, which Tailwind arbitrary variants turn into spaces — put such overrides as plain CSS classes in

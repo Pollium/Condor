@@ -7,19 +7,34 @@ import { useState } from 'react';
 import { funnelsApi } from '@/modules/funnels/api/api';
 import FunnelStepField, { type StepDraft } from '@/modules/funnels/components/FunnelStepField';
 import { useKnownTargets } from '@/modules/funnels/hooks/use-known-targets';
+import { copy } from '@/modules/funnels/i18n';
 import { windowChoices } from '@/modules/funnels/utils/funnel-copy';
+import { copy as shared } from '@/shared/i18n';
 import { translate } from '@/shared/utils/carbon-translate';
 import { errorCopy } from '@/shared/utils/error-copy';
 
 const MIN_STEPS = 2;
 const MAX_STEPS = 8;
 
-const blank = (kind: StepDraft['kind']): StepDraft => ({ key: crypto.randomUUID(), kind, match: '', label: '' });
+const blank = (kind: StepDraft['kind']): StepDraft => ({ key: crypto.randomUUID(), kind, match: '', label: '', whereKey: '', whereValue: '' });
 
 const draftsOf = (funnel: Funnel | null): StepDraft[] =>
-    funnel ? funnel.steps.map((step) => ({ ...step, key: crypto.randomUUID() })) : [blank('page'), blank('event')];
+    funnel
+        ? funnel.steps.map((step) => ({
+            key: crypto.randomUUID(),
+            kind: step.kind,
+            match: step.match,
+            label: step.label,
+            whereKey: step.where?.key ?? '',
+            whereValue: step.where?.value ?? ''
+        }))
+        : [blank('page'), blank('event')];
 
-const copy = errorCopy({ 'Funnel::NotFound': 'Este embudo ya no existe.' });
+const filled = (draft: StepDraft): boolean => draft.whereKey.trim() !== '' && draft.whereValue.trim() !== '';
+
+const halfFilled = (draft: StepDraft): boolean => (draft.whereKey.trim() === '') !== (draft.whereValue.trim() === '');
+
+const failure = errorCopy({ 'Funnel::NotFound': copy.errors.notFound });
 
 interface FunnelEditorProps{
     projectId: string;
@@ -36,9 +51,9 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
     const create = useMutation(funnelsApi.create);
     const update = useMutation(funnelsApi.update);
     const saving = create.loading || update.loading;
-    const error = copy(create.error ?? update.error);
+    const error = failure(create.error ?? update.error);
     const choices = windowChoices(Number(hours));
-    const valid = name.trim() !== '' && drafts.length >= MIN_STEPS && drafts.every((draft) => draft.match.trim() !== '');
+    const valid = name.trim() !== '' && drafts.length >= MIN_STEPS && drafts.every((draft) => draft.match.trim() !== '' && !halfFilled(draft));
 
     const change = (key: string, patch: Partial<StepDraft>) =>
         setDrafts((current) => current.map((draft) => (draft.key === key ? { ...draft, ...patch } : draft)));
@@ -51,7 +66,8 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
             steps: drafts.map((draft) => ({
                 kind: draft.kind,
                 match: draft.match.trim(),
-                label: (draft.label.trim() || draft.match.trim()).slice(0, 80)
+                label: (draft.label.trim() || draft.match.trim()).slice(0, 80),
+                ...(draft.kind === 'event' && filled(draft) ? { where: { key: draft.whereKey.trim(), value: draft.whereValue.trim() } } : {})
             }))
         };
         const saved = funnel ? update.run(projectId, funnel.id, body) : create.run(projectId, body);
@@ -62,11 +78,11 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
         <Modal
             open
             size='md'
-            modalHeading={funnel ? 'Editar embudo' : 'Nuevo embudo'}
-            primaryButtonText={saving ? 'Guardando…' : 'Guardar'}
-            secondaryButtonText='Cancelar'
+            modalHeading={funnel ? copy.editor.edit : copy.editor.create}
+            primaryButtonText={saving ? copy.editor.saving : copy.editor.save}
+            secondaryButtonText={copy.editor.cancel}
             primaryButtonDisabled={!valid || saving}
-            closeButtonLabel='Cerrar'
+            closeButtonLabel={shared.close}
             preventCloseOnClickOutside
             selectorPrimaryFocus='#funnel-name'
             onRequestClose={onClose}
@@ -74,21 +90,21 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
         >
             <div className='flex flex-col gap-6'>
                 <p className='text-[0.875rem] text-label-2'>
-                    Cuenta a las personas que hacen cada paso en orden, dentro de la ventana desde el primero.
+                    {copy.editor.intro}
                 </p>
                 <div className='grid gap-4 sm:grid-cols-[minmax(0,1fr)_14rem]'>
                     <TextInput
                         id='funnel-name'
-                        labelText='Nombre'
-                        placeholder='Compra'
+                        labelText={copy.editor.name}
+                        placeholder={copy.editor.namePlaceholder}
                         maxLength={80}
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                     />
                     <Dropdown
                         id='funnel-window'
-                        titleText='Ventana de conversión'
-                        label='Ventana de conversión'
+                        titleText={copy.editor.window}
+                        label={copy.editor.window}
                         items={choices}
                         itemToString={(choice) => choice?.label ?? ''}
                         selectedItem={choices.find((choice) => choice.value === hours) ?? null}
@@ -117,7 +133,7 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
                         disabled={drafts.length >= MAX_STEPS}
                         onClick={() => setDrafts((current) => [...current, blank('event')])}
                     >
-                        {drafts.length >= MAX_STEPS ? 'Hasta 8 pasos' : 'Añadir paso'}
+                        {drafts.length >= MAX_STEPS ? copy.editor.maxSteps(MAX_STEPS) : copy.editor.addStep}
                     </Button>
                 </div>
                 {error ? <InlineNotification kind='error' lowContrast hideCloseButton title={error} /> : null}

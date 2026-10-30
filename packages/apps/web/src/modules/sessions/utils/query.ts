@@ -1,6 +1,7 @@
 import { Device } from '@condor/contracts/shared/analytics';
 import { Period } from '@condor/contracts/shared/period';
 import { SessionListQuery, SessionSignal, SessionSort } from '@condor/contracts/sessions/domain';
+import { copy } from '@/modules/sessions/i18n';
 import type { Choice } from '@/shared/components/Segmented';
 
 export const PAGE_SIZES = [25, 50, 100];
@@ -11,29 +12,29 @@ export interface Flag{
 }
 
 export const FLAGS: Flag[] = [
-    { id: 'error', label: 'Con errores' },
-    { id: 'rage', label: 'Con clics de rabia' },
-    { id: 'dead', label: 'Con clics muertos' },
-    { id: 'uturn', label: 'Con vueltas atrás' },
-    { id: 'converted', label: 'Que convirtieron' },
-    { id: 'identified', label: 'Con cuenta' },
-    { id: 'replay', label: 'Con grabación' }
+    { id: 'error', label: copy.flags.error },
+    { id: 'rage', label: copy.flags.rage },
+    { id: 'dead', label: copy.flags.dead },
+    { id: 'uturn', label: copy.flags.uturn },
+    { id: 'converted', label: copy.flags.converted },
+    { id: 'identified', label: copy.flags.identified },
+    { id: 'replay', label: copy.flags.replay }
 ];
 
 const SIGNALS: string[] = ['error', 'rage', 'dead', 'uturn'];
 
 export const SORTS: Choice<SessionSort>[] = [
-    { value: 'recent', label: 'Más recientes' },
-    { value: 'longest', label: 'Más largas' },
-    { value: 'events', label: 'Más eventos' },
-    { value: 'frustrated', label: 'Más frustradas' }
+    { value: 'recent', label: copy.sorts.recent },
+    { value: 'longest', label: copy.sorts.longest },
+    { value: 'events', label: copy.sorts.events },
+    { value: 'frustrated', label: copy.sorts.frustrated }
 ];
 
 export const DEVICES: Choice<Device | 'all'>[] = [
-    { value: 'all', label: 'Todos los dispositivos' },
-    { value: 'desktop', label: 'Escritorio' },
-    { value: 'mobile', label: 'Móvil' },
-    { value: 'tablet', label: 'Tableta' }
+    { value: 'all', label: copy.allDevices },
+    { value: 'desktop', label: copy.devices.desktop },
+    { value: 'mobile', label: copy.devices.mobile },
+    { value: 'tablet', label: copy.devices.tablet }
 ];
 
 export interface ListState{

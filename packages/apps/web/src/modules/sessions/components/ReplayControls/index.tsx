@@ -2,6 +2,7 @@ import { Dropdown, IconButton, Popover, PopoverContent, Toggle } from '@carbon/r
 import { Forward_10, PauseFilled, PlayFilledAlt, Rewind_10, SettingsAdjust } from '@carbon/icons-react';
 import { useId, useState, type CSSProperties } from 'react';
 import type { Player } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 import { fmt } from '@/shared/utils/format';
 import { translate } from '@/shared/utils/carbon-translate';
 
@@ -49,7 +50,7 @@ const ReplayControls = ({ player, marks }: ReplayControlsProps) => {
                 </div>
                 <input
                     type='range'
-                    aria-label='Posición'
+                    aria-label={copy.controls.position}
                     min={0}
                     max={total}
                     step={100}
@@ -62,13 +63,13 @@ const ReplayControls = ({ player, marks }: ReplayControlsProps) => {
             </div>
 
             <div className='flex items-center gap-1'>
-                <IconButton kind='ghost' size='sm' label={playing ? 'Pausar' : 'Reproducir'} onClick={toggle} align='top-start'>
+                <IconButton kind='ghost' size='sm' label={playing ? copy.controls.pause : copy.controls.play} onClick={toggle} align='top-start'>
                     {playing ? <PauseFilled /> : <PlayFilledAlt />}
                 </IconButton>
-                <IconButton kind='ghost' size='sm' label='Retroceder 10 segundos' onClick={() => seek(time - 10_000)} align='top'>
+                <IconButton kind='ghost' size='sm' label={copy.controls.back} onClick={() => seek(time - 10_000)} align='top'>
                     <Rewind_10 />
                 </IconButton>
-                <IconButton kind='ghost' size='sm' label='Avanzar 10 segundos' onClick={() => seek(time + 10_000)} align='top'>
+                <IconButton kind='ghost' size='sm' label={copy.controls.forward} onClick={() => seek(time + 10_000)} align='top'>
                     <Forward_10 />
                 </IconButton>
                 <span className='ml-2 whitespace-nowrap text-[0.8125rem] tabular-nums text-label-2'>
@@ -82,9 +83,9 @@ const ReplayControls = ({ player, marks }: ReplayControlsProps) => {
                     type='inline'
                     size='sm'
                     direction='top'
-                    titleText='Velocidad'
+                    titleText={copy.controls.speed}
                     hideLabel
-                    label='Velocidad'
+                    label={copy.controls.speed}
                     items={SPEEDS}
                     itemToString={(value) => (value === null ? '' : `${value}×`)}
                     selectedItem={speed}
@@ -94,14 +95,14 @@ const ReplayControls = ({ player, marks }: ReplayControlsProps) => {
                 />
 
                 <Popover open={open} onRequestClose={() => setOpen(false)} align='top-end'>
-                    <IconButton kind='ghost' size='sm' label='Opciones de reproducción' onClick={() => setOpen((value) => !value)} align='top-end'>
+                    <IconButton kind='ghost' size='sm' label={copy.controls.options} onClick={() => setOpen((value) => !value)} align='top-end'>
                         <SettingsAdjust />
                     </IconButton>
                     <PopoverContent>
                         <div className='flex w-64 items-center justify-between gap-4 p-4'>
                             <label id={`${id}-skip-label`} htmlFor={`${id}-skip`} className='flex cursor-pointer flex-col'>
-                                <span className='text-[0.875rem] text-foreground'>Saltar la inactividad</span>
-                                <span className='text-[0.75rem] text-label-2'>Pasa de largo los tramos sin movimiento</span>
+                                <span className='text-[0.875rem] text-foreground'>{copy.controls.skipInactive}</span>
+                                <span className='text-[0.75rem] text-label-2'>{copy.controls.skipInactiveHint}</span>
                             </label>
                             <Toggle id={`${id}-skip`} aria-labelledby={`${id}-skip-label`} size='sm' hideLabel toggled={skipInactive} onToggle={setSkipInactive} />
                         </div>

@@ -1,7 +1,9 @@
 import { Journey } from '@condor/contracts/journeys/domain';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { copy } from '@/modules/journeys/i18n';
 import { HEIGHT, layoutSankey, NODE_WIDTH, ribbon, type FlowLink, type FlowNode, type NodeTone } from '@/modules/journeys/utils/sankey-layout';
 import { ChartTooltip } from '@/shared/components/Charts';
+import { copy as shared } from '@/shared/i18n';
 import { fmt } from '@/shared/utils/format';
 
 const MIN_WIDTH = 860;
@@ -20,7 +22,7 @@ const FILL: Record<NodeTone, string> = {
 
 type Hover = { kind: 'node'; id: string } | { kind: 'link'; index: number } | null;
 
-const columnName = (step: number) => (step === 0 ? 'Entrada' : `Paso ${step + 1}`);
+const columnName = (step: number) => (step === 0 ? copy.sankey.entry : copy.sankey.step(step + 1));
 
 const short = (label: string) => (label.length > 22 ? `${label.slice(0, 21)}…` : label);
 
@@ -38,9 +40,9 @@ const describe = (hover: Hover, nodes: FlowNode[], links: FlowLink[], totals: nu
         return {
             title: `${node.label} · ${columnName(node.step)}`,
             rows: [
-                { label: 'Sesiones', value: fmt.n(node.size), swatch: node.tone === 'page' ? 'bg-accent' : 'bg-foreground/25' },
-                { label: 'De la columna', value: fmt.pct(totals[node.step] ? node.size / totals[node.step] : 0), swatch: 'bg-foreground/20' },
-                ...(outgoing.length ? [{ label: 'Siguen', value: fmt.pct(node.size ? onward / node.size : 0), swatch: 'bg-foreground/20' }] : [])
+                { label: shared.chart.sessions, value: fmt.n(node.size), swatch: node.tone === 'page' ? 'bg-accent' : 'bg-foreground/25' },
+                { label: copy.sankey.ofColumn, value: fmt.pct(totals[node.step] ? node.size / totals[node.step] : 0), swatch: 'bg-foreground/20' },
+                ...(outgoing.length ? [{ label: copy.sankey.onward, value: fmt.pct(node.size ? onward / node.size : 0), swatch: 'bg-foreground/20' }] : [])
             ]
         };
     }
@@ -50,8 +52,8 @@ const describe = (hover: Hover, nodes: FlowNode[], links: FlowLink[], totals: nu
         return {
             title: `${link.source.label} → ${link.target.label}`,
             rows: [
-                { label: 'Sesiones', value: fmt.n(link.value), swatch: 'bg-foreground/30' },
-                { label: `De ${short(link.source.label)}`, value: fmt.pct(link.source.size ? link.value / link.source.size : 0), swatch: 'bg-foreground/20' }
+                { label: shared.chart.sessions, value: fmt.n(link.value), swatch: 'bg-foreground/30' },
+                { label: copy.sankey.ofSource(short(link.source.label)), value: fmt.pct(link.source.size ? link.value / link.source.size : 0), swatch: 'bg-foreground/20' }
             ]
         };
     }
@@ -88,7 +90,7 @@ const Sankey = ({ journey }: { journey: Journey }) => {
                 height={HEIGHT}
                 viewBox={`0 0 ${width} ${HEIGHT}`}
                 role='img'
-                aria-label='Flujo de sesiones entre páginas'
+                aria-label={copy.sankey.label}
                 onMouseMove={(event) => {
                     const box = event.currentTarget.getBoundingClientRect();
                     setPoint({ x: event.clientX - box.left, y: event.clientY - box.top });
