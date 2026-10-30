@@ -1,5 +1,6 @@
 import { Channel, Device, EventType, Traits } from '../shared/analytics';
 import { Period } from '../shared/period';
+import { SegmentQuery } from '../shared/segment';
 
 export interface SessionSignals{
     rage: number;
@@ -93,7 +94,7 @@ export type SessionSignal = 'rage' | 'dead' | 'error' | 'uturn';
 
 export type SessionSort = 'recent' | 'longest' | 'events' | 'frustrated';
 
-export interface SessionListQuery{
+export interface SessionListQuery extends SegmentQuery{
     period?: Period;
     search?: string;
     device?: Device;

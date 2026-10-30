@@ -1,3 +1,5 @@
+import { SegmentQuery } from '../shared/segment';
+
 export type RetentionGrain = 'day' | 'week';
 
 export interface Cohort{
@@ -13,7 +15,7 @@ export interface Retention{
     average: number[];
 }
 
-export interface RetentionQuery{
+export interface RetentionQuery extends SegmentQuery{
     grain?: RetentionGrain;
     cohorts?: number;
     returnEvent?: string;

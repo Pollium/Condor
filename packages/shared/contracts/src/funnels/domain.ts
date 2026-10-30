@@ -1,6 +1,7 @@
 import { Device } from '../shared/analytics';
 import { BaseEntity } from '../shared/base';
 import { Period } from '../shared/period';
+import { Segment, SegmentQuery } from '../shared/segment';
 
 export type FunnelStepKind = 'page' | 'event';
 
@@ -8,6 +9,7 @@ export interface FunnelStep{
     kind: FunnelStepKind;
     match: string;
     label: string;
+    where?: Segment;
 }
 
 export interface Funnel extends BaseEntity{
@@ -40,7 +42,7 @@ export interface FunnelResult{
     byDevice: FunnelDeviceResult[];
 }
 
-export interface FunnelResultQuery{
+export interface FunnelResultQuery extends SegmentQuery{
     period?: Period;
     windowHours?: number;
 }
