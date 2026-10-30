@@ -45,11 +45,11 @@ The console is at `http://localhost:8080`. Then:
 
 1. Create the owner account. The first visit asks for it. After that the setup page is closed.
 2. Add your first app (below) and paste its snippet into your site.
-3. Invite your team from **Equipo**. Invitations are links you copy and send yourself, so no
+3. Invite your team from **Team**. Invitations are links you copy and send yourself, so no
    email server is needed.
 
 To look around first, `docker compose exec api pnpm seed` loads a demo store, *Tienda Andes*,
-with 90 days of synthetic history. You can delete it later from its **Ajustes → Zona de peligro**.
+with 90 days of synthetic history. You can delete it later from its **Settings → Danger zone**.
 
 The schema is synced on boot, so updating is:
 
@@ -117,15 +117,16 @@ password, the owner's included.
 
 Condor is organized around apps. Each app has its own public key, settings and data. You switch
 between apps from the header, along with the period (24 hours, 7, 30 or 90 days), the global search
-across people, pages and errors, and the light or dark theme. The console is in Spanish.
+across people, pages and errors, and the light or dark theme. The console speaks English, Spanish
+and Portuguese. It follows the browser's language, and **Your account → Language** changes it for that browser.
 
 Members are **owners** (members and everything else), **admins** (apps, settings and errors) or
 **viewers** (read only).
 
 ### Connect an app
 
-**Añadir una app** in the app menu takes a name, a domain and where the data comes from: a web
-app or a server/HTTP API. The app's **Ajustes** page then shows its key and install snippet. It
+**Add an app** in the app menu takes a name, a domain and where the data comes from: a web
+app or a server/HTTP API. The app's **Settings** page then shows its key and install snippet. It
 also shows whether the first event has arrived.
 
 ![App settings: public key, install snippet, name, domain, time zone and privacy](/screenshots/settings.png)
@@ -140,8 +141,9 @@ condor.identify(user.id, { email: user.email, name: user.name });
 condor.track('purchase_completed', { value: 129990 });
 ```
 
-Single-page apps are tracked on every history change. Backends can `POST /i/batch` with the same
-key. [packages/sdk/browser/README.md](packages/sdk/browser/README.md) has the full API and the
+Single-page apps are tracked on every history change. Node backends can send `track` and
+`identify` with `@condor/node`, and their events join the user's live browser session when there
+is one. Any other backend can `POST /i/batch` with the same key. [packages/sdk/browser/README.md](packages/sdk/browser/README.md) has the full API and the
 server format.
 
 The console adapts to the data each app sends. Paths, custom events, funnels, releases and the
@@ -151,7 +153,7 @@ conversion event all come from the app, and nothing is hard-coded.
 
 ![Overview: where visitors are, people, sessions, duration, bounce, frustrated sessions and JS errors](/screenshots/overview.png)
 
-**Resumen** puts the period next to the one before it. It shows where visitors are on a map with
+**Overview** puts the period next to the one before it. It shows where visitors are on a map with
 countries, cities and languages, then sessions, people, duration, bounce rate, frustrated sessions
 and JavaScript errors, each with its trend. Below that are breakdowns by channel, source,
 campaign, page, entry and exit page, release, device, OS, browser, screen,
@@ -162,29 +164,40 @@ right now.
 
 ![Sessions: every visit with its person, place, device, activity and frustration signals](/screenshots/sessions.png)
 
-**Sesiones** lists every visit with its person, place, device, pages, activity and what went
+**Sessions** lists every visit with its person, place, device, pages, activity and what went
 wrong. You can search by person, email or page, and filter to recorded, converted, identified or
 frustrated sessions, or to sessions with errors, rage clicks or dead clicks.
 
 ![Session replay with its timeline of pages, clicks, Web Vitals, custom events and errors](/screenshots/replay.png)
 
-Opening a session plays its recording. Next to it are the session's **Eventos** (pages, clicks,
-Web Vitals, custom events, identification and errors), its **Consola**, its **Red** requests and
-the **Persona** behind it. Marks on the timeline show where things happened, and clicking an
-event seeks the replay to it. **Copiar enlace** shares the session with a teammate.
+Opening a session plays its recording. Next to it are the session's **Events** (pages, clicks,
+Web Vitals, custom events, identification and errors), its **Console**, its **Network** requests
+and the **Person** behind it. Marks on the timeline show where things happened, and clicking an
+event seeks the replay to it. **Copy link** shares the session with a teammate.
+
+### Events
+
+![Events: every custom event with its count, people, trend and property values](/screenshots/events.png)
+
+**Events** lists every custom event of the period with how many times it was sent and by how many
+people. Selecting one shows its total against the previous period, how often each person sends it,
+its trend over time, and the values of each of its properties.
+
+The **Everyone** menu on Sessions, Events, Funnels and Retention narrows any of them to the people
+who carry one trait, such as `plan: pro`, taken from what `identify` sent.
 
 ### Heatmaps
 
 ![Click heatmap over a product page, with the most clicked elements](/screenshots/heatmaps.png)
 
-**Mapas de calor** draws clicks, rage clicks or scroll depth over a real snapshot of the page, per
+**Heatmaps** draws clicks, rage clicks or scroll depth over a real snapshot of the page, per
 path group and per device (desktop, tablet or mobile). Beside it are the most clicked elements.
 
 ### Funnels
 
 ![Funnel: people at each step, drop-off, median time and conversion by device](/screenshots/funnels.png)
 
-**Embudos** chains pages and custom events into steps within a window of 1 hour to 30 days. For
+**Funnels** chains pages and custom events into steps within a window of 1 hour to 30 days. For
 each step it shows how many people get there, how many drop off and the median time between steps.
 It also breaks conversion down by device.
 
@@ -192,24 +205,24 @@ It also breaks conversion down by device.
 
 ![Journeys: the flow between pages from the entry page, with exits](/screenshots/journeys.png)
 
-**Recorridos** follows sessions page by page from any entry page or from one you pick, for 3 to 6
+**Journeys** follows sessions page by page from any entry page or from one you pick, for 3 to 6
 steps, with or without exits. Below the flow are the most common full paths.
 
 ### Retention
 
 ![Retention: the curve and the weekly cohorts](/screenshots/retention.png)
 
-**Retención** groups people by the day or week of their first visit and shows how many come back,
+**Retention** groups people by the day or week of their first visit and shows how many come back,
 as a curve and as a cohort table. A return can be any visit or a specific custom event.
 
 ### Errors
 
 ![Errors grouped by message, with occurrences, sessions, people and the trace](/screenshots/errors.png)
 
-**Errores** groups JavaScript and network errors by type, message and top stack frame. Ids,
+**Errors** groups JavaScript and network errors by type, message and top stack frame. Ids,
 numbers, URLs, line numbers and build hashes are ignored, so one bug stays one group across
 deploys. Each group shows its occurrences, sessions, people, release, the last 24 hours and the
-trace. **Ver una sesión** opens a
+trace. **View a session** opens a
 replay where it happened. Errors can be resolved or ignored. A resolved error reopens if it comes
 back.
 
@@ -217,19 +230,19 @@ back.
 
 ![Recording, network and console capture, route groups and conversion](/screenshots/recording.png)
 
-Each app's **Ajustes** controls:
+Each app's **Settings** controls:
 
-- **Privacidad.** Inputs are masked by default, and you can also mask all text. You can respect
+- **Privacy.** Inputs are masked by default, and you can also mask all text. You can respect
   Do Not Track and block selectors from recordings. In your own markup, `data-condor-mask` hides
   an element's text and `data-condor-block` leaves the element out entirely.
-- **Grabación.** Turn recording on or off, sample a share of sessions, and keep data for 30 days
+- **Recording.** Turn recording on or off, sample a share of sessions, and keep data for 30 days
   to 2 years. Metrics count every session; only recordings follow the sample. A daily job deletes
   events, sessions and replays past the window.
-- **Red y consola.** Capture network requests and console output next to the replay.
+- **Network and console.** Capture network requests and console output next to the replay.
   `Authorization` and `Cookie` headers and query strings are never stored.
-- **Agrupar rutas.** Merge dynamic paths such as `/productos/:slug` into one page. Ids, uuids and
+- **Group paths.** Merge dynamic paths such as `/productos/:slug` into one page. Ids, uuids and
   numbers are collapsed automatically.
-- **Conversión.** Choose the custom event that marks a session as converted.
+- **Conversion.** Choose the custom event that marks a session as converted.
 
 ## Configuration
 
