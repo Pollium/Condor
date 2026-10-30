@@ -1,9 +1,11 @@
 import { Button, CodeSnippet, InlineNotification, TextInput } from '@carbon/react';
 import { CreatedInvitation, InvitedRole } from '@condor/contracts/members/domain';
 import { teamApi } from '@/modules/team/api/api';
+import { copy } from '@/modules/team/i18n';
 import { ROLE_HINT, ROLE_LABEL } from '@/modules/team/utils/roles';
 import { teamError } from '@/modules/team/utils/team-error';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
+import { copy as shared } from '@/shared/i18n';
 import { fmt } from '@/shared/utils/format';
 import { fieldErrors } from '@/shared/utils/error-copy';
 import { useMutation } from '@condor/ui/hooks/api/use-mutation';
@@ -37,21 +39,21 @@ const InviteForm = ({ roles, onInvited }: InviteFormProps) => {
                     id='invite-email'
                     type='email'
                     size='md'
-                    labelText='Correo'
-                    placeholder='persona@empresa.cl'
+                    labelText={copy.inviteForm.email}
+                    placeholder={copy.inviteForm.emailPlaceholder}
                     value={email}
                     invalid={fields.email !== undefined}
-                    invalidText='Revisa el correo'
+                    invalidText={copy.inviteForm.emailInvalid}
                     onChange={(event) => setEmail(event.target.value)}
                     className='min-w-[14rem] flex-1'
                 />
                 {roles.length > 1 ? (
-                    <ToolbarMenu label='Rol' choices={roles.map((entry) => ({ value: entry, label: ROLE_LABEL[entry] }))} value={role} onChange={setRole} />
+                    <ToolbarMenu label={copy.inviteForm.role} choices={roles.map((entry) => ({ value: entry, label: ROLE_LABEL[entry] }))} value={role} onChange={setRole} />
                 ) : (
                     <span className='flex h-10 items-center px-2 text-[0.875rem] text-label-2'>{ROLE_LABEL[role]}</span>
                 )}
                 <Button type='submit' kind='primary' size='md' disabled={email.trim() === '' || invite.loading}>
-                    {invite.loading ? 'Invitando…' : 'Invitar'}
+                    {invite.loading ? copy.inviteForm.inviting : copy.inviteForm.invite}
                 </Button>
             </form>
             <p className='text-[0.75rem] text-label-2'>{ROLE_LABEL[role]}: {ROLE_HINT[role].toLowerCase()}.</p>
@@ -61,13 +63,14 @@ const InviteForm = ({ roles, onInvited }: InviteFormProps) => {
                     <InlineNotification
                         kind='success'
                         lowContrast
-                        title='Invitación creada'
-                        subtitle={`Envía este enlace a ${created.invitation.email}. Solo se muestra ahora y vence el ${fmt.day(created.invitation.expiresAt)}.`}
-                        statusIconDescription='Listo'
+                        title={copy.inviteForm.created}
+                        subtitle={copy.inviteForm.createdHint(created.invitation.email, fmt.day(created.invitation.expiresAt))}
+                        statusIconDescription={copy.inviteForm.done}
+                        aria-label={shared.close}
                         onCloseButtonClick={() => setCreated(null)}
                         className='max-w-none'
                     />
-                    <CodeSnippet type='single' feedback='Copiado' copyButtonDescription='Copiar el enlace' className='max-w-none'>
+                    <CodeSnippet type='single' feedback={shared.copied} copyButtonDescription={copy.inviteForm.copyLink} className='max-w-none'>
                         {`${window.location.origin}/invitacion/${created.token}`}
                     </CodeSnippet>
                 </div>

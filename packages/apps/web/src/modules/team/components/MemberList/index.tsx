@@ -4,6 +4,7 @@ import { Role } from '@condor/contracts/auth/domain';
 import { Member } from '@condor/contracts/members/domain';
 import RemoveMember from '@/modules/team/components/RemoveMember';
 import { teamApi } from '@/modules/team/api/api';
+import { copy } from '@/modules/team/i18n';
 import { ROLE_HINT, ROLE_LABEL } from '@/modules/team/utils/roles';
 import { teamError } from '@/modules/team/utils/team-error';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
@@ -42,17 +43,17 @@ const MemberList = ({ members, selfId, manage, onChanged }: MemberListProps) => 
                             <div className='min-w-0'>
                                 <p className='truncate text-[0.875rem] text-foreground'>
                                     {member.name}
-                                    {self ? <span className='text-label-2'> · tú</span> : null}
+                                    {self ? <span className='text-label-2'> · {copy.memberList.you}</span> : null}
                                 </p>
                                 <p className='truncate text-[0.8125rem] text-label-2'>
-                                    {member.email} · {member.lastSignInAt === null ? 'nunca ha entrado' : `entró ${fmt.ago(member.lastSignInAt)}`}
+                                    {member.email} · {member.lastSignInAt === null ? copy.memberList.neverSignedIn : copy.memberList.signedIn(fmt.ago(member.lastSignInAt))}
                                 </p>
                             </div>
                             <div className='flex shrink-0 items-center gap-1'>
-                                {pending === member.id ? <InlineLoading description='Guardando…' className='w-auto' /> : null}
+                                {pending === member.id ? <InlineLoading description={copy.memberList.saving} className='w-auto' /> : null}
                                 {editable ? (
                                     <ToolbarMenu
-                                        label={`Rol de ${member.name}`}
+                                        label={copy.memberList.roleOf(member.name)}
                                         choices={ROLES.map((role) => ({ value: role, label: ROLE_LABEL[role] }))}
                                         value={member.role}
                                         onChange={(role) => changeRole(member, role)}
@@ -61,7 +62,7 @@ const MemberList = ({ members, selfId, manage, onChanged }: MemberListProps) => 
                                     <span title={ROLE_HINT[member.role]} className='px-4 text-[0.875rem] text-label-2'>{ROLE_LABEL[member.role]}</span>
                                 )}
                                 {editable ? (
-                                    <IconButton kind='ghost' size='sm' label={`Quitar a ${member.name}`} align='left' onClick={() => setRemoving(member)}>
+                                    <IconButton kind='ghost' size='sm' label={copy.memberList.remove(member.name)} align='left' onClick={() => setRemoving(member)}>
                                         <TrashCan />
                                     </IconButton>
                                 ) : null}

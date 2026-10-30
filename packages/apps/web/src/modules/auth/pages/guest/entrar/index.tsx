@@ -3,12 +3,13 @@ import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 import AuthFrame from '@/modules/auth/components/AuthFrame';
 import { authApi } from '@/modules/auth/api/api';
+import { copy } from '@/modules/auth/i18n';
 import { startSession } from '@/modules/auth/utils/start-session';
 import { errorCopy } from '@/shared/utils/error-copy';
 import { FormEvent, useState } from 'react';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 
-const copy = errorCopy({ 'Auth::InvalidCredentials': 'El correo o la contraseña no coinciden.' });
+const signInError = errorCopy({ 'Auth::InvalidCredentials': copy.errors.invalidCredentials });
 
 const SignInPage = () => {
     const navigate = useNavigate();
@@ -29,14 +30,23 @@ const SignInPage = () => {
     };
 
     return (
-        <AuthFrame title='Entrar a Condor' lead='Usa la cuenta que te creó quien administra esta instalación.'>
+        <AuthFrame title={copy.signIn.title} lead={copy.signIn.lead}>
             <Form onSubmit={submit}>
                 <Stack gap={6}>
-                    <TextInput id='email' type='email' labelText='Correo' autoComplete='email' value={email} onChange={(event) => setEmail(event.target.value)} required />
-                    <PasswordInput id='password' labelText='Contraseña' autoComplete='current-password' value={password} onChange={(event) => setPassword(event.target.value)} required />
-                    {signIn.error ? <InlineNotification kind='error' lowContrast hideCloseButton title={copy(signIn.error) ?? ''} /> : null}
+                    <TextInput id='email' type='email' labelText={copy.fields.email} autoComplete='email' value={email} onChange={(event) => setEmail(event.target.value)} required />
+                    <PasswordInput
+                        id='password'
+                        labelText={copy.fields.password}
+                        showPasswordLabel={copy.fields.showPassword}
+                        hidePasswordLabel={copy.fields.hidePassword}
+                        autoComplete='current-password'
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        required
+                    />
+                    {signIn.error ? <InlineNotification kind='error' lowContrast hideCloseButton title={signInError(signIn.error) ?? ''} /> : null}
                     <Button type='submit' disabled={signIn.loading || email === '' || password === ''}>
-                        {signIn.loading ? <InlineLoading description='Entrando…' /> : 'Entrar'}
+                        {signIn.loading ? <InlineLoading description={copy.signIn.submitting} /> : copy.signIn.submit}
                     </Button>
                 </Stack>
             </Form>

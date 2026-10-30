@@ -2,7 +2,9 @@ import { Modal } from '@carbon/react';
 import Portal from '@/shared/components/Portal';
 import { Member } from '@condor/contracts/members/domain';
 import { teamApi } from '@/modules/team/api/api';
+import { copy } from '@/modules/team/i18n';
 import { teamError } from '@/modules/team/utils/team-error';
+import { copy as shared } from '@/shared/i18n';
 import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 
 interface RemoveMemberProps{
@@ -31,17 +33,17 @@ const RemoveMember = ({ member, onClose, onRemoved }: RemoveMemberProps) => {
                 open={member !== null}
                 danger
                 size='xs'
-                modalHeading={`¿Quitar a ${member?.name ?? ''}?`}
-                primaryButtonText='Quitar del equipo'
-                secondaryButtonText='Cancelar'
-                closeButtonLabel='Cerrar'
+                modalHeading={copy.removeMember.heading(member?.name ?? '')}
+                primaryButtonText={copy.removeMember.confirm}
+                secondaryButtonText={copy.removeMember.cancel}
+                closeButtonLabel={shared.close}
                 loadingStatus={remove.loading ? 'active' : 'inactive'}
-                loadingDescription='Quitando…'
+                loadingDescription={copy.removeMember.removing}
                 onRequestSubmit={submit}
                 onRequestClose={onClose}
             >
                 <div className='flex flex-col gap-3 text-[0.875rem]'>
-                    <p>{member?.email} pierde el acceso a Condor en ese momento. Para volver necesitará otra invitación.</p>
+                    <p>{copy.removeMember.body(member?.email ?? '')}</p>
                     {remove.error ? <p className='text-danger'>{teamError(remove.error)}</p> : null}
                 </div>
             </Modal>
