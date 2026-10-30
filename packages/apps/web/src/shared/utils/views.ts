@@ -1,4 +1,4 @@
-import { Calendar, Dashboard, Debug, Filter, Flow, HeatMap, Screen, Settings } from '@carbon/icons-react';
+import { Calendar, ChartMultitype, Dashboard, Debug, Filter, Flow, HeatMap, Screen, Settings } from '@carbon/icons-react';
 import { ComponentType } from 'react';
 
 export interface View{
@@ -10,6 +10,7 @@ export interface View{
 export const VIEWS: View[] = [
     { segment: '', label: 'Resumen', icon: Dashboard },
     { segment: 'sesiones', label: 'Sesiones', icon: Screen },
+    { segment: 'eventos', label: 'Eventos', icon: ChartMultitype },
     { segment: 'mapas-de-calor', label: 'Mapas de calor', icon: HeatMap },
     { segment: 'embudos', label: 'Embudos', icon: Filter },
     { segment: 'recorridos', label: 'Recorridos', icon: Flow },
