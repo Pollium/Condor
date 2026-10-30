@@ -1,12 +1,13 @@
+import { copy } from '@/modules/account/i18n';
 import { readPreference, rememberSystem, systemTheme, type ThemePreference } from '@/modules/account/utils/theme-preference';
 import Segmented from '@/shared/components/Segmented';
 import { useThemeStore } from '@condor/ui/store/theme';
 import { useState } from 'react';
 
 const CHOICES: { value: ThemePreference; label: string }[] = [
-    { value: 'light', label: 'Claro' },
-    { value: 'dark', label: 'Oscuro' },
-    { value: 'system', label: 'Sistema' }
+    { value: 'light', label: copy.themes.light },
+    { value: 'dark', label: copy.themes.dark },
+    { value: 'system', label: copy.themes.system }
 ];
 
 const ThemeChoice = () => {
@@ -23,7 +24,7 @@ const ThemeChoice = () => {
         rememberSystem();
     };
 
-    return <Segmented label='Apariencia' choices={CHOICES} value={preference} onChange={choose} />;
+    return <Segmented label={copy.appearance} choices={CHOICES} value={preference} onChange={choose} />;
 };
 
 export default ThemeChoice;

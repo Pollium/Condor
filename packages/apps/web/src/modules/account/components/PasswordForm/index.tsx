@@ -1,4 +1,5 @@
 import { Button, InlineLoading, PasswordInput } from '@carbon/react';
+import { copy } from '@/modules/account/i18n';
 import { accountError } from '@/modules/account/utils/account-error';
 import { authApi } from '@/modules/auth/api/api';
 import { useMutation } from '@condor/ui/hooks/api/use-mutation';
@@ -24,25 +25,27 @@ const PasswordForm = () => {
     return (
         <form onSubmit={submit} className='flex flex-col gap-4'>
             <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
-                <PasswordInput id='password-current' labelText='Contraseña actual' autoComplete='current-password' value={current} onChange={(event) => setCurrent(event.target.value)} />
+                <PasswordInput id='password-current' labelText={copy.currentPassword} showPasswordLabel={copy.showPassword} hidePasswordLabel={copy.hidePassword} autoComplete='current-password' value={current} onChange={(event) => setCurrent(event.target.value)} />
                 <PasswordInput
                     id='password-next'
-                    labelText='Contraseña nueva'
+                    labelText={copy.newPassword}
+                    showPasswordLabel={copy.showPassword}
+                    hidePasswordLabel={copy.hidePassword}
                     autoComplete='new-password'
-                    helperText='Al menos 8 caracteres.'
+                    helperText={copy.passwordHelper}
                     value={next}
                     invalid={short}
-                    invalidText='Usa al menos 8 caracteres.'
+                    invalidText={copy.passwordShort}
                     onChange={(event) => setNext(event.target.value)}
                 />
             </div>
             {change.error ? <p className='text-[0.75rem] text-danger'>{accountError(change.error)}</p> : null}
             <div className='flex items-center gap-4'>
                 <Button type='submit' kind='tertiary' size='md' disabled={current === '' || next.length < 8 || change.loading}>
-                    Cambiar la contraseña
+                    {copy.changePassword}
                 </Button>
-                {change.loading ? <InlineLoading description='Cambiando…' className='w-auto' /> : null}
-                {done ? <InlineLoading status='finished' description='Contraseña cambiada' className='w-auto' /> : null}
+                {change.loading ? <InlineLoading description={copy.changing} className='w-auto' /> : null}
+                {done ? <InlineLoading status='finished' description={copy.changed} className='w-auto' /> : null}
             </div>
         </form>
     );
