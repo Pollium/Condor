@@ -1,0 +1,32 @@
+{
+  "name": "@condor/node",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Condor server SDK: send product events and identify users from any Node.js backend",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "oxlint --deny-warnings",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@condor/contracts": "workspace:*",
+    "@types/node": "^26.1.1",
+    "oxlint": "^1.71.0",
+    "typescript": "~6.0.2",
+    "vitest": "^4.1.10"
+  }
+}
