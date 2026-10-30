@@ -8,6 +8,7 @@ import RecordingGroup from '@/modules/projects/components/RecordingGroup';
 import RouteGroups from '@/modules/projects/components/RouteGroups';
 import StatusGroup from '@/modules/projects/components/StatusGroup';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
+import { copy } from '@/modules/projects/i18n';
 import { canEdit, useMe } from '@/modules/auth/hooks/use-me';
 import { PageHeader } from '@/shared/components/Page';
 
@@ -18,8 +19,8 @@ const SettingsPage = () => {
 
     return (
         <div key={project.id} className='mx-auto flex w-full max-w-2xl flex-col gap-10 pb-16 pt-2'>
-            <PageHeader title='Ajustes' hint={project.host} />
-            {disabled && me.data !== null ? <p className='-mb-6 text-[0.8125rem] text-label-2'>Tu rol es de lectura.</p> : null}
+            <PageHeader title={copy.settings.title} hint={project.host} />
+            {disabled && me.data !== null ? <p className='-mb-6 text-[0.8125rem] text-label-2'>{copy.settings.readOnly}</p> : null}
             <InstallGroup disabled={disabled} />
             <AppGroup disabled={disabled} />
             <PrivacyGroup disabled={disabled} />
