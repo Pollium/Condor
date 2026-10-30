@@ -21,7 +21,8 @@ export default class FunnelResultsService{
         const run = {
             projectId: project.id,
             steps: funnel.steps,
-            windowHours
+            windowHours,
+            segment: filter.segment
         };
         const [current, previous] = await Promise.all([
             this.#progress.run({ ...run, from: window.from, until: window.to }),

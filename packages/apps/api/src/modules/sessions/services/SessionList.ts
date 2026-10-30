@@ -70,6 +70,15 @@ export default class SessionListService{
         if(filter.identified !== null){
             query.andWhere(filter.identified ? 'session.userId IS NOT NULL' : 'session.userId IS NULL');
         }
+        if(filter.segment !== null){
+            const members = query.subQuery()
+                .select('member.id')
+                .from(Person, 'member')
+                .where('member.projectId = :projectId')
+                .andWhere('member.traits ->> :traitKey = :traitValue')
+                .getQuery();
+            query.andWhere(`session.personId IN ${members}`, { traitKey: filter.segment.key, traitValue: filter.segment.value });
+        }
 
         const equalities = {
             device: filter.device,

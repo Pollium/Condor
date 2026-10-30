@@ -1,9 +1,11 @@
 import { FunnelDeviceResult, FunnelStep } from '@condor/contracts/funnels/domain';
 import { Period } from '@condor/contracts/shared/period';
+import { Segment } from '@condor/contracts/shared/segment';
 
 export interface FunnelResultFilter{
     period: Period;
     windowHours: number | null;
+    segment: Segment | null;
 }
 
 export interface FunnelRun{
@@ -12,6 +14,7 @@ export interface FunnelRun{
     from: Date;
     until: Date;
     windowHours: number;
+    segment: Segment | null;
 }
 
 export interface FunnelProgress{

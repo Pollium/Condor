@@ -4,6 +4,7 @@ import { SessionSignal, SessionSort } from '@condor/contracts/sessions/domain';
 import { Device } from '@condor/contracts/shared/analytics';
 import { PERIODS } from '@condor/contracts/shared/period';
 import { parseChoice, parseText } from '@/shared/http/query-params';
+import { parseSegment } from '@/shared/http/segment';
 import { SessionFilter } from '../contracts/domain/filters';
 
 const DEVICES: readonly Device[] = ['desktop', 'mobile', 'tablet'];
@@ -31,6 +32,7 @@ const parseFilter = (query: Record<string, unknown>): SessionFilter => {
         identified: parseFlag('identified', query.identified),
         replay: parseFlag('replay', query.replay),
         personId: personId === null ? null : parseId(personId),
+        segment: parseSegment(query.traitKey, query.traitValue),
         sort: parseChoice('sort', query.sort, SORTS, 'recent')
     };
 };

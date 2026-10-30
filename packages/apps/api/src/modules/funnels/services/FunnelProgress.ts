@@ -1,4 +1,4 @@
-import Session from '@/modules/sessions/models/Session';
+import Person from '@/modules/sessions/models/Person';
 import Event from '@/modules/tracking/models/Event';
 import { tableRef } from '@readable/utils/models/table-ref';
 import { FunnelDeviceResult } from '@condor/contracts/funnels/domain';
@@ -63,24 +63,27 @@ export default class FunnelProgressQuery{
     #rows(run: FunnelRun): Promise<ProgressRow[]>{
         const manager = Event.getRepository().manager;
         const events = tableRef(manager, Event);
-        const sessions = tableRef(manager, Session);
+        const people = tableRef(manager, Person);
         const later = run.steps.slice(1).map((_, offset) => offset + 1);
 
         return manager.query<ProgressRow[]>(`
             WITH steps AS (
-                SELECT (ordinality - 1)::int AS idx, kind, match
-                FROM unnest($2::text[], $3::text[]) WITH ORDINALITY AS step(kind, match, ordinality)
+                SELECT (ordinality - 1)::int AS idx, kind, match, "whereKey", "whereValue"
+                FROM unnest($2::text[], $3::text[], $8::text[], $9::text[])
+                    WITH ORDINALITY AS step(kind, match, "whereKey", "whereValue", ordinality)
             ),
             hits AS MATERIALIZED (
-                SELECT steps.idx, s."personKey", s.device, e.timestamp
+                SELECT steps.idx, COALESCE(p."userId", p."anonymousId") AS "personKey", e.device, e.timestamp
                 FROM ${events.table} e
                 JOIN steps ON (steps.kind = 'page' AND e.type = 'pageview' AND e.path = steps.match)
-                    OR (steps.kind = 'event' AND e.type = 'custom' AND e.name = steps.match)
-                JOIN ${sessions.table} s ON s.id = e."sessionId"
+                    OR (steps.kind = 'event' AND e.type = 'custom' AND e.name = steps.match
+                        AND (steps."whereKey" IS NULL OR e.props ->> steps."whereKey" = steps."whereValue"))
+                JOIN ${people.table} p ON p.id = e."personId"
                 WHERE e."projectId" = $1
                     AND e.type IN ('pageview', 'custom')
                     AND e.timestamp >= $4
                     AND e.timestamp < $5::timestamptz + make_interval(hours => $6)
+                    AND ($10::text IS NULL OR p.traits ->> $10::text = $11::text)
             ),
             reached0 AS (
                 SELECT DISTINCT ON ("personKey")
@@ -109,7 +112,11 @@ export default class FunnelProgressQuery{
             run.from,
             run.until,
             run.windowHours,
-            MEDIAN
+            MEDIAN,
+            run.steps.map((step) => step.where?.key ?? null),
+            run.steps.map((step) => step.where?.value ?? null),
+            run.segment?.key ?? null,
+            run.segment?.value ?? null
         ]);
     }
 }

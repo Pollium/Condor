@@ -8,6 +8,8 @@ import { actor } from '@tests/roles';
 import { seed } from '@tests/Seed';
 import Funnel from '@/modules/funnels/models/Funnel';
 import Project from '@/modules/projects/models/Project';
+import Event from '@/modules/tracking/models/Event';
+import { randomUUID } from 'node:crypto';
 
 const PRODUCT = '/productos/:slug';
 
@@ -72,6 +74,24 @@ describe('FunnelController', () => {
         const later = await seed.funnel(project);
         const list = await request(ctx.app, funnelRoutes.list, { as: await actor('viewer'), params: { projectId: project.id } });
         expect(list.data().map((funnel) => funnel.id)).toEqual([created.data().id, later.id]);
+    });
+
+    it('stores the property an event step must carry', async () => {
+        const project = await seed.project();
+        const steps = [
+            { kind: 'page' as const, match: '/settings/plan', label: 'Ve los planes' },
+            { kind: 'event' as const, match: 'subscription_started', label: 'Pro', where: { key: 'plan', value: 'pro' } }
+        ];
+
+        const created = await request(ctx.app, funnelRoutes.create, { as: await actor('admin'), params: { projectId: project.id }, body: { name: 'Pro', steps, windowHours: 24 } });
+        const blank = await request(ctx.app, funnelRoutes.create, {
+            as: await actor('admin'),
+            params: { projectId: project.id },
+            body: { name: 'Vacío', steps: [steps[0], { ...steps[1], where: { key: '', value: 'pro' } }], windowHours: 24 }
+        });
+
+        expect(created.data().steps).toEqual(steps);
+        expectError(blank, 400, 'Request::ValidationFailed');
     });
 
     it('rejects an invalid funnel and a viewer writing one', async () => {
@@ -147,6 +167,68 @@ describe('FunnelController', () => {
         ]);
         expect(result.steps.map((step) => step.fromStart)).toEqual([1, expect.closeTo(2 / 3), expect.closeTo(1 / 3)]);
         expect(result.steps[0]).toMatchObject({ kind: 'page', match: PRODUCT, label: 'Ve un producto' });
+    });
+
+    it('matches an event step on one of its properties and narrows to a segment', async () => {
+        const project = await seed.project();
+        const funnel = await seed.funnel(project, {
+            steps: [
+                { kind: 'page', match: '/settings/plan', label: 'Ve los planes' },
+                { kind: 'event', match: 'subscription_started', label: 'Se suscribe a Pro', where: { key: 'plan', value: 'pro' } }
+            ]
+        });
+        const subscriber = async (plan: string, traits: Record<string, string>) => {
+            const person = await seed.person(project, { traits });
+            const session = await seed.session(project, person, { startedAt: utcAt(2, 10) });
+            await seed.event(session, { type: 'pageview', path: '/settings/plan', timestamp: utcAt(2, 10) });
+            await seed.event(session, { type: 'custom', name: 'subscription_started', timestamp: utcAt(2, 10, 5), props: { plan } });
+        };
+        await subscriber('pro', { country: 'CL' });
+        await subscriber('team', { country: 'CL' });
+        await subscriber('pro', { country: 'AR' });
+
+        const as = await actor('viewer');
+        const all = await request(ctx.app, funnelRoutes.results, { as, params: { projectId: project.id, funnelId: funnel.id } });
+        const chile = await request(ctx.app, funnelRoutes.results, {
+            as,
+            params: { projectId: project.id, funnelId: funnel.id },
+            query: { traitKey: 'country', traitValue: 'CL' }
+        });
+
+        expect(all.data().steps.map((step) => step.people)).toEqual([3, 2]);
+        expect(chile.data().steps.map((step) => step.people)).toEqual([2, 1]);
+    });
+
+    it('counts a step the server sent outside any session', async () => {
+        const project = await seed.project();
+        const funnel = await seed.funnel(project, {
+            steps: [
+                { kind: 'page', match: '/courses', label: 'Ve sus cursos' },
+                { kind: 'event', match: 'course_generated', label: 'Genera un curso' }
+            ]
+        });
+        const person = await seed.person(project, { userId: 'user-81' });
+        const session = await seed.session(project, person, { startedAt: utcAt(2, 9) });
+        await seed.event(session, { type: 'pageview', path: '/courses', timestamp: utcAt(2, 9) });
+        await Event.create({
+            id: randomUUID(),
+            projectId: project.id,
+            sessionId: null,
+            personId: person.id,
+            type: 'custom',
+            name: 'course_generated',
+            path: '/',
+            rawPath: '/',
+            title: null,
+            timestamp: utcAt(2, 11),
+            device: 'desktop',
+            release: null,
+            props: null
+        }).save();
+
+        const res = await request(ctx.app, funnelRoutes.results, { as: await actor('viewer'), params: { projectId: project.id, funnelId: funnel.id } });
+
+        expect(res.data().steps.map((step) => step.people)).toEqual([1, 1]);
     });
 
     it('widens the conversion window from the query', async () => {

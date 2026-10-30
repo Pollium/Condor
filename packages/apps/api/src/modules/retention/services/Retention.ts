@@ -80,6 +80,7 @@ export default class RetentionService{
                 SELECT p.id, date_trunc($2, p."firstSeenAt" AT TIME ZONE $3) AS start
                 FROM ${people.table} p, bounds
                 WHERE p."projectId" = $1 AND p."firstSeenAt" >= bounds.first AT TIME ZONE $3
+                    AND ($7::text IS NULL OR p.traits ->> $7::text = $8::text)
             ),
             activity AS (
                 SELECT s."personId" AS id, date_trunc($2, s."startedAt" AT TIME ZONE $3) AS period
@@ -99,6 +100,15 @@ export default class RetentionService{
             ) joined
             GROUP BY GROUPING SETS ((start), (start, elapsed))
             ORDER BY start
-        `, [project.id, filter.grain, project.settings.timezone, filter.cohorts, filter.returnEvent, DAYS_PER_PERIOD[filter.grain]]);
+        `, [
+            project.id,
+            filter.grain,
+            project.settings.timezone,
+            filter.cohorts,
+            filter.returnEvent,
+            DAYS_PER_PERIOD[filter.grain],
+            filter.segment?.key ?? null,
+            filter.segment?.value ?? null
+        ]);
     }
 }
