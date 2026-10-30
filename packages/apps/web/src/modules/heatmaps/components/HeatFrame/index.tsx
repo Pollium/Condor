@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import ElementOutline, { OutlineBox } from '@/modules/heatmaps/components/ElementOutline';
 import PageSilhouette from '@/modules/heatmaps/components/PageSilhouette';
 import ScrollBands from '@/modules/heatmaps/components/ScrollBands';
+import { copy } from '@/modules/heatmaps/i18n';
 import { useSnapshot } from '@/modules/heatmaps/hooks/use-snapshot';
 import { useWidth } from '@/modules/heatmaps/hooks/use-width';
 import { paintHeat } from '@/modules/heatmaps/utils/paint-heat';
@@ -48,8 +49,8 @@ const HeatFrame = ({ projectId, host, heatmap, picked }: HeatFrameProps) => {
     }, [heatmap.points, scroll, scale, width, height, radius]);
 
     const caption = heatmap.snapshot === null
-        ? 'Aún no hay una grabación de esta página para dibujarla'
-        : failed ? 'No se pudo reconstruir la grabación de esta página' : null;
+        ? copy.frame.noSnapshot
+        : failed ? copy.frame.snapshotFailed : null;
 
     return (
         <div className='min-w-0 overflow-hidden border border-separator'>

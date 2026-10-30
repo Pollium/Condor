@@ -1,13 +1,10 @@
 import { Journey, JOURNEY_EXIT, JOURNEY_OTHER } from '@condor/contracts/journeys/domain';
 import Sankey from '@/modules/journeys/components/Sankey';
+import { copy } from '@/modules/journeys/i18n';
 import { Legend, Section, Stack } from '@/shared/components/Page';
 import { RowList } from '@/shared/components/RowList';
 import StatTile, { StatRow } from '@/shared/components/StatTile';
 import { fmt } from '@/shared/utils/format';
-
-const sessions = (count: number) => `${fmt.n(count)} ${count === 1 ? 'sesión' : 'sesiones'}`;
-
-const pages = (count: number) => `${count} ${count === 1 ? 'página' : 'páginas'}`;
 
 const JourneyView = ({ journey }: { journey: Journey }) => {
     const top = journey.routes[0];
@@ -18,30 +15,30 @@ const JourneyView = ({ journey }: { journey: Journey }) => {
         <Stack>
             <StatRow columns={3}>
                 <StatTile
-                    label='Sesiones'
+                    label={copy.view.sessions}
                     value={fmt.n(journey.sessions)}
-                    hint={journey.start ? `Empiezan en ${journey.start}` : 'Con al menos una página vista'}
+                    hint={journey.start ? copy.view.startsAt(journey.start) : copy.view.anyStart}
                 />
                 <StatTile
-                    label='Siguen tras el primer paso'
+                    label={copy.view.continued}
                     value={fmt.pct(journey.sessions ? stayed / journey.sessions : 0)}
-                    hint={`${sessions(journey.leftAfterFirst)} se van en la primera página`}
+                    hint={copy.view.leftFirst(journey.leftAfterFirst)}
                 />
                 <StatTile
-                    label='Ruta más común'
+                    label={copy.view.topRoute}
                     value={top?.paths[0] ?? '—'}
-                    hint={top ? `${top.paths.length > 1 ? `→ ${top.paths.slice(1).join(' → ')}` : 'Y se van'} · ${sessions(top.sessions)}` : undefined}
+                    hint={top ? `${top.paths.length > 1 ? `→ ${top.paths.slice(1).join(' → ')}` : copy.view.thenLeave} · ${copy.view.sessionCount(top.sessions)}` : undefined}
                 />
             </StatRow>
 
             <Section
-                title='Flujo entre páginas'
+                title={copy.view.flow}
                 aside={
                     <Legend
                         items={[
-                            { label: 'Página', className: 'bg-accent' },
-                            ...(has(JOURNEY_OTHER) ? [{ label: 'Otras páginas', className: 'bg-foreground/40' }] : []),
-                            ...(has(JOURNEY_EXIT) ? [{ label: 'Salida', className: 'bg-foreground/25' }] : [])
+                            { label: copy.nodes.page, className: 'bg-accent' },
+                            ...(has(JOURNEY_OTHER) ? [{ label: copy.nodes.other, className: 'bg-foreground/40' }] : []),
+                            ...(has(JOURNEY_EXIT) ? [{ label: copy.nodes.exit, className: 'bg-foreground/25' }] : [])
                         ]}
                     />
                 }
@@ -49,18 +46,18 @@ const JourneyView = ({ journey }: { journey: Journey }) => {
                 <div className='overflow-x-auto [scrollbar-width:none]'>
                     <Sankey journey={journey} />
                 </div>
-                <p className='text-[0.8125rem] text-muted'>Pasa el cursor por una página o una franja para ver cuántas sesiones siguen ese camino.</p>
+                <p className='text-[0.8125rem] text-muted'>{copy.view.hover}</p>
             </Section>
 
-            <Section title='Rutas más comunes'>
+            <Section title={copy.view.routes}>
                 <RowList
-                    label='Rutas más comunes'
-                    empty={<p className='text-[0.875rem] text-label-2'>Aún no hay rutas que mostrar.</p>}
+                    label={copy.view.routes}
+                    empty={<p className='text-[0.875rem] text-label-2'>{copy.view.noRoutes}</p>}
                     rows={journey.routes.map((route) => ({
                         id: route.paths.join('>'),
                         text: route.paths.join(' → '),
                         title: route.paths.join(' → '),
-                        subtitle: route.paths.length < journey.steps ? `${pages(route.paths.length)} y se van` : pages(route.paths.length),
+                        subtitle: route.paths.length < journey.steps ? copy.view.pagesThenLeave(route.paths.length) : copy.view.pages(route.paths.length),
                         value: fmt.n(route.sessions),
                         meta: fmt.pct(journey.sessions ? route.sessions / journey.sessions : 0)
                     }))}
