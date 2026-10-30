@@ -10,12 +10,14 @@ import { funnelsApi } from '@/modules/funnels/api/api';
 import FunnelDelete from '@/modules/funnels/components/FunnelDelete';
 import FunnelEditor from '@/modules/funnels/components/FunnelEditor';
 import FunnelResults from '@/modules/funnels/components/FunnelResults';
+import { copy } from '@/modules/funnels/i18n';
 import { windowChoices } from '@/modules/funnels/utils/funnel-copy';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import ActionMenu from '@/shared/components/ActionMenu';
 import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
+import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
 import { errorCopy } from '@/shared/utils/error-copy';
 
@@ -56,20 +58,20 @@ const FunnelsPage = () => {
     const body = () => {
         if(funnels.error && !funnels.data){
             return (
-                <EmptyState icon={WarningAlt} title='No pudimos cargar los embudos' description={errorCopy()(funnels.error) ?? undefined}>
-                    <Button kind='tertiary' size='sm' onClick={funnels.reload}>Reintentar</Button>
+                <EmptyState icon={WarningAlt} title={copy.page.loadFailed} description={errorCopy()(funnels.error) ?? undefined}>
+                    <Button kind='tertiary' size='sm' onClick={funnels.reload}>{copy.page.retry}</Button>
                 </EmptyState>
             );
         }
-        if(!funnels.data) return <InlineLoading description='Cargando embudos…' />;
+        if(!funnels.data) return <InlineLoading description={copy.page.loading} />;
         if(!funnel){
             return (
                 <EmptyState
                     icon={Filter}
-                    title='Aún no hay embudos'
-                    description='Un embudo sigue a las personas por una serie de pasos, páginas que visitan o eventos que envía tu app, y muestra cuántas llegan a cada uno y dónde se quedan.'
+                    title={copy.page.emptyTitle}
+                    description={copy.page.emptyHint}
                 >
-                    {editor ? <Button size='md' renderIcon={Add} onClick={() => setEditing('new')}>Crear el primer embudo</Button> : null}
+                    {editor ? <Button size='md' renderIcon={Add} onClick={() => setEditing('new')}>{copy.page.createFirst}</Button> : null}
                 </EmptyState>
             );
         }
@@ -78,20 +80,20 @@ const FunnelsPage = () => {
 
     return (
         <div className='w-full'>
-            <PageHeader title='Embudos' hint={funnel ? `${funnel.steps.length} pasos` : undefined}>
+            <PageHeader title={shared.views.funnels} hint={funnel ? copy.page.steps(funnel.steps.length) : undefined}>
                 {funnel ? (
                     <>
                         <SegmentMenu projectId={project.id} />
-                        <ToolbarMenu label='Embudo' choices={list.map((entry) => ({ value: entry.id, label: entry.name }))} value={funnel.id} onChange={pick} />
-                        <ToolbarMenu label='Ventana de conversión' choices={windowChoices(windowHours)} value={String(windowHours)} onChange={(value) => setHours(Number(value))} />
+                        <ToolbarMenu label={copy.page.funnel} choices={list.map((entry) => ({ value: entry.id, label: entry.name }))} value={funnel.id} onChange={pick} />
+                        <ToolbarMenu label={copy.page.window} choices={windowChoices(windowHours)} value={String(windowHours)} onChange={(value) => setHours(Number(value))} />
                     </>
                 ) : null}
                 {editor && funnel ? (
                     <>
-                        <Button kind='ghost' size='sm' renderIcon={Add} onClick={() => setEditing('new')}>Nuevo embudo</Button>
+                        <Button kind='ghost' size='sm' renderIcon={Add} onClick={() => setEditing('new')}>{copy.page.create}</Button>
                         <ActionMenu subject={funnel.name}>
-                            <OverflowMenuItem itemText='Editar embudo' onClick={() => setEditing(funnel)} />
-                            <OverflowMenuItem itemText='Eliminar embudo' isDelete hasDivider onClick={() => setDeleting(funnel)} />
+                            <OverflowMenuItem itemText={copy.page.edit} onClick={() => setEditing(funnel)} />
+                            <OverflowMenuItem itemText={copy.page.remove} isDelete hasDivider onClick={() => setDeleting(funnel)} />
                         </ActionMenu>
                     </>
                 ) : null}

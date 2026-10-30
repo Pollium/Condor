@@ -1,5 +1,6 @@
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 import { eventsApi } from '@/modules/events/api/api';
+import { copy } from '@/modules/events/i18n';
 import type { Choice } from '@/shared/components/Segmented';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
 import { useSegmentStore } from '@/shared/store/segment';
@@ -13,7 +14,7 @@ const SegmentMenu = ({ projectId }: { projectId: string }) => {
     const setSegment = useSegmentStore((state) => state.setSegment);
     const current = segment ? `${segment.key}${SEPARATOR}${segment.value}` : EVERYONE;
     const choices: Choice<string>[] = [
-        { value: EVERYONE, label: 'Todas las personas' },
+        { value: EVERYONE, label: copy.segment.everyone },
         ...(traits.data ?? []).flatMap((trait) => trait.values.map((entry) => ({
             value: `${trait.key}${SEPARATOR}${entry.value}`,
             label: `${trait.key}: ${entry.value}`
@@ -29,7 +30,7 @@ const SegmentMenu = ({ projectId }: { projectId: string }) => {
         setSegment(projectId, value === EVERYONE ? null : { key, value: chosen });
     };
 
-    return <ToolbarMenu label='Personas' choices={choices} value={current} onChange={choose} />;
+    return <ToolbarMenu label={copy.segment.label} choices={choices} value={current} onChange={choose} />;
 };
 
 export default SegmentMenu;

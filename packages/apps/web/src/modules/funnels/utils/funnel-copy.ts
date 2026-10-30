@@ -1,37 +1,37 @@
 import { Device } from '@condor/contracts/shared/analytics';
+import { copy } from '@/modules/funnels/i18n';
 import type { Choice } from '@/shared/components/Segmented';
+import { intlLocale } from '@/shared/i18n/locale';
 import { fmt } from '@/shared/utils/format';
 
 const WINDOWS: Choice<string>[] = [
-    { value: '1', label: 'En 1 h' },
-    { value: '24', label: 'En 1 día' },
-    { value: '168', label: 'En 7 días' },
-    { value: '720', label: 'En 30 días' }
+    { value: '1', label: copy.windows.hours(1) },
+    { value: '24', label: copy.windows.days(1) },
+    { value: '168', label: copy.windows.days(7) },
+    { value: '720', label: copy.windows.days(30) }
 ];
 
-const points = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 1, signDisplay: 'exceptZero' });
+const points = new Intl.NumberFormat(intlLocale, { maximumFractionDigits: 1, signDisplay: 'exceptZero' });
+
+const days = new Intl.NumberFormat(intlLocale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 export const windowChoices = (hours: number): Choice<string>[] =>
     WINDOWS.some((choice) => choice.value === String(hours))
         ? WINDOWS
-        : [...WINDOWS, { value: String(hours), label: `En ${hours} h` }].sort((a, b) => Number(a.value) - Number(b.value));
+        : [...WINDOWS, { value: String(hours), label: copy.windows.hours(hours) }].sort((a, b) => Number(a.value) - Number(b.value));
 
 export const WINDOW_OPTIONS = WINDOWS;
 
-export const DEVICES: Record<Device, string> = {
-    desktop: 'Escritorio',
-    mobile: 'Móvil',
-    tablet: 'Tableta'
-};
+export const DEVICES: Record<Device, string> = copy.devices;
 
 export const median = (seconds: number | null): string => {
     if(seconds === null) return '—';
-    if(seconds >= 86_400) return `${(seconds / 86_400).toFixed(1).replace('.', ',')} días`;
+    if(seconds >= 86_400) return copy.days(days.format(seconds / 86_400));
     return fmt.duration(seconds);
 };
 
 export const pointsDelta = (current: number, previous: number): string => {
     const delta = (current - previous) * 100;
-    if(Math.abs(delta) < 0.05) return 'Igual que antes';
-    return `${points.format(delta)} pts vs. antes`;
+    if(Math.abs(delta) < 0.05) return copy.sameAsBefore;
+    return copy.pointsVsBefore(points.format(delta));
 };

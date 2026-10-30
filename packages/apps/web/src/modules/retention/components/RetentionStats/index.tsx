@@ -1,4 +1,5 @@
 import { Retention } from '@condor/contracts/retention/domain';
+import { copy } from '@/modules/retention/i18n';
 import { cohortLabel, people, UNIT } from '@/modules/retention/utils/cohort-copy';
 import StatTile, { StatRow } from '@/shared/components/StatTile';
 import { fmt } from '@/shared/utils/format';
@@ -10,8 +11,8 @@ const RetentionStats = ({ retention }: { retention: Retention }) => {
     const reaching = (index: number) => retention.cohorts.filter((cohort) => cohort.values.length > index).length;
     const averaged = (index: number) => {
         const count = reaching(index);
-        if(retention.average[index] === undefined || !count) return { value: '—', hint: 'Aún no hay cohortes que lleguen tan lejos' };
-        return { value: fmt.pct(retention.average[index]), hint: `Media ponderada de ${count} ${count === 1 ? 'cohorte' : 'cohortes'}` };
+        if(retention.average[index] === undefined || !count) return { value: '—', hint: copy.stats.notThatFar };
+        return { value: fmt.pct(retention.average[index]), hint: copy.stats.weightedAverage(count) };
     };
     const first = averaged(1);
     const later = averaged(LATER);
@@ -21,12 +22,12 @@ const RetentionStats = ({ retention }: { retention: Retention }) => {
 
     return (
         <StatRow columns={3}>
-            <StatTile label={`Vuelven ${unit.one} 1`} value={first.value} hint={first.hint} />
-            <StatTile label={`Siguen ${unit.one} ${LATER}`} value={later.value} hint={later.hint} />
+            <StatTile label={copy.stats.returnIn(unit.one, 1)} value={first.value} hint={first.hint} />
+            <StatTile label={copy.stats.stillIn(unit.one, LATER)} value={later.value} hint={later.hint} />
             <StatTile
-                label='Mejor cohorte'
+                label={copy.stats.best}
                 value={best ? fmt.pct(best.values[1]) : '—'}
-                hint={best ? `${retention.grain === 'week' ? 'Semana del' : 'Llegó el'} ${cohortLabel(best.start)} · ${people(best.size)}` : 'Aún no hay cohortes que vuelvan'}
+                hint={best ? `${copy.stats.bestStart[retention.grain](cohortLabel(best.start))} · ${people(best.size)}` : copy.stats.noneBack}
             />
         </StatRow>
     );
