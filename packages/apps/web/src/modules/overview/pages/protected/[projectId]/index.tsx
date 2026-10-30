@@ -14,6 +14,7 @@ import Trends from '@/modules/overview/components/Trends';
 import { PERIOD_HINT } from '@/modules/overview/utils/kpis';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import { PageHeader, Stack } from '@/shared/components/Page';
+import { copy } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
 
 const ROW = 'grid gap-x-12 gap-y-10 lg:grid-cols-2';
@@ -25,7 +26,7 @@ const OverviewPage = () => {
 
     return (
         <>
-            <PageHeader title='Resumen' hint={`${project.name} · ${PERIOD_HINT[period]}`} />
+            <PageHeader title={copy.views.overview} hint={`${project.name} · ${PERIOD_HINT[period]}`} />
             <Stack>
                 <Places people={summary.data?.kpis.find((kpi) => kpi.key === 'people')} />
                 <Loaded query={summary} skeleton={<SkeletonPlaceholder className='h-80 w-full max-w-none' />}>

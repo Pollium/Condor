@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { issuesApi } from '@/modules/issues/api/api';
 import Loaded from '@/modules/overview/components/Loaded';
 import { useScope } from '@/modules/overview/hooks/use-scope';
+import { copy } from '@/modules/overview/i18n';
 import { RowList } from '@/shared/components/RowList';
 import { fmt } from '@/shared/utils/format';
 
@@ -15,9 +16,9 @@ const TopIssues = () => {
         <Loaded query={query}>
             {(issues) => (
                 <RowList
-                    label='Errores abiertos'
+                    label={copy.topIssues.label}
                     onOpen={(id) => navigate(`/${projectId}/errores?issue=${id}`)}
-                    empty={<p className='text-[0.8125rem] text-label-2'>No hay errores abiertos en este periodo.</p>}
+                    empty={<p className='text-[0.8125rem] text-label-2'>{copy.topIssues.empty}</p>}
                     rows={[...issues]
                         .sort((x, y) => y.sessions - x.sessions)
                         .slice(0, 5)
@@ -26,7 +27,7 @@ const TopIssues = () => {
                             text: issue.message,
                             title: issue.message,
                             subtitle: issue.source ?? issue.errorType,
-                            value: <span className='text-label-2'>{fmt.n(issue.sessions)} {issue.sessions === 1 ? 'sesión' : 'sesiones'}</span>,
+                            value: <span className='text-label-2'>{copy.topIssues.sessions(issue.sessions)}</span>,
                             meta: fmt.ago(issue.lastSeenAt)
                         }))}
                 />

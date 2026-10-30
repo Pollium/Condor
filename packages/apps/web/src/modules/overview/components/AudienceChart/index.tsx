@@ -1,4 +1,5 @@
 import { Bar, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { copy } from '@/modules/overview/i18n';
 import { ChartTooltip } from '@/shared/components/Charts';
 import { AXIS_TICK, CURSOR_FILL, GRID_STROKE, MARGIN } from '@/shared/utils/chart-style';
 import { fmt } from '@/shared/utils/format';
@@ -25,9 +26,9 @@ const AudienceChart = ({ buckets, className = 'h-56' }: { buckets: AudienceBucke
                             <ChartTooltip
                                 title={bucket.label}
                                 rows={[
-                                    { label: 'Sesiones', value: fmt.n(bucket.fresh + bucket.returning), swatch: 'bg-transparent' },
-                                    { label: 'Recurrentes', value: fmt.n(bucket.returning), swatch: 'bg-accent' },
-                                    { label: 'Nuevas', value: fmt.n(bucket.fresh), swatch: 'bg-fill-strong' }
+                                    { label: copy.kpis.sessions, value: fmt.n(bucket.fresh + bucket.returning), swatch: 'bg-transparent' },
+                                    { label: copy.audience.returning, value: fmt.n(bucket.returning), swatch: 'bg-accent' },
+                                    { label: copy.audience.fresh, value: fmt.n(bucket.fresh), swatch: 'bg-fill-strong' }
                                 ]}
                             />
                         );

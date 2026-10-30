@@ -7,6 +7,7 @@ import Stats from '@/modules/overview/components/Stats';
 import Tabbed from '@/modules/overview/components/Tabbed';
 import WeekRhythm from '@/modules/overview/components/WeekRhythm';
 import { useScope } from '@/modules/overview/hooks/use-scope';
+import { copy } from '@/modules/overview/i18n';
 import { oneDecimal } from '@/modules/overview/utils/kpis';
 import { fmt } from '@/shared/utils/format';
 
@@ -16,25 +17,25 @@ const BehaviourCard = () => {
 
     return (
         <Tabbed
-            title='Comportamiento'
+            title={copy.behaviour.title}
             lead={
                 <Loaded query={engagement} skeleton={<SkeletonText heading width='100%' />}>
                     {(data) => (
                         <Stats
                             items={[
-                                { label: 'Tiempo activo', value: fmt.duration(data.activeSeconds) },
-                                { label: 'Scroll medio', value: fmt.pct(data.scrollDepth) },
-                                { label: 'Clics por sesión', value: oneDecimal(data.clicksPerSession) },
-                                { label: 'Sesiones por persona', value: oneDecimal(data.sessionsPerPerson) }
+                                { label: copy.behaviour.activeTime, value: fmt.duration(data.activeSeconds) },
+                                { label: copy.behaviour.scroll, value: fmt.pct(data.scrollDepth) },
+                                { label: copy.behaviour.clicksPerSession, value: oneDecimal(data.clicksPerSession) },
+                                { label: copy.behaviour.sessionsPerPerson, value: oneDecimal(data.sessionsPerPerson) }
                             ]}
                         />
                     )}
                 </Loaded>
             }
             tabs={[
-                { id: 'duration', label: 'Duración', content: <RangeBars dimension='duration' /> },
-                { id: 'depth', label: 'Páginas', content: <RangeBars dimension='depth' /> },
-                { id: 'hours', label: 'Horario', content: <WeekRhythm /> }
+                { id: 'duration', label: copy.behaviour.duration, content: <RangeBars dimension='duration' /> },
+                { id: 'depth', label: copy.behaviour.depth, content: <RangeBars dimension='depth' /> },
+                { id: 'hours', label: copy.behaviour.hours, content: <WeekRhythm /> }
             ]}
         />
     );

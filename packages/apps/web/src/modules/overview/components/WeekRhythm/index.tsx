@@ -5,10 +5,17 @@ import { overviewApi } from '@/modules/overview/api/api';
 import Loaded from '@/modules/overview/components/Loaded';
 import Stats from '@/modules/overview/components/Stats';
 import { useScope } from '@/modules/overview/hooks/use-scope';
+import { copy } from '@/modules/overview/i18n';
 import { WeekHeatmap, type HeatCell } from '@/shared/components/Charts';
+import { intlLocale } from '@/shared/i18n/locale';
 import { fmt } from '@/shared/utils/format';
 
-const WEEKDAY_NAMES = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const weekdayName = new Intl.DateTimeFormat(intlLocale, { weekday: 'long', timeZone: 'UTC' });
+
+const WEEKDAY_NAMES = Array.from({ length: 7 }, (_, day) => {
+    const name = weekdayName.format(new Date(Date.UTC(2024, 0, 1 + day)));
+    return name.charAt(0).toLocaleUpperCase(intlLocale) + name.slice(1);
+});
 
 const filled = (hours: HourCell[]): HeatCell[] => {
     const counted = new Map(hours.map((cell) => [`${cell.weekday}-${cell.hour}`, cell.sessions]));
@@ -21,15 +28,15 @@ const filled = (hours: HourCell[]): HeatCell[] => {
 
 const rhythm = (cells: HeatCell[]) => {
     const total = cells.reduce((sum, cell) => sum + cell.value, 0);
-    if(total === 0) return [{ label: 'Hora pico', value: '—' }, { label: 'Día más activo', value: '—' }, { label: 'De noche, 20–02 h', value: '—' }];
+    if(total === 0) return [{ label: copy.rhythm.peak, value: '—' }, { label: copy.rhythm.busiest, value: '—' }, { label: copy.rhythm.night, value: '—' }];
     const peak = cells.reduce((best, cell) => cell.value > best.value ? cell : best);
     const byDay = WEEKDAY_NAMES.map((_, day) => cells.filter((cell) => cell.isoWeekday === day + 1).reduce((sum, cell) => sum + cell.value, 0));
     const busiest = byDay.indexOf(Math.max(...byDay));
     const night = cells.filter((cell) => cell.hour >= 20 || cell.hour < 2).reduce((sum, cell) => sum + cell.value, 0);
     return [
-        { label: 'Hora pico', value: `${WEEKDAY_NAMES[peak.isoWeekday - 1].slice(0, 3)} ${String(peak.hour).padStart(2, '0')}:00` },
-        { label: 'Día más activo', value: WEEKDAY_NAMES[busiest] },
-        { label: 'De noche, 20–02 h', value: fmt.pct(night / total) }
+        { label: copy.rhythm.peak, value: `${WEEKDAY_NAMES[peak.isoWeekday - 1].slice(0, 3)} ${String(peak.hour).padStart(2, '0')}:00` },
+        { label: copy.rhythm.busiest, value: WEEKDAY_NAMES[busiest] },
+        { label: copy.rhythm.night, value: fmt.pct(night / total) }
     ];
 };
 
@@ -43,7 +50,7 @@ const WeekRhythm = () => {
                 const cells = filled(hours);
                 return (
                     <div className='flex flex-col gap-4'>
-                        <WeekHeatmap cells={cells} unit='sesiones' />
+                        <WeekHeatmap cells={cells} unit={copy.rhythm.unit} />
                         <Stats items={rhythm(cells)} />
                     </div>
                 );

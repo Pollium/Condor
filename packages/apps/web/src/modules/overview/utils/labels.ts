@@ -1,5 +1,7 @@
 import { Dimension } from '@condor/contracts/overview/domain';
 import { Channel, Device, Slice } from '@condor/contracts/shared/analytics';
+import { copy } from '@/modules/overview/i18n';
+import { intlLocale } from '@/shared/i18n/locale';
 import { fmt } from '@/shared/utils/format';
 
 interface Named{
@@ -7,11 +9,11 @@ interface Named{
     detail?: string;
 }
 
-const REGIONS = new Intl.DisplayNames('es', { type: 'region' });
-const LANGUAGES = new Intl.DisplayNames('es', { type: 'language' });
+const REGIONS = new Intl.DisplayNames(intlLocale, { type: 'region' });
+const LANGUAGES = new Intl.DisplayNames(intlLocale, { type: 'language' });
 const ISO_REGION = /^[A-Z]{2}$/;
 
-const capitalized = (text: string) => text.charAt(0).toLocaleUpperCase('es') + text.slice(1);
+const capitalized = (text: string) => text.charAt(0).toLocaleUpperCase(intlLocale) + text.slice(1);
 
 const displayed = (names: Intl.DisplayNames, code: string) => {
     try{
@@ -34,29 +36,11 @@ export const languageName = (code: string) => displayed(LANGUAGES, code);
 
 export const languageRegion = (code: string) => regionOf(code.split('-')[1]?.toUpperCase());
 
-export const CHANNELS: Record<Channel, Named> = {
-    direct: { label: 'Directo', detail: 'Escriben la dirección o usan un marcador' },
-    organic: { label: 'Búsqueda orgánica', detail: 'Google, Bing, DuckDuckGo' },
-    paid: { label: 'Pago', detail: 'Anuncios y enlaces patrocinados' },
-    social: { label: 'Redes sociales', detail: 'Instagram, TikTok, X' },
-    messaging: { label: 'Mensajería', detail: 'WhatsApp, Telegram' },
-    email: { label: 'Correo', detail: 'Boletines y correos' },
-    ai: { label: 'Asistentes IA', detail: 'ChatGPT, Perplexity, Gemini' },
-    referral: { label: 'Referencias', detail: 'Enlaces desde otros sitios' }
-};
+export const CHANNELS: Record<Channel, Named> = copy.channels;
 
-const DEVICES: Record<Device, string> = {
-    desktop: 'Escritorio',
-    mobile: 'Móvil',
-    tablet: 'Tablet'
-};
+const DEVICES: Record<Device, string> = copy.devices;
 
-export const FRUSTRATION: Record<string, Named> = {
-    rage: { label: 'Clics de rabia', detail: '3+ clics en el mismo punto en menos de 1 s' },
-    dead: { label: 'Clics muertos', detail: 'Clic sin cambio en la página ni en la red' },
-    error: { label: 'Clics con error', detail: 'Un error JS justo después del clic' },
-    uturn: { label: 'Vuelta atrás', detail: 'Vuelve a la página anterior en menos de 7 s' }
-};
+export const FRUSTRATION: Record<string, Named> = copy.frustration;
 
 const DURATIONS: Record<string, string> = {
     '<10s': '< 10 s',
@@ -71,16 +55,16 @@ const DURATIONS: Record<string, string> = {
 const CONNECTIONS: Record<string, string> = {
     wifi: 'Wi-Fi',
     ethernet: 'Ethernet',
-    cellular: 'Datos móviles',
-    'slow-2g': '2G lenta'
+    cellular: copy.connections.cellular,
+    'slow-2g': copy.connections.slow2g
 };
 
 const range = (id: string) => id.replace('-', '–');
 
 const frequency = (id: string) => {
-    if(id === '1') return '1 sesión';
-    if(id.endsWith('+')) return `${id.slice(0, -1)} o más`;
-    return `${range(id)} sesiones`;
+    if(id === '1') return copy.frequency.once;
+    if(id.endsWith('+')) return copy.frequency.orMore(id.slice(0, -1));
+    return copy.frequency.range(range(id));
 };
 
 const NAMERS: Partial<Record<Dimension, (slice: Slice) => Named>> = {
@@ -94,7 +78,7 @@ const NAMERS: Partial<Record<Dimension, (slice: Slice) => Named>> = {
     campaign: (slice) => ({ label: slice.label, detail: slice.detail }),
     release: (slice) => ({
         label: `v${slice.label}`,
-        detail: slice.secondary === undefined ? undefined : `${fmt.pct(slice.value ? slice.secondary / slice.value : 0)} con error`
+        detail: slice.secondary === undefined ? undefined : copy.releaseErrors(fmt.pct(slice.value ? slice.secondary / slice.value : 0))
     }),
     frustration: (slice) => FRUSTRATION[slice.id] ?? { label: slice.label },
     duration: (slice) => ({ label: DURATIONS[slice.id] ?? slice.label }),

@@ -1,13 +1,14 @@
 import Shares from '@/modules/overview/components/Shares';
 import Tabbed from '@/modules/overview/components/Tabbed';
+import { copy } from '@/modules/overview/i18n';
 
 const AcquisitionCard = () => (
     <Tabbed
-        title='Adquisición'
+        title={copy.acquisition.title}
         tabs={[
-            { id: 'channels', label: 'Canales', content: <Shares label='Canales' dimension='channel' /> },
-            { id: 'sources', label: 'Fuentes', content: <Shares label='Fuentes' dimension='source' /> },
-            { id: 'campaigns', label: 'Campañas', content: <Shares label='Campañas' dimension='campaign' /> }
+            { id: 'channels', label: copy.acquisition.channels, content: <Shares label={copy.acquisition.channels} dimension='channel' /> },
+            { id: 'sources', label: copy.acquisition.sources, content: <Shares label={copy.acquisition.sources} dimension='source' /> },
+            { id: 'campaigns', label: copy.acquisition.campaigns, content: <Shares label={copy.acquisition.campaigns} dimension='campaign' /> }
         ]}
     />
 );
