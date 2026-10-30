@@ -1,12 +1,13 @@
 import { Project } from '@condor/contracts/projects/domain';
+import { copy } from '@/modules/projects/i18n';
 
 export const PLATFORMS = [
-    { value: 'web', label: 'Web' },
-    { value: 'server', label: 'Servidor o API HTTP' }
+    { value: 'web', label: copy.platforms.web },
+    { value: 'server', label: copy.platforms.server }
 ] as const;
 
 export const platformLabel = (platform: Project['platform']): string =>
-    PLATFORMS.find((entry) => entry.value === platform)?.label ?? 'Web';
+    PLATFORMS.find((entry) => entry.value === platform)?.label ?? copy.platforms.web;
 
 export const scriptSnippet = (origin: string, key: string): string =>
     `<script defer src="${origin}/i/condor.js" data-key="${key}"></script>`;

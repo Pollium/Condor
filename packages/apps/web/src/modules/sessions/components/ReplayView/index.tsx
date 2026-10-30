@@ -3,6 +3,7 @@ import { VideoOff } from '@carbon/icons-react';
 import ReplayControls, { type Mark } from '@/modules/sessions/components/ReplayControls';
 import ReplayStage from '@/modules/sessions/components/ReplayStage';
 import type { Player } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 import EmptyState from '@/shared/components/EmptyState';
 
 interface ReplayViewProps{
@@ -14,8 +15,8 @@ interface ReplayViewProps{
 }
 
 const COPY = {
-    missing: { title: 'Esta sesión no tiene grabación', description: 'La grabación estaba desactivada o la página no la permitió. Los eventos y los datos de la persona siguen disponibles.' },
-    failed: { title: 'No pudimos cargar la grabación', description: 'Los eventos y los datos de la persona siguen disponibles. Vuelve a intentarlo en un momento.' }
+    missing: { title: copy.replay.missing, description: copy.replay.missingHint },
+    failed: { title: copy.replay.failed, description: copy.replay.failedHint }
 };
 
 const ReplayView = ({ player, marks, address, state, fit }: ReplayViewProps) => {
@@ -31,7 +32,7 @@ const ReplayView = ({ player, marks, address, state, fit }: ReplayViewProps) => 
         <section className='flex min-h-[16rem] flex-col justify-center border border-separator'>
             {state === 'loading' ? (
                 <div className='px-6 py-16'>
-                    <InlineLoading description='Cargando la grabación…' />
+                    <InlineLoading description={copy.replay.loading} />
                 </div>
             ) : (
                 <EmptyState icon={VideoOff} title={COPY[state].title} description={COPY[state].description} />

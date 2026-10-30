@@ -1,5 +1,6 @@
 import { FunnelStepResult } from '@condor/contracts/funnels/domain';
 import { Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { copy } from '@/modules/funnels/i18n';
 import { ChartTooltip } from '@/shared/components/Charts';
 import { AXIS_TICK, CURSOR_FILL, GRID_STROKE, MARGIN } from '@/shared/utils/chart-style';
 import { fmt } from '@/shared/utils/format';
@@ -33,7 +34,7 @@ const StepTick = ({ x = 0, y = 0, width = 0, payload, points }: TickProps) => {
                 {short(point.label, room)}
             </text>
             <text textAnchor='middle' dy={30} fontSize={12} fill='var(--muted)'>
-                {point.index === 0 ? 'Inicio' : slot < 110 ? share : `${share} siguen`}
+                {point.index === 0 ? copy.chart.start : slot < 110 ? share : copy.chart.continued(share)}
             </text>
         </g>
     );
@@ -64,9 +65,9 @@ const FunnelChart = ({ steps }: { steps: FunnelStepResult[] }) => {
                                 <ChartTooltip
                                     title={point.label}
                                     rows={[
-                                        { label: 'Llegan', value: fmt.n(point.people), swatch: 'bg-accent' },
-                                        { label: 'Desde el inicio', value: fmt.pct(point.fromStart), swatch: 'bg-foreground/10' },
-                                        ...(point.index === 0 ? [] : [{ label: 'Abandonan', value: fmt.n(point.dropped), swatch: 'bg-foreground/10' }])
+                                        { label: copy.chart.reach, value: fmt.n(point.people), swatch: 'bg-accent' },
+                                        { label: copy.chart.fromStart, value: fmt.pct(point.fromStart), swatch: 'bg-foreground/10' },
+                                        ...(point.index === 0 ? [] : [{ label: copy.chart.dropOff, value: fmt.n(point.dropped), swatch: 'bg-foreground/10' }])
                                     ]}
                                 />
                             );

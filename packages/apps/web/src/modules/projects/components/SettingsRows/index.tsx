@@ -1,11 +1,12 @@
 import { InlineLoading, Toggle } from '@carbon/react';
 import type { SaveStatus } from '@/modules/projects/hooks/use-save-project';
+import { copy } from '@/modules/projects/i18n';
 import { useId, type ReactNode } from 'react';
 
 const SAVE_COPY: Record<Exclude<SaveStatus, 'idle'>, { status: 'active' | 'finished' | 'error'; text: string }> = {
-    saving: { status: 'active', text: 'Guardando…' },
-    saved: { status: 'finished', text: 'Guardado' },
-    error: { status: 'error', text: 'No se guardó' }
+    saving: { status: 'active', text: copy.save.saving },
+    saved: { status: 'finished', text: copy.save.saved },
+    error: { status: 'error', text: copy.save.failed }
 };
 
 interface GroupProps{

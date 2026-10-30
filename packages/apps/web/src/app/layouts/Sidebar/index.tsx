@@ -1,4 +1,5 @@
 import { SideNav, SideNavDivider, SideNavItems, SideNavLink } from '@carbon/react';
+import { copy } from '@/app/i18n';
 import { useIssueCount } from '@/modules/issues/hooks/use-issue-count';
 import { SETTINGS_VIEW, VIEWS, viewPath } from '@/shared/utils/views';
 import { Link, useLocation } from 'react-router-dom';
@@ -18,7 +19,7 @@ const Sidebar = ({ projectId, expanded, onNavigate }: SidebarProps) => {
     if(projectId === null) return null;
 
     return (
-        <SideNav aria-label='Navegación' expanded={expanded} onOverlayClick={onNavigate} isRail={false}>
+        <SideNav aria-label={copy.navigation} expanded={expanded} onOverlayClick={onNavigate} isRail={false}>
             <SideNavItems>
                 {VIEWS.map((view) => {
                     const to = viewPath(projectId, view.segment);
@@ -34,7 +35,7 @@ const Sidebar = ({ projectId, expanded, onNavigate }: SidebarProps) => {
                 })}
                 <SideNavDivider />
                 <SideNavLink as={Link} to={viewPath(projectId, SETTINGS_VIEW.segment)} renderIcon={SETTINGS_VIEW.icon} isActive={pathname === viewPath(projectId, SETTINGS_VIEW.segment)} onClick={onNavigate}>
-                    Ajustes
+                    {copy.settings}
                 </SideNavLink>
             </SideNavItems>
         </SideNav>

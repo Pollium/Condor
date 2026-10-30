@@ -1,6 +1,7 @@
 import { Dimension } from '@condor/contracts/overview/domain';
 import Loaded from '@/modules/overview/components/Loaded';
 import { useBreakdown } from '@/modules/overview/hooks/use-breakdown';
+import { copy } from '@/modules/overview/i18n';
 import { named } from '@/modules/overview/utils/labels';
 import { ShareList } from '@/shared/components/ShareList';
 
@@ -17,7 +18,7 @@ const Shares = ({ label, dimension, show, onOpen }: SharesProps) => {
     return (
         <Loaded query={query}>
             {(breakdown) => breakdown.slices.length === 0 ? (
-                <p className='text-[0.8125rem] text-label-2'>Sin datos en este periodo.</p>
+                <p className='text-[0.8125rem] text-label-2'>{copy.noData}</p>
             ) : (
                 <ShareList
                     label={label}

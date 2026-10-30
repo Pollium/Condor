@@ -6,6 +6,7 @@ import NetworkList from '@/modules/sessions/components/NetworkList';
 import PersonFacts from '@/modules/sessions/components/PersonFacts';
 import TimelineList from '@/modules/sessions/components/TimelineList';
 import type { Player } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 import type { Recording } from '@/modules/sessions/utils/replay';
 
 interface ReplayPanelProps{
@@ -25,11 +26,11 @@ const ReplayPanel = ({ session, recording, lead, player }: ReplayPanelProps) => 
     return (
         <section className='flex min-h-[32rem] min-w-0 flex-col overflow-hidden border-t border-separator xl:sticky xl:top-0 xl:h-[calc(100dvh-8rem)] xl:border-l xl:border-t-0 xl:pl-4'>
             <Tabs selectedIndex={tab} onChange={({ selectedIndex }) => setTab(selectedIndex)}>
-                <TabList aria-label='Detalle de la sesión'>
-                    <Tab>Eventos</Tab>
-                    <Tab disabled={recording === null}>Consola{errors ? <span className='ml-1 text-danger'>{errors}</span> : null}</Tab>
-                    <Tab disabled={recording === null}>Red{failed ? <span className='ml-1 text-danger'>{failed}</span> : null}</Tab>
-                    <Tab>Persona</Tab>
+                <TabList aria-label={copy.panel.label}>
+                    <Tab>{copy.panel.events}</Tab>
+                    <Tab disabled={recording === null}>{copy.panel.console}{errors ? <span className='ml-1 text-danger'>{errors}</span> : null}</Tab>
+                    <Tab disabled={recording === null}>{copy.panel.network}{failed ? <span className='ml-1 text-danger'>{failed}</span> : null}</Tab>
+                    <Tab>{copy.panel.person}</Tab>
                 </TabList>
                 <TabPanels>
                     <TabPanel className={PANEL}>{tab === 0 ? <TimelineList timeline={session.timeline} lead={lead} player={player} /> : null}</TabPanel>

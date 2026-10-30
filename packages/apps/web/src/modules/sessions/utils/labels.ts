@@ -1,24 +1,13 @@
 import { Channel, Device } from '@condor/contracts/shared/analytics';
 import { SessionSummary } from '@condor/contracts/sessions/domain';
+import { copy } from '@/modules/sessions/i18n';
+import { intlLocale } from '@/shared/i18n/locale';
 
-export const DEVICE_LABELS: Record<Device, string> = {
-    desktop: 'Escritorio',
-    mobile: 'Móvil',
-    tablet: 'Tableta'
-};
+export const DEVICE_LABELS: Record<Device, string> = copy.devices;
 
-export const CHANNEL_LABELS: Record<Channel, string> = {
-    direct: 'Directo',
-    organic: 'Búsqueda',
-    paid: 'Anuncios',
-    social: 'Redes sociales',
-    messaging: 'Mensajería',
-    email: 'Correo',
-    ai: 'Asistentes de IA',
-    referral: 'Otros sitios'
-};
+export const CHANNEL_LABELS: Record<Channel, string> = copy.channels;
 
-const regions = new Intl.DisplayNames(['es'], { type: 'region' });
+const regions = new Intl.DisplayNames(intlLocale, { type: 'region' });
 
 export const countryName = (code: string | null): string | null => {
     if(code === null) return null;
@@ -31,7 +20,7 @@ export const countryName = (code: string | null): string | null => {
 
 type Who = Pick<SessionSummary, 'name' | 'email' | 'userId'>;
 
-export const personName = (who: Who): string => who.name ?? who.email ?? who.userId ?? 'Persona anónima';
+export const personName = (who: Who): string => who.name ?? who.email ?? who.userId ?? copy.anonymous;
 
 export const initials = (who: Who): string => {
     const source = who.name ?? who.email;

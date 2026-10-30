@@ -1,6 +1,7 @@
 import { ComboBox } from '@carbon/react';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 import { journeysApi } from '@/modules/journeys/api/api';
+import { copy } from '@/modules/journeys/i18n';
 import { usePeriodStore } from '@/shared/store/period';
 import { translate } from '@/shared/utils/carbon-translate';
 
@@ -18,9 +19,9 @@ const StartPicker = ({ projectId, value, onChange }: StartPickerProps) => {
     return (
         <ComboBox
             id='journey-start'
-            aria-label='Página de inicio'
+            aria-label={copy.startPicker.label}
             size='sm'
-            placeholder='Desde cualquier página'
+            placeholder={copy.startPicker.placeholder}
             items={value && !paths.includes(value) ? [value, ...paths] : paths}
             selectedItem={value}
             shouldFilterItem={({ item, inputValue }) => !inputValue || item.toLowerCase().includes(inputValue.toLowerCase())}

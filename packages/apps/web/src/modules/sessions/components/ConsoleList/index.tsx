@@ -3,6 +3,7 @@ import { Debug, Information, Terminal, WarningAlt } from '@carbon/icons-react';
 import { useMemo } from 'react';
 import MomentList from '@/modules/sessions/components/MomentList';
 import type { Player } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 import type { Timed } from '@/modules/sessions/utils/replay';
 import EmptyState from '@/shared/components/EmptyState';
 
@@ -28,10 +29,10 @@ const ConsoleList = ({ entries, player }: { entries: Timed<ReplayConsoleEntry>[]
 
     return (
         <MomentList
-            label='Consola'
+            label={copy.panel.console}
             items={items}
             player={player}
-            empty={<EmptyState compact icon={Terminal} title='Consola vacía' description='La grabación no registró mensajes de consola.' />}
+            empty={<EmptyState compact icon={Terminal} title={copy.console.empty} description={copy.console.emptyHint} />}
         />
     );
 };

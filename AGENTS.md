@@ -84,4 +84,4 @@ The guides were written for the framework, so some examples name modules Condor 
   `application/json` cross-origin, so the api registers a `text/plain` parser that reads JSON.
 
 Code style: 4-space indent, single quotes, semicolons, `if(` / `}else{` / `try{` with no space,
-`interface Name{`, private `#fields`, no comments, English identifiers. All web copy is Spanish.
+`interface Name{`, private `#fields`, no comments, English identifiers. Web copy lives in each module's `i18n/` (es is the source; en and pt are typed against it).

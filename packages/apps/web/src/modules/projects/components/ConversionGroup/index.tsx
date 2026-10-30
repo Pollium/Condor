@@ -3,6 +3,7 @@ import { Group } from '@/modules/projects/components/SettingsRows';
 import { projectsApi } from '@/modules/projects/api/api';
 import { useSaveProject } from '@/modules/projects/hooks/use-save-project';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
+import { copy } from '@/modules/projects/i18n';
 import { translate } from '@/shared/utils/carbon-translate';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 
@@ -19,12 +20,12 @@ const ConversionGroup = ({ disabled }: { disabled: boolean }) => {
     };
 
     return (
-        <Group title='Conversión' status={status} error={error} note='Una sesión cuenta como convertida cuando envía este evento. Elige uno de los vistos en 90 días o escribe otro; vacío, ninguna se marca.'>
+        <Group title={copy.conversion.title} status={status} error={error} note={copy.conversion.note}>
             <ComboBox
                 id='conversion-event'
-                titleText='Evento que marca la conversión'
+                titleText={copy.conversion.event}
                 size='md'
-                placeholder='Ninguno'
+                placeholder={copy.conversion.none}
                 items={current !== null && !items.includes(current) ? [current, ...items] : items}
                 selectedItem={current}
                 allowCustomValue

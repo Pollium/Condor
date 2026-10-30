@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, type PointerEvent } from 'react';
 import { CELLS, CENTROIDS, GRID, TRACKED, type TrackedCode } from '@/shared/components/WorldMap/world-dots';
+import { copy } from '@/shared/i18n';
 import { fmt } from '@/shared/utils/format';
 
 const LETTERS = 'abcdefghijklmnopq';
@@ -74,7 +75,7 @@ export const WorldMap = ({ data, className = '' }: WorldMapProps) => {
 
     return (
         <div ref={wrapper} className={`relative ${className}`}>
-            <svg viewBox={`0 0 ${GRID.cols} ${GRID.rows}`} width='100%' style={{ height: 'auto', display: 'block' }} role='img' aria-label='Mapa de personas por país'>
+            <svg viewBox={`0 0 ${GRID.cols} ${GRID.rows}`} width='100%' style={{ height: 'auto', display: 'block' }} role='img' aria-label={copy.worldMap}>
                 {untracked}
                 {[...stats.byCode.entries()].map(([code, entry]) => {
                     const cells = layout.countries.get(code) ?? [];

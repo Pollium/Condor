@@ -3,6 +3,7 @@ import { Activity } from '@carbon/icons-react';
 import { useMemo } from 'react';
 import MomentList from '@/modules/sessions/components/MomentList';
 import type { Player } from '@/modules/sessions/hooks/use-replayer';
+import { copy } from '@/modules/sessions/i18n';
 import { describe, TIMELINE_TYPES } from '@/modules/sessions/utils/timeline';
 import EmptyState from '@/shared/components/EmptyState';
 
@@ -29,10 +30,10 @@ const TimelineList = ({ timeline, lead, player }: TimelineListProps) => {
 
     return (
         <MomentList
-            label='Eventos de la sesión'
+            label={copy.timeline.label}
             items={items}
             player={player}
-            empty={<EmptyState compact icon={Activity} title='Sin eventos' description='Esta sesión no registró páginas, clics ni errores.' />}
+            empty={<EmptyState compact icon={Activity} title={copy.timeline.empty} description={copy.timeline.emptyHint} />}
         />
     );
 };

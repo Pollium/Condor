@@ -6,11 +6,13 @@ import { eventsApi } from '@/modules/events/api/api';
 import EventDetailPanel from '@/modules/events/components/EventDetailPanel';
 import SegmentMenu from '@/modules/events/components/SegmentMenu';
 import { useSegmentQuery } from '@/modules/events/hooks/use-segment';
+import { copy } from '@/modules/events/i18n';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import { people } from '@/modules/retention/utils/cohort-copy';
 import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
 import { RowList } from '@/shared/components/RowList';
+import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
 import { errorCopy } from '@/shared/utils/error-copy';
 import { fmt } from '@/shared/utils/format';
@@ -36,7 +38,7 @@ const EventsPage = () => {
 
     return (
         <div className='w-full'>
-            <PageHeader title='Eventos' hint={list.data ? `${fmt.n(rows.length)} eventos propios en este periodo` : undefined}>
+            <PageHeader title={shared.views.events} hint={list.data ? copy.page.count(rows.length) : undefined}>
                 <SegmentMenu projectId={project.id} />
             </PageHeader>
 
@@ -44,15 +46,15 @@ const EventsPage = () => {
 
             <div className='grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]'>
                 <RowList
-                    label='Eventos propios'
+                    label={copy.page.list}
                     selected={name ?? null}
                     onSelect={select}
                     empty={list.data ? (
                         <EmptyState
                             compact
                             icon={ChartMultitype}
-                            title='Aún no hay eventos propios'
-                            description='Llama a condor.track("nombre", { ... }) desde tu app o envíalos desde tu servidor y aparecerán aquí.'
+                            title={copy.page.emptyTitle}
+                            description={copy.page.emptyHint}
                         />
                     ) : undefined}
                     rows={rows.map((event) => ({

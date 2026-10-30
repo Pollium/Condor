@@ -10,12 +10,14 @@ import QuickLook from '@/modules/sessions/components/QuickLook';
 import SessionList from '@/modules/sessions/components/SessionList';
 import SessionToolbar from '@/modules/sessions/components/SessionToolbar';
 import { sessionsApi } from '@/modules/sessions/api/api';
+import { copy } from '@/modules/sessions/i18n';
 import { countryName } from '@/modules/sessions/utils/labels';
 import { isNarrowed, PAGE_SIZES, readState, toQuery, writeState, type ListState } from '@/modules/sessions/utils/query';
 import { useLive } from '@/modules/live/hooks/use-live';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
+import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
 import { errorCopy } from '@/shared/utils/error-copy';
 import { viewPath } from '@/shared/utils/views';
@@ -67,33 +69,33 @@ const SessionsPage = () => {
         if(last !== null && state.page > last) change({ page: last });
     }, [last, state.page, change]);
     const open = (id: string) => navigate(`${base}/${id}`);
-    const scope = [state.country && `de ${countryName(state.country)}`, state.personId && 'de una persona'].filter(Boolean).join(' y ');
+    const scoped = Boolean(state.country || state.personId);
 
     return (
         <div className='w-full'>
-            <PageHeader title='Sesiones'>
+            <PageHeader title={shared.views.sessions}>
                 <SessionToolbar state={state} total={total} onChange={change} />
                 <SegmentMenu projectId={project.id} />
             </PageHeader>
 
-            {scope ? (
+            {scoped ? (
                 <div className='mb-4 flex flex-wrap items-center gap-2 text-[0.8125rem] text-label-2'>
-                    <span>Solo sesiones {scope}</span>
+                    <span>{copy.list.only(countryName(state.country), Boolean(state.personId))}</span>
                     <Button kind='ghost' size='sm' onClick={() => change({ country: null, personId: null, page: 1 })}>
-                        Ver todas
+                        {copy.list.seeAll}
                     </Button>
                 </div>
             ) : null}
 
             {list.error && !list.data ? (
-                <EmptyState icon={Screen} title='No pudimos cargar las sesiones' description={failure(list.error) ?? undefined}>
+                <EmptyState icon={Screen} title={copy.list.loadFailed} description={failure(list.error) ?? undefined}>
                     <Button kind='tertiary' size='sm' onClick={list.reload}>
-                        Reintentar
+                        {copy.list.retry}
                     </Button>
                 </EmptyState>
             ) : !list.data ? (
                 <div className='px-4 py-8'>
-                    <InlineLoading description='Cargando sesiones…' />
+                    <InlineLoading description={copy.list.loading} />
                 </div>
             ) : (
                 <div className={list.loading ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
@@ -109,15 +111,15 @@ const SessionsPage = () => {
                         pageSizes={PAGE_SIZES}
                         totalItems={total}
                         size='sm'
-                        backwardText='Página anterior'
-                        forwardText='Página siguiente'
-                        itemsPerPageText='Por página'
-                        pageNumberText='Página'
-                        itemRangeText={(min, max, count) => `${min}–${max} de ${count}`}
-                        pageRangeText={(_, pages) => `de ${pages} ${pages === 1 ? 'página' : 'páginas'}`}
+                        backwardText={copy.list.previousPage}
+                        forwardText={copy.list.nextPage}
+                        itemsPerPageText={copy.list.perPage}
+                        pageNumberText={copy.list.page}
+                        itemRangeText={copy.list.range}
+                        pageRangeText={(_, pages) => copy.list.ofPages(pages)}
                         onChange={({ page, pageSize }) => change({ page: pageSize === state.pageSize ? page : 1, pageSize })}
                     />
-                    <p className='text-[0.8125rem] text-label-2'>Clic para reproducir. Con una sesión enfocada, Espacio abre una vista rápida.</p>
+                    <p className='text-[0.8125rem] text-label-2'>{copy.list.hint}</p>
                 </div>
             ) : null}
 

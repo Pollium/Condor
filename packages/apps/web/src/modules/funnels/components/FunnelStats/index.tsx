@@ -1,5 +1,6 @@
 import { FunnelResult } from '@condor/contracts/funnels/domain';
 import StatTile, { StatRow } from '@/shared/components/StatTile';
+import { copy } from '@/modules/funnels/i18n';
 import { median, pointsDelta } from '@/modules/funnels/utils/funnel-copy';
 import { fmt } from '@/shared/utils/format';
 
@@ -10,13 +11,13 @@ const FunnelStats = ({ result }: { result: FunnelResult }) => {
 
     return (
         <StatRow columns={4}>
-            <StatTile label='Conversión total' value={fmt.pct(result.conversion)} hint={pointsDelta(result.conversion, result.previousConversion)} />
-            <StatTile label='Completan' value={fmt.n(last.people)} hint={`de ${fmt.n(first.people)} que empiezan`} />
-            <StatTile label='Tiempo mediano' value={median(result.medianSeconds)} hint='Del primer paso al último' />
+            <StatTile label={copy.stats.conversion} value={fmt.pct(result.conversion)} hint={pointsDelta(result.conversion, result.previousConversion)} />
+            <StatTile label={copy.stats.complete} value={fmt.n(last.people)} hint={copy.stats.ofStarting(first.people)} />
+            <StatTile label={copy.stats.medianTime} value={median(result.medianSeconds)} hint={copy.stats.firstToLast} />
             <StatTile
-                label='Mayor abandono'
+                label={copy.stats.biggestDrop}
                 value={first.people ? fmt.pct(1 - worst.fromPrevious) : '—'}
-                hint={first.people ? `Antes de «${worst.label}»` : 'Aún nadie empieza'}
+                hint={first.people ? copy.stats.before(worst.label) : copy.stats.noneYet}
             />
         </StatRow>
     );

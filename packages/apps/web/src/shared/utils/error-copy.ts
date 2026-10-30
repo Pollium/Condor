@@ -1,20 +1,21 @@
 import { ApiError } from '@condor/ui/services/ApiError';
 import { baseCodeOf } from '@condor/contracts/shared/errors';
+import { copy } from '@/shared/i18n';
 
 const SHARED: Record<string, string> = {
-    'Auth::Forbidden': 'Tu rol no permite hacer esto.',
-    'Auth::Unauthorized': 'Tu sesión terminó. Vuelve a entrar.',
-    'RateLimit::TooManyRequests': 'Demasiados intentos. Espera un momento y vuelve a probar.',
-    'Request::ValidationFailed': 'Revisa los campos marcados.',
-    'Project::NotFound': 'Esta app ya no existe.'
+    'Auth::Forbidden': copy.errors.forbidden,
+    'Auth::Unauthorized': copy.errors.unauthorized,
+    'RateLimit::TooManyRequests': copy.errors.tooManyRequests,
+    'Request::ValidationFailed': copy.errors.validationFailed,
+    'Project::NotFound': copy.errors.projectNotFound
 };
 
 export const errorCopy = (messages: Partial<Record<string, string>> = {}) => (error: Error | undefined): string | null => {
     if(error === undefined) return null;
-    if(error instanceof ApiError && error.isNetworkError) return 'No hay conexión con Condor. Revisa que los servicios estén en marcha.';
+    if(error instanceof ApiError && error.isNetworkError) return copy.errors.offline;
 
     const code = baseCodeOf(error.message);
-    return messages[code] ?? SHARED[code] ?? 'Algo salió mal. Vuelve a intentarlo.';
+    return messages[code] ?? SHARED[code] ?? copy.errors.unknown;
 };
 
 export const fieldErrors = (error: Error | undefined): Record<string, string> => {
