@@ -247,6 +247,17 @@ describe('CollectController', () => {
             expect(enqueue).not.toHaveBeenCalled();
         });
 
+        it('takes a server batch whatever client the server uses', async () => {
+            const custom = { type: 'custom', id: '0196f1b2-0003-7e5f-8a9b-0c1d2e3f4a5b', timestamp: SENT_AT - 100, path: '/', name: 'course_generated' };
+            const res = await send('/i/batch', batchOf([custom], { sessionId: undefined, anonymousId: 'user-7', userId: 'user-7', context: {} }), {
+                'user-agent': 'python-requests/2.32.3',
+                'content-type': 'application/json'
+            });
+
+            expect(res.json()).toEqual({ data: { accepted: 1 } });
+            expect(enqueue).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ sessionId: null, userId: 'user-7' }));
+        });
+
         it('enqueues a heartbeat with no events', async () => {
             const res = await send('/i/batch', batchOf([], { userId: 'user-7' }));
 
