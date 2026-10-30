@@ -1,4 +1,5 @@
 import { OverflowMenu } from '@carbon/react';
+import { copy } from '@/shared/i18n';
 import type { ReactNode } from 'react';
 
 interface ActionMenuProps{
@@ -8,7 +9,7 @@ interface ActionMenuProps{
 }
 
 const ActionMenu = ({ subject, ariaLabel, children }: ActionMenuProps) => (
-    <OverflowMenu aria-label={ariaLabel ?? `Acciones de ${subject}`} iconDescription={ariaLabel ?? `Acciones de ${subject}`} flipped size='md'>
+    <OverflowMenu aria-label={ariaLabel ?? copy.actionsOf(subject)} iconDescription={ariaLabel ?? copy.actionsOf(subject)} flipped size='md'>
         {children}
     </OverflowMenu>
 );

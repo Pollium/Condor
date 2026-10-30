@@ -3,6 +3,7 @@ import { ChevronLeft } from '@carbon/icons-react';
 import { Children, Fragment, useEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
+import { copy } from '@/shared/i18n';
 import { useToolbarStore } from '@/shared/store/toolbar';
 
 interface PageHeaderProps{
@@ -26,7 +27,7 @@ export const PageHeader = ({ title, hint, back, children }: PageHeaderProps) => 
         <>
             <div className='flex min-w-[9rem] flex-1 items-center gap-1.5'>
                 {back ? (
-                    <IconButton kind='ghost' size='sm' label={`Volver a ${back.label}`} onClick={() => navigate(back.to)} align='bottom-start'>
+                    <IconButton kind='ghost' size='sm' label={copy.backTo(back.label)} onClick={() => navigate(back.to)} align='bottom-start'>
                         <ChevronLeft />
                     </IconButton>
                 ) : null}

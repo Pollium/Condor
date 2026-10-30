@@ -15,9 +15,10 @@ import {
     Tooltip
 } from '@carbon/react';
 import { Asleep, Light, Search, UserAvatar } from '@carbon/icons-react';
-import { Period } from '@condor/contracts/shared/period';
+import { Period, PERIODS as PERIOD_VALUES } from '@condor/contracts/shared/period';
 import { endSession } from '@condor/ui/services/end-session';
 import { useThemeStore } from '@condor/ui/store/theme';
+import { copy } from '@/app/i18n';
 import Sidebar from '@/app/layouts/Sidebar';
 import { useMe } from '@/modules/auth/hooks/use-me';
 import { useLive } from '@/modules/live/hooks/use-live';
@@ -33,12 +34,7 @@ import { SETTINGS_VIEW, VIEWS, viewPath } from '@/shared/utils/views';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-const PERIODS: { value: Period; label: string }[] = [
-    { value: '24h', label: 'Últimas 24 horas' },
-    { value: '7d', label: 'Últimos 7 días' },
-    { value: '30d', label: 'Últimos 30 días' },
-    { value: '90d', label: 'Últimos 90 días' }
-];
+const PERIODS: { value: Period; label: string }[] = PERIOD_VALUES.map((value) => ({ value, label: copy.periods[value] }));
 
 const switchProject = (pathname: string, from: string, to: string): string => {
     const view = pathname.split('/')[2] ?? '';
@@ -84,54 +80,54 @@ const Shell = () => {
     return (
         <div className='h-dvh bg-canvas text-foreground'>
             <Header aria-label='Condor'>
-                <SkipToContent href='#main-content'>Ir al contenido</SkipToContent>
-                <HeaderMenuButton aria-label={nav ? 'Cerrar el menú' : 'Abrir el menú'} isActive={nav} onClick={() => setNav((value) => !value)} isCollapsible />
+                <SkipToContent href='#main-content'>{copy.skipToContent}</SkipToContent>
+                <HeaderMenuButton aria-label={nav ? copy.closeMenu : copy.openMenu} isActive={nav} onClick={() => setNav((value) => !value)} isCollapsible />
                 <HeaderName as={Link} to='/' prefix=''>
                     Condor
                 </HeaderName>
                 <HeaderNavigation aria-label='App'>
-                    <HeaderMenu aria-label='Cambiar de app' menuLinkName={project?.name ?? 'Elige una app'}>
+                    <HeaderMenu aria-label={copy.switchApp} menuLinkName={project?.name ?? copy.chooseApp}>
                         {projects.map((entry) => (
                             <HeaderMenuItem key={entry.id} isActive={entry.id === project?.id} onClick={() => navigate(project === null ? `/${entry.id}` : switchProject(pathname, project.id, entry.id))}>
                                 {entry.name}
                             </HeaderMenuItem>
                         ))}
-                        <HeaderMenuItem onClick={() => setAdding(true)}>Añadir una app…</HeaderMenuItem>
+                        <HeaderMenuItem onClick={() => setAdding(true)}>{copy.addAppEllipsis}</HeaderMenuItem>
                     </HeaderMenu>
                 </HeaderNavigation>
                 <HeaderGlobalBar>
                     {project !== null && project.lastEventAt !== null ? (
                         <div className='hidden items-center gap-4 pr-2 md:flex'>
-                            <Tooltip label={`${live?.count ?? 0} personas en ${project.name} ahora`} align='bottom'>
+                            <Tooltip label={copy.liveNow(live?.count ?? 0, project.name)} align='bottom'>
                                 <button type='button' onClick={() => navigate(viewPath(project.id, 'sesiones'))} className='flex items-center gap-2 text-[0.875rem] tabular-nums text-foreground'>
                                     <span className={`size-2 rounded-full ${(live?.count ?? 0) > 0 ? 'bg-success' : 'bg-label-3'}`} />
-                                    {live?.count ?? 0} en vivo
+                                    {copy.live(live?.count ?? 0)}
                                 </button>
                             </Tooltip>
-                            <ToolbarMenu label='Periodo' choices={PERIODS} value={period} onChange={setPeriod} />
+                            <ToolbarMenu label={copy.period} choices={PERIODS} value={period} onChange={setPeriod} />
                         </div>
                     ) : null}
-                    <HeaderGlobalAction aria-label='Buscar' tooltipAlignment='end' onClick={() => setSpotlight(true)}>
+                    <HeaderGlobalAction aria-label={copy.search} tooltipAlignment='end' onClick={() => setSpotlight(true)}>
                         <Search size={20} />
                     </HeaderGlobalAction>
-                    <HeaderGlobalAction aria-label={theme === 'dark' ? 'Usar tema claro' : 'Usar tema oscuro'} tooltipAlignment='end' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+                    <HeaderGlobalAction aria-label={theme === 'dark' ? copy.lightTheme : copy.darkTheme} tooltipAlignment='end' onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
                         {theme === 'dark' ? <Light size={20} /> : <Asleep size={20} />}
                     </HeaderGlobalAction>
-                    <HeaderGlobalAction aria-label='Tu cuenta' tooltipAlignment='end' isActive={account} onClick={() => setAccount((value) => !value)}>
+                    <HeaderGlobalAction aria-label={copy.yourAccount} tooltipAlignment='end' isActive={account} onClick={() => setAccount((value) => !value)}>
                         <UserAvatar size={20} />
                     </HeaderGlobalAction>
                 </HeaderGlobalBar>
                 <HeaderPanel expanded={account} onHeaderPanelFocus={() => setAccount(false)}>
-                    <Switcher aria-label='Cuenta'>
+                    <Switcher aria-label={copy.account}>
                         {me.data ? <li className='px-4 pb-3 pt-4 text-[0.75rem] text-label-2'>{me.data.name} · {me.data.email}</li> : null}
-                        <SwitcherItem aria-label='Tu cuenta' onClick={() => go('/cuenta')}>Tu cuenta</SwitcherItem>
-                        <SwitcherItem aria-label='Equipo' onClick={() => go('/equipo')}>Equipo</SwitcherItem>
+                        <SwitcherItem aria-label={copy.yourAccount} onClick={() => go('/cuenta')}>{copy.yourAccount}</SwitcherItem>
+                        <SwitcherItem aria-label={copy.team} onClick={() => go('/equipo')}>{copy.team}</SwitcherItem>
                         {project !== null ? (
-                            <SwitcherItem aria-label='Ajustes de la app' onClick={() => go(viewPath(project.id, SETTINGS_VIEW.segment))}>Ajustes de la app</SwitcherItem>
+                            <SwitcherItem aria-label={SETTINGS_VIEW.label} onClick={() => go(viewPath(project.id, SETTINGS_VIEW.segment))}>{SETTINGS_VIEW.label}</SwitcherItem>
                         ) : null}
-                        <SwitcherItem aria-label='Añadir una app' onClick={() => { setAccount(false); setAdding(true); }}>Añadir una app…</SwitcherItem>
+                        <SwitcherItem aria-label={copy.addApp} onClick={() => { setAccount(false); setAdding(true); }}>{copy.addAppEllipsis}</SwitcherItem>
                         <SwitcherDivider />
-                        <SwitcherItem aria-label='Cerrar sesión' onClick={() => { setAccount(false); void endSession(); }}>Cerrar sesión</SwitcherItem>
+                        <SwitcherItem aria-label={copy.signOut} onClick={() => { setAccount(false); void endSession(); }}>{copy.signOut}</SwitcherItem>
                     </Switcher>
                 </HeaderPanel>
                 <Sidebar projectId={project?.id ?? null} expanded={nav} onNavigate={() => setNav(false)} />

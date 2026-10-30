@@ -1,4 +1,5 @@
 import { Modal as CarbonModal } from '@carbon/react';
+import { copy } from '@/shared/i18n';
 import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -11,7 +12,7 @@ interface ModalProps{
 }
 
 const Modal = ({ isOpen, onOpenChange, title, width = 'sm', children }: ModalProps) => createPortal(
-    <CarbonModal open={isOpen} onRequestClose={() => onOpenChange(false)} passiveModal modalHeading={title} size={width} closeButtonLabel='Cerrar'>
+    <CarbonModal open={isOpen} onRequestClose={() => onOpenChange(false)} passiveModal modalHeading={title} size={width} closeButtonLabel={copy.close}>
         {children}
     </CarbonModal>,
     document.body

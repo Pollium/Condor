@@ -1,6 +1,8 @@
 import { Tooltip as HintTip } from '@carbon/react';
 import { heatFill, mixFill } from '@/shared/utils/heat';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { copy } from '@/shared/i18n';
+import { intlLocale } from '@/shared/i18n/locale';
 import { fmt } from '@/shared/utils/format';
 import { AXIS_TICK, CURSOR_FILL, GRID_STROKE, MARGIN } from '@/shared/utils/chart-style';
 
@@ -66,8 +68,8 @@ export const SessionsChart = ({ days, className = 'h-52' }: { days: DayTraffic[]
                                     <ChartTooltip
                                         title={day.label}
                                         rows={[
-                                            { label: 'Sesiones', value: fmt.n(day.sessions), swatch: 'bg-accent' },
-                                            { label: 'Con error', value: fmt.n(day.errored), swatch: 'bg-danger' }
+                                            { label: copy.chart.sessions, value: fmt.n(day.sessions), swatch: 'bg-accent' },
+                                            { label: copy.chart.errored, value: fmt.n(day.errored), swatch: 'bg-danger' }
                                         ]}
                                     />
                                 );
@@ -159,7 +161,11 @@ export const TrendChart = ({
     </div>
 );
 
-const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'] as const;
+const weekdayName = new Intl.DateTimeFormat(intlLocale, { weekday: 'short', timeZone: 'UTC' });
+const WEEKDAYS = Array.from({ length: 7 }, (_, index) => {
+    const name = weekdayName.format(new Date(Date.UTC(2024, 0, 1 + index)));
+    return name.charAt(0).toUpperCase() + name.slice(1);
+});
 const HOURS = Array.from({ length: 24 }, (_, hour) => hour);
 const HOUR_TICKS = new Set([0, 3, 6, 9, 12, 15, 18, 21]);
 const LEGEND_MIXES = [4, 20, 36, 52, 70, 86] as const;
@@ -208,11 +214,11 @@ export const WeekHeatmap = ({ cells, unit }: { cells: HeatCell[]; unit: string }
             </div>
 
             <div className='flex items-center gap-1.5 text-[0.6875rem] text-muted'>
-                Tranquilo
+                {copy.chart.quiet}
                 {LEGEND_MIXES.map((mix) => (
                     <span key={mix} className='h-1.5 w-3.5' style={{ background: mixFill(mix) }} />
                 ))}
-                Pico · {fmt.n(peak)} {unit}/h
+                {copy.chart.peak} · {fmt.n(peak)} {unit}/h
             </div>
         </div>
     );

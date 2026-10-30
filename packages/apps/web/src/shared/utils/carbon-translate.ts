@@ -1,8 +1,5 @@
-const SPANISH: Record<string, string> = {
-    'open.menu': 'Abrir menú',
-    'close.menu': 'Cerrar menú',
-    'clear.all': 'Quitar todo',
-    'clear.selection': 'Quitar selección'
-};
+import { copy } from '@/shared/i18n';
 
-export const translate = (id: string) => SPANISH[id] ?? id;
+const MESSAGES: Record<string, string> = copy.carbon;
+
+export const translate = (id: string) => MESSAGES[id] ?? id;
