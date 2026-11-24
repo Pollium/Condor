@@ -1,6 +1,6 @@
 import Project from '@/modules/projects/models/Project';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { HeatPage } from '@condor/contracts/heatmaps/domain';
 import { Period } from '@condor/contracts/shared/period';
 import { resolveWindow } from '@/shared/time/period-window';

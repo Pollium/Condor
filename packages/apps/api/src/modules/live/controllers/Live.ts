@@ -1,9 +1,7 @@
 import LiveSnapshotService from '../services/LiveSnapshot';
 import Project from '@/modules/projects/models/Project';
-import BaseController from '@readable/controllers/BaseController';
-import { Controller } from '@readable/decorators/controllers/Controller';
-import { Route } from '@readable/decorators/controllers/Route';
-import { Middleware } from '@readable/decorators/middleware/Middleware';
+import BaseController, { Controller, Route } from '@pollium/readable/http/Controller';
+import { Middleware } from '@pollium/readable/http/middleware';
 import { overviewRoutes } from '@condor/contracts/overview/routes';
 import { CurrentProject } from '@/modules/projects/middlewares/CurrentProject';
 import { MemberRoute } from '@/shared/access/role-route';

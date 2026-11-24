@@ -1,7 +1,7 @@
 import Project from '@/modules/projects/models/Project';
 import Person from '@/modules/sessions/models/Person';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { EventDetail, EventProperty, EventSummary, PropertyBreakdown } from '@condor/contracts/events/domain';
 import { Period } from '@condor/contracts/shared/period';
 import { Segment } from '@condor/contracts/shared/segment';

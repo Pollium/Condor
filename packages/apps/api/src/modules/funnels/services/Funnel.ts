@@ -1,6 +1,6 @@
 import Funnel from '../models/Funnel';
 import Project from '@/modules/projects/models/Project';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
+import { findOrThrow } from '@pollium/readable/database/queries';
 import { CreateFunnelInput, UpdateFunnelInput } from '@condor/contracts/funnels/http';
 import { FunnelError } from '../contracts/domain/errors';
 

@@ -1,4 +1,4 @@
-import { defineErrors } from '@readable/utils/errors/define-errors';
+import { defineErrors } from '@pollium/readable/app/errors';
 import { InvitationErrors, MemberErrors } from '@condor/contracts/members/errors';
 
 export const MemberError = defineErrors(MemberErrors);

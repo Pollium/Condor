@@ -1,6 +1,6 @@
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { HeatScope } from '../contracts/domain/heatmap';
 
 const TABLET_FROM_PX = 768;

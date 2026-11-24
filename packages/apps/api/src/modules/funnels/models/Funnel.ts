@@ -1,4 +1,4 @@
-import BaseModel from '@readable/models/BaseModel';
+import { BaseModel } from '@pollium/readable/database/models';
 import { FunnelStep } from '@condor/contracts/funnels/domain';
 import { Column, Entity, Index } from 'typeorm';
 

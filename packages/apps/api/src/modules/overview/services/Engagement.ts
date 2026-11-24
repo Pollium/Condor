@@ -1,6 +1,6 @@
 import Project from '@/modules/projects/models/Project';
 import Session from '@/modules/sessions/models/Session';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { Engagement } from '@condor/contracts/overview/domain';
 import { Period } from '@condor/contracts/shared/period';
 import { resolveWindow } from '@/shared/time/period-window';

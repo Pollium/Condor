@@ -1,6 +1,6 @@
 import ProjectDirectory from '../services/ProjectDirectory';
 import Project from '@/modules/projects/models/Project';
-import { eventBus } from '@readable/events/EventBus';
+import { eventBus } from '@pollium/readable/events/EventBus';
 import { ingestProject, PROJECT_ID, PUBLIC_KEY } from '@tests/fixtures';
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 

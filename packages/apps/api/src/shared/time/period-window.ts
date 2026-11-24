@@ -1,4 +1,4 @@
-import ValidationError from '@readable/errors/Validation';
+import { ValidationError } from '@pollium/readable/app/errors';
 import { Period, PERIODS } from '@condor/contracts/shared/period';
 import { EntityManager } from 'typeorm';
 

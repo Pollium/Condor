@@ -1,4 +1,4 @@
-import { logger } from '@readable/utils/Logger';
+import { logger } from '@pollium/readable/app/logger';
 import { LiveFlush } from '../contracts/domain/throttle';
 
 const FLUSH_INTERVAL_MS = 1000;

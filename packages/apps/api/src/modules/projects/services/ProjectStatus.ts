@@ -1,7 +1,7 @@
 import Project from '../models/Project';
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { ProjectStatus } from '@condor/contracts/projects/domain';
 
 interface TodayRow{

@@ -1,10 +1,18 @@
-import { configure } from '@readable/config';
-import { redisFromEnv, serviceConfig, storageFromEnv } from '@readable/service-config';
-import { optionalEnv, requiredEnv } from '@readable/utils/env';
+import {
+    configure,
+    redisFromEnv,
+    serviceConfig,
+    storageFromEnv,
+    optionalEnv,
+    requiredEnv
+} from '@pollium/readable/app/config';
 import { resolve } from 'node:path';
 
+const service = serviceConfig('http://localhost:5190');
+
 export const config = {
-    ...serviceConfig('http://localhost:5190'),
+    ...service,
+    database: { ...service.database, timestamptz: true },
     jwtSecret: requiredEnv('JWT_SECRET'),
     redis: redisFromEnv(),
     storage: storageFromEnv(),
@@ -21,8 +29,8 @@ export const config = {
 } as const;
 
 configure({
+    name: 'condor',
     jwtSecret: config.jwtSecret,
     redis: config.redis,
-    storage: config.storage,
-    queue: { concurrency: config.ingestConcurrency }
+    storage: config.storage
 });

@@ -23,15 +23,15 @@ importers:
       '@condor/contracts':
         specifier: workspace:*
         version: link:../../shared/contracts
-      '@condor/readable':
-        specifier: workspace:*
-        version: link:../../shared/readable
       '@fastify/cors':
         specifier: ^11.3.0
         version: 11.3.1
       '@fastify/websocket':
         specifier: 11.3.0
         version: 11.3.0
+      '@pollium/readable':
+        specifier: ^0.2.0
+        version: 0.2.0(@types/node@26.6.6)(fastify@5.12.7)(pg@8.23.1)(typeorm@1.1.2(ioredis@5.11.1)(pg@8.23.1))(typescript@6.0.3)(vitest@4.1.12(@types/node@26.6.6)(happy-dom@20.14.6)(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0)))
       bowser:
         specifier: 2.14.1
         version: 2.14.1
@@ -493,6 +493,9 @@ packages:
   '@fastify/proxy-addr@5.1.2':
     resolution: {integrity: sha512-uqB4QsgVoro0XDC+DIftIMGXHdBPn+lK6Ek3xXAIxPMCJfqxnbtyEoMCm2KPUVOuIosd7Cyw9HawEqMFM/UA+g==}
 
+  '@fastify/rate-limit@11.3.0':
+    resolution: {integrity: sha512-n+gmOdTRReRA+UGI/cPAvG4bW4FCDLofInXNkTX42/rkMPy/8ii8LsLWHUU1KC+jJRdBtOD9Zs+Js8168eS/4A==}
+
   '@fastify/websocket@11.3.0':
     resolution: {integrity: sha512-g89ag4BCcD9YP5wBZXixzoLnuf5j89p/sXFcfpCiv2pdEkYYukBEoK3heVzqsp0EAtszVDc2BBZG0KZqeAShIA==}
 
@@ -584,6 +587,10 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@lukeed/ms@2.0.2':
+    resolution: {integrity: sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==}
+    engines: {node: '>=8'}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     resolution: {integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==}
@@ -742,6 +749,20 @@ packages:
 
   '@pinojs/redact@0.4.0':
     resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
+
+  '@pollium/readable-contracts@0.2.0':
+    resolution: {integrity: sha512-WzBFRNhCnjFOxFbcZz7SX6Kp+q+DqkpMQfOwxFP/dK+IxHUf6tXaTRcMxuUGxPpoy8Qfp7V3PYsab1VyObTR9A==}
+
+  '@pollium/readable@0.2.0':
+    resolution: {integrity: sha512-K3Cvxnf3KhalcXLb8pvfvtslE9r6WQCo+OysyXRl4TEmAJWGF8ZN/jKYvl4ogGTHkVYa+IstCYQA+gJEX7lCcw==}
+    peerDependencies:
+      fastify: ^5.12.5
+      pg: ^8.22.0
+      typeorm: ^1.1.0
+      vitest: ^4.1.10
+    peerDependenciesMeta:
+      vitest:
+        optional: true
 
   '@reduxjs/toolkit@2.13.0':
     resolution: {integrity: sha512-f6jwVRfwW30+tnllz4YcsHHpPYYOE7abcHkyUCovD+P7DyhdAI5prz2Fh/8TLhakjpN+7aIEion1s5L/tvlYlA==}
@@ -1638,6 +1659,10 @@ packages:
   ioredis@5.11.1:
     resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
     engines: {node: '>=12.22.0'}
+
+  ip-address@10.7.6:
+    resolution: {integrity: sha512-00LYkM6byILa9eQIx6qoaXCM40xTLd56AZ4vyaPW3YTyb49VZYPo5xsiAq4tuQ54GH4R7gVdYScJ1B7B77PuTg==}
+    engines: {node: '>= 12'}
 
   ipaddr.js@2.5.0:
     resolution: {integrity: sha512-aq+t5NAc+cS6rZQQVWC2x98CPqGtKKTMDd4Gaodv0wShnItdKg/51djkGJ1hqH+Oy0ivDftCbSLCQob8zso01w==}
@@ -2947,6 +2972,13 @@ snapshots:
       '@fastify/forwarded': 3.1.2
       ipaddr.js: 2.5.0
 
+  '@fastify/rate-limit@11.3.0':
+    dependencies:
+      '@lukeed/ms': 2.0.2
+      fastify-plugin: 6.0.1
+      ip-address: 10.7.6
+      toad-cache: 3.7.4
+
   '@fastify/websocket@11.3.0':
     dependencies:
       duplexify: 4.1.3
@@ -3055,6 +3087,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
+  '@lukeed/ms@2.0.2': {}
+
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     optional: true
 
@@ -3133,6 +3167,34 @@ snapshots:
     optional: true
 
   '@pinojs/redact@0.4.0': {}
+
+  '@pollium/readable-contracts@0.2.0': {}
+
+  '@pollium/readable@0.2.0(@types/node@26.6.6)(fastify@5.12.7)(pg@8.23.1)(typeorm@1.1.2(ioredis@5.11.1)(pg@8.23.1))(typescript@6.0.3)(vitest@4.1.12(@types/node@26.6.6)(happy-dom@20.14.6)(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0)))':
+    dependencies:
+      '@aws-sdk/client-s3': 3.1159.0
+      '@fastify/cors': 11.3.1
+      '@fastify/rate-limit': 11.3.0
+      '@fastify/websocket': 11.3.0
+      '@pollium/readable-contracts': 0.2.0
+      bullmq: 5.81.5
+      fastify: 5.12.7
+      ioredis: 5.11.1
+      jsonwebtoken: 9.0.3
+      pg: 8.23.1
+      pino: 10.4.0
+      typeorm: 1.1.2(ioredis@5.11.1)(pg@8.23.1)
+      typia: 12.2.1(@types/node@26.6.6)(typescript@6.0.3)
+      uuid: 14.0.3
+    optionalDependencies:
+      vitest: 4.1.12(@types/node@26.6.6)(happy-dom@20.14.6)(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0))
+    transitivePeerDependencies:
+      - '@types/node'
+      - bufferutil
+      - redis
+      - supports-color
+      - typescript
+      - utf-8-validate
 
   '@reduxjs/toolkit@2.13.0(react-redux@9.3.1(@types/react@19.3.0)(react@19.2.7)(redux@5.0.1))(react@19.2.7)':
     dependencies:
@@ -3924,6 +3986,8 @@ snapshots:
       standard-as-callback: 2.1.0
     transitivePeerDependencies:
       - supports-color
+
+  ip-address@10.7.6: {}
 
   ipaddr.js@2.5.0: {}
 

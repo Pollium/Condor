@@ -1,7 +1,6 @@
 import User from '@/modules/users/models/User';
-import PasswordService from '@readable/auth/PasswordService';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
-import { isUniqueViolation } from '@readable/utils/models/is-unique-violation';
+import { PasswordService } from '@pollium/readable/auth/credentials';
+import { findOrThrow, isUniqueViolation } from '@pollium/readable/database/queries';
 import { ChangePasswordInput, UpdateProfileInput } from '@condor/contracts/auth/http';
 import { AuthError } from '../contracts/domain/errors';
 

@@ -1,7 +1,7 @@
 import User from '@/modules/users/models/User';
 import SessionService from './Session';
-import PasswordService from '@readable/auth/PasswordService';
-import { advisoryLock } from '@readable/utils/models/advisory-lock';
+import { PasswordService } from '@pollium/readable/auth/credentials';
+import { advisoryLock } from '@pollium/readable/database/queries';
 import { SetupStatus } from '@condor/contracts/auth/domain';
 import { SetupInput, SignInInput } from '@condor/contracts/auth/http';
 import { AuthError } from '../contracts/domain/errors';

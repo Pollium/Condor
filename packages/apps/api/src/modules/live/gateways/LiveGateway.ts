@@ -3,16 +3,18 @@ import LiveThrottle from '../services/LiveThrottle';
 import Project from '@/modules/projects/models/Project';
 import Session from '@/modules/sessions/models/Session';
 import SessionSummariesService from '@/modules/sessions/services/SessionSummaries';
-import BaseGateway from '@readable/gateway/BaseGateway';
-import { CurrentUser } from '@readable/auth/CurrentUser';
-import { SocketAuthenticatedRoute } from '@readable/auth/SocketAuthenticatedRoute';
-import { Channel } from '@readable/decorators/gateway/Channel';
-import { OnMessage } from '@readable/decorators/gateway/Gateway';
-import { Payload, Socket } from '@readable/decorators/gateway/Params';
-import { Middleware } from '@readable/decorators/middleware/Middleware';
-import { eventBus } from '@readable/events/EventBus';
-import { parseId } from '@readable/utils/controllers/parse-id';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
+import BaseGateway, {
+    Channel,
+    OnMessage,
+    Payload,
+    Socket
+} from '@pollium/readable/gateway/Gateway';
+import { CurrentUser } from '@pollium/readable/auth/params';
+import { SocketAuthenticatedRoute } from '@pollium/readable/auth/guards';
+import { Middleware } from '@pollium/readable/http/middleware';
+import { eventBus } from '@pollium/readable/events/EventBus';
+import { parseId } from '@pollium/readable/http/params';
+import { findOrThrow } from '@pollium/readable/database/queries';
 import { liveGateway, LiveSessionFrame, LiveSnapshotFrame, LiveWatchMessage } from '@condor/contracts/live/gateway';
 import { ProjectError } from '@/modules/projects/contracts/domain/errors';
 import { assertRole, MEMBER_ROLES } from '@/shared/access/role-route';

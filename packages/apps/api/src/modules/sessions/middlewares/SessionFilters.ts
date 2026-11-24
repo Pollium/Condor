@@ -1,5 +1,4 @@
-import { createParamDecorator } from '@readable/decorators/controllers/Params';
-import { parseId } from '@readable/utils/controllers/parse-id';
+import { createParamDecorator, parseId } from '@pollium/readable/http/params';
 import { SessionSignal, SessionSort } from '@condor/contracts/sessions/domain';
 import { Device } from '@condor/contracts/shared/analytics';
 import { PERIODS } from '@condor/contracts/shared/period';

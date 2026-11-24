@@ -3,7 +3,7 @@ import Event from '../models/Event';
 import Person from '@/modules/sessions/models/Person';
 import ReplayChunk from '@/modules/sessions/models/ReplayChunk';
 import Session from '@/modules/sessions/models/Session';
-import { objectStorage } from '@readable/storage/ObjectStorage';
+import { objectStorage } from '@pollium/readable/storage/ObjectStorage';
 import { useApp } from '@tests/harness';
 import { DEFAULT_SETTINGS, minutesAgo } from '@tests/Seed';
 import { trackingSeed } from './TrackingSeed';

@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@condor/contracts": "workspace:*",
-    "@condor/readable": "workspace:*",
+    "@pollium/readable": "^0.2.0",
     "@fastify/cors": "^11.3.0",
     "bullmq": "^5.80.6",
     "dotenv": "^17.4.2",

@@ -34,10 +34,10 @@ await client.query(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
 await client.query(`CREATE SCHEMA "${schema}"`);
 await client.end();
 
-const { default: BaseQueue } = await import('@readable/queues/BaseQueue');
-const { default: QueueProducer } = await import('@readable/queues/QueueProducer');
-const { rateLimitStore } = await import('@readable/decorators/middleware/RateLimit');
+const { default: BaseQueue } = await import('@pollium/readable/queues/BaseQueue');
+const { default: QueueProducer } = await import('@pollium/readable/queues/QueueProducer');
+const { rateLimitStore } = await import('@pollium/readable/testing/rate-limit');
 
-vi.spyOn(rateLimitStore, 'hit').mockResolvedValue({ count: 1, resetMs: 60_000 });
+vi.spyOn(rateLimitStore, 'incr').mockImplementation((_key, done) => done(null, { current: 1, ttl: 60_000 }));
 vi.spyOn(BaseQueue.prototype, 'add').mockResolvedValue();
 vi.spyOn(QueueProducer.prototype, 'add').mockResolvedValue();

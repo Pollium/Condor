@@ -1,5 +1,5 @@
 import Session from '@/modules/sessions/models/Session';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import RankedSlices from './RankedSlices';
 import { BreakdownScope, BreakdownSlices, SessionColumn } from '../../contracts/domain/breakdown';
 

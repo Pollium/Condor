@@ -1,5 +1,5 @@
 import Session from '@/modules/sessions/models/Session';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { SessionSignal } from '@condor/contracts/sessions/domain';
 import { Slice } from '@condor/contracts/shared/analytics';
 import { BreakdownScope, BreakdownSlices } from '../../contracts/domain/breakdown';

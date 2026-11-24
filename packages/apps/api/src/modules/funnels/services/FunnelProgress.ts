@@ -1,6 +1,6 @@
 import Person from '@/modules/sessions/models/Person';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { FunnelDeviceResult } from '@condor/contracts/funnels/domain';
 import { Device } from '@condor/contracts/shared/analytics';
 import { FunnelProgress, FunnelRun } from '../contracts/domain/funnel';

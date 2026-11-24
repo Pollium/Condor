@@ -1,8 +1,8 @@
 import ProfileService from '../services/Profile';
-import AuthenticatedController from '@readable/auth/AuthenticatedController';
-import { CurrentUser } from '@readable/auth/CurrentUser';
-import { Body } from '@readable/decorators/controllers/RequestParams';
-import { Route } from '@readable/decorators/controllers/Route';
+import { AuthenticatedController } from '@pollium/readable/auth/guards';
+import { CurrentUser } from '@pollium/readable/auth/params';
+import { Body } from '@pollium/readable/http/params';
+import { Route } from '@pollium/readable/http/Controller';
 import { ChangePasswordInput, UpdateProfileInput } from '@condor/contracts/auth/http';
 import { authRoutes } from '@condor/contracts/auth/routes';
 

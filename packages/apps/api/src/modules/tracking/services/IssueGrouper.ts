@@ -1,7 +1,7 @@
 import ErrorFingerprintService from './ErrorFingerprint';
 import Issue from '@/modules/issues/models/Issue';
 import Event from '../models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { IngestBatchJob, IngestEvent } from '@/modules/tracking/contracts/domain/queue';
 import { eventsOfType, IngestOf } from '../contracts/domain/ingest';
 import { EntityManager, In } from 'typeorm';

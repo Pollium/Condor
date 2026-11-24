@@ -1,4 +1,4 @@
-import { defineErrors } from '@readable/utils/errors/define-errors';
+import { defineErrors } from '@pollium/readable/app/errors';
 import { IngestErrors } from '@condor/contracts/ingest/errors';
 
 export const IngestError = defineErrors(IngestErrors);

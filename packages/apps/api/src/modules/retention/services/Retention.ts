@@ -2,7 +2,7 @@ import Person from '@/modules/sessions/models/Person';
 import Project from '@/modules/projects/models/Project';
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { Cohort, Retention, RetentionGrain } from '@condor/contracts/retention/domain';
 import { CohortCounts, RetentionFilter } from '../contracts/domain/retention';
 

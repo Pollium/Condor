@@ -1,4 +1,4 @@
-import BaseModel from '@readable/models/BaseModel';
+import { BaseModel } from '@pollium/readable/database/models';
 import { Channel, Device } from '@condor/contracts/shared/analytics';
 import { Column, Entity, Index } from 'typeorm';
 

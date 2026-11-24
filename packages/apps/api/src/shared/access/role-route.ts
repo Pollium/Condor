@@ -1,8 +1,8 @@
 import User from '@/modules/users/models/User';
-import { AuthenticatedRoute } from '@readable/auth/AuthenticatedRoute';
-import { AuthError } from '@readable/auth/errors';
-import { principalId } from '@readable/auth/principalId';
-import { MiddlewareFn } from '@readable/decorators/middleware/Middleware';
+import { AuthenticatedRoute } from '@pollium/readable/auth/guards';
+import { AuthError } from '@/modules/auth/contracts/domain/errors';
+import { principalId } from '@pollium/readable/auth/params';
+import { MiddlewareFn } from '@pollium/readable/http/middleware';
 import { Role } from '@condor/contracts/auth/domain';
 
 export const MEMBER_ROLES: Role[] = ['owner', 'admin', 'viewer'];
@@ -14,7 +14,7 @@ export const assertRole = async (userId: string, roles: Role[]) => {
 };
 
 export const RoleRoute = (...roles: Role[]): MiddlewareFn => async (req, reply) => {
-    AuthenticatedRoute(req, reply);
+    await AuthenticatedRoute(req, reply);
     await assertRole(principalId(req), roles);
 };
 

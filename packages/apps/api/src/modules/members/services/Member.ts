@@ -1,5 +1,5 @@
 import User from '@/modules/users/models/User';
-import { advisoryLock } from '@readable/utils/models/advisory-lock';
+import { advisoryLock } from '@pollium/readable/database/queries';
 import { UpdateMemberInput } from '@condor/contracts/members/http';
 import { MemberError } from '../contracts/domain/errors';
 import { EntityManager } from 'typeorm';

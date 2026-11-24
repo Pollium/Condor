@@ -1,12 +1,9 @@
 import Project from '../models/Project';
 import ProjectService from '../services/Project';
 import ProjectStatusService from '../services/ProjectStatus';
-import BaseController from '@readable/controllers/BaseController';
-import { Controller } from '@readable/decorators/controllers/Controller';
-import { Body } from '@readable/decorators/controllers/RequestParams';
-import { Route } from '@readable/decorators/controllers/Route';
-import { Status } from '@readable/decorators/controllers/Status';
-import { Middleware } from '@readable/decorators/middleware/Middleware';
+import BaseController, { Controller, Route, Status } from '@pollium/readable/http/Controller';
+import { Body } from '@pollium/readable/http/params';
+import { Middleware } from '@pollium/readable/http/middleware';
 import { CreateProjectInput, UpdateProjectInput, UpdateSettingsInput } from '@condor/contracts/projects/http';
 import { projectRoutes } from '@condor/contracts/projects/routes';
 import { EditorRoute, MemberRoute } from '@/shared/access/role-route';

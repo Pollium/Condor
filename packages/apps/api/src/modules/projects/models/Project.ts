@@ -1,4 +1,4 @@
-import BaseModel from '@readable/models/BaseModel';
+import { BaseModel } from '@pollium/readable/database/models';
 import { Platform, ProjectSettings } from '@condor/contracts/projects/domain';
 import { Column, Entity } from 'typeorm';
 

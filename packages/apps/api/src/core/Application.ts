@@ -1,7 +1,7 @@
 import websocket from '@fastify/websocket';
-import Application from '@readable/http/Application';
-import { createDataSource } from '@readable/http/data-source';
-import { discoverFrom } from '@readable/http/discover';
+import Application from '@pollium/readable/app/Application';
+import { createDataSource } from '@pollium/readable/database/data-source';
+import { discoverFrom } from '@pollium/readable/app/discovery';
 import { config } from '@/shared/config';
 import { registerJsonBody } from './json-body';
 
@@ -10,7 +10,7 @@ const createApp = () => new Application({
     corsOrigins: [...config.corsOrigins],
     publicPaths: ['/i/'],
     log: config.log,
-    discover: () => discoverFrom(import.meta.url),
+    discover: () => discoverFrom(import.meta.url, (url) => import(url)),
     createDataSource: (entities) => createDataSource(config.database, entities),
     plugins: async (app) => {
         await registerJsonBody(app);

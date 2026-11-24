@@ -1,8 +1,8 @@
 import ReplayChunk from '../models/ReplayChunk';
 import Session from '../models/Session';
 import Project from '@/modules/projects/models/Project';
-import { objectStorage } from '@readable/storage/ObjectStorage';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
+import { objectStorage } from '@pollium/readable/storage/ObjectStorage';
+import { findOrThrow } from '@pollium/readable/database/queries';
 import { Replay } from '@condor/contracts/sessions/domain';
 import { SessionError } from '../contracts/domain/errors';
 import { ReplayFrame } from '../contracts/domain/replay';
