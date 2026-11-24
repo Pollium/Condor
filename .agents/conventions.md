@@ -398,7 +398,7 @@ async-wraps every middleware, so sync and async both work — do not remove that
 
 Class-level `@Middleware` is inherited and runs base class first, so a guard every controller of a kind
 needs lives once on a base class: a signed-in controller extends `AuthenticatedController`
-(`@readable/auth/AuthenticatedController`) instead of repeating `@Middleware(AuthenticatedRoute)`. `@Route`, the
+(`@pollium/readable/auth/guards`) instead of repeating `@Middleware(AuthenticatedRoute)`. `@Route`, the
 parameter decorators and `@Status` are read from the concrete class only, so a base never declares
 routes or per-method middleware. Keep a base outside `controllers/`, which discovery mounts whole.
 
@@ -446,7 +446,7 @@ update(@Owned(RoadmapService) roadmap: Roadmap, @Body() body: UpdateRoadmapInput
   caller: it parses the route param itself (subsuming `@NumericParam` for that param, 400
   `Request::InvalidId`), reads the principal (401 `Auth::Unauthorized` — like `@CurrentUser`,
   it lives in the auth module and needs `AuthenticatedRoute`), and delegates to the service's
-  `getOwned(userId, id)` — the `OwnedResolver<T>` contract (`@readable/auth/Owned`),
+  `getOwned(userId, id)` — the `OwnedResolver<T>` contract (`@pollium/readable/auth/params`),
   which loads (404 `<Domain>::NotFound`) and checks ownership (403 `<Domain>::Forbidden`).
   The handler and service then work with the entity; keep `@CurrentUser() userId` only where
   the operation needs the *actor* (`create`, `list*`). Convention: declare `@Owned` first in
