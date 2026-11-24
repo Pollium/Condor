@@ -1,7 +1,7 @@
 import { projectDirectory } from '../services/ProjectDirectory';
 import { IngestError } from '../contracts/domain/errors';
-import QueueProducer from '@readable/queues/QueueProducer';
-import { objectStorage } from '@readable/storage/ObjectStorage';
+import QueueProducer from '@pollium/readable/queues/QueueProducer';
+import { objectStorage } from '@pollium/readable/storage/ObjectStorage';
 import { replayStorageKey } from '@/modules/tracking/contracts/domain/queue';
 import { WireClick, WirePageview } from '@condor/contracts/ingest/wire';
 import { config } from '@/shared/config';

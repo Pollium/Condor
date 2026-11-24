@@ -4,7 +4,7 @@ import PersonMapper from './PersonMapper';
 import SessionSummariesService from './SessionSummaries';
 import Project from '@/modules/projects/models/Project';
 import Event from '@/modules/tracking/models/Event';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
+import { findOrThrow } from '@pollium/readable/database/queries';
 import { SessionDetail, SessionEvent } from '@condor/contracts/sessions/domain';
 import { SessionError } from '../contracts/domain/errors';
 

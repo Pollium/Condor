@@ -1,5 +1,4 @@
-import BaseModel from '@readable/models/BaseModel';
-import { Hidden } from '@readable/models/Hidden';
+import { BaseModel, Hidden } from '@pollium/readable/database/models';
 import { InvitedRole } from '@condor/contracts/members/domain';
 import { Entity, Column } from 'typeorm';
 

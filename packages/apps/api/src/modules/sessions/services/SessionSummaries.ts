@@ -1,7 +1,7 @@
 import Person from '../models/Person';
 import Session from '../models/Session';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { SessionSummary } from '@condor/contracts/sessions/domain';
 import { config } from '@/shared/config';
 import { In } from 'typeorm';

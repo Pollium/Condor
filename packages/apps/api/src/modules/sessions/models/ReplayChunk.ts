@@ -1,4 +1,4 @@
-import BaseModel from '@readable/models/BaseModel';
+import { BaseModel } from '@pollium/readable/database/models';
 import { Column, Entity, Index, Unique } from 'typeorm';
 
 @Entity()

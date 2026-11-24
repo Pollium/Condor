@@ -1,12 +1,9 @@
 import FunnelService from '../services/Funnel';
 import FunnelResultsService from '../services/FunnelResults';
 import Project from '@/modules/projects/models/Project';
-import BaseController from '@readable/controllers/BaseController';
-import { Controller } from '@readable/decorators/controllers/Controller';
-import { Body, IdParam, Query } from '@readable/decorators/controllers/RequestParams';
-import { Route } from '@readable/decorators/controllers/Route';
-import { Status } from '@readable/decorators/controllers/Status';
-import { Middleware } from '@readable/decorators/middleware/Middleware';
+import BaseController, { Controller, Route, Status } from '@pollium/readable/http/Controller';
+import { Body, IdParam, Query } from '@pollium/readable/http/params';
+import { Middleware } from '@pollium/readable/http/middleware';
 import { CreateFunnelInput, UpdateFunnelInput } from '@condor/contracts/funnels/http';
 import { funnelRoutes } from '@condor/contracts/funnels/routes';
 import { CurrentProject } from '@/modules/projects/middlewares/CurrentProject';

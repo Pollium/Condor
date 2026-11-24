@@ -5,7 +5,7 @@ import Person from '@/modules/sessions/models/Person';
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
 import User from '@/modules/users/models/User';
-import PasswordService from '@readable/auth/PasswordService';
+import { PasswordService } from '@pollium/readable/auth/credentials';
 import { Role } from '@condor/contracts/auth/domain';
 import { DEFAULT_SETTINGS } from '@/modules/projects/services/ProjectSettings';
 import { randomBytes, randomUUID } from 'node:crypto';

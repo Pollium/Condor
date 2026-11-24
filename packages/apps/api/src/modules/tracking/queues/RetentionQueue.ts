@@ -1,5 +1,5 @@
 import RetentionSweeperService from '../services/RetentionSweeper';
-import BaseQueue from '@readable/queues/BaseQueue';
+import BaseQueue from '@pollium/readable/queues/BaseQueue';
 import { JobsOptions } from 'bullmq';
 
 const DAY_MS = 86_400_000;

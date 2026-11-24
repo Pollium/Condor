@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@condor/contracts": "workspace:*",
+    "@pollium/readable-contracts": "^0.2.0",
     "alova": "^3.5.2",
     "react-router-dom": "^7.18.1",
     "zustand": "^5.0.14"

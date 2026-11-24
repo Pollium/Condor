@@ -1,7 +1,6 @@
 import ReplayChunk from '@/modules/sessions/models/ReplayChunk';
 import Session from '@/modules/sessions/models/Session';
-import { advisoryLock } from '@readable/utils/models/advisory-lock';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { advisoryLock, tableRef } from '@pollium/readable/database/queries';
 import { EntityManager } from 'typeorm';
 
 const SESSION_LOCK_NAMESPACE = 4103;

@@ -1,5 +1,5 @@
 import typia from '@typia/unplugin/vite';
-import { autoValidateBody } from '../../shared/readable/lib/vite/auto-validate-body';
+import { autoValidateBody } from '@pollium/readable/http/auto-validate-body';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
@@ -11,7 +11,6 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url)),
-            '@readable': fileURLToPath(new URL('../../shared/readable/lib', import.meta.url)),
             '@tests': fileURLToPath(new URL('./tests', import.meta.url))
         }
     },

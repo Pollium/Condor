@@ -1,5 +1,5 @@
 import ReplayIndexerService from '../services/ReplayIndexer';
-import BaseQueue from '@readable/queues/BaseQueue';
+import BaseQueue from '@pollium/readable/queues/BaseQueue';
 import { IngestReplayJob, ingestQueues } from '@/modules/tracking/contracts/domain/queue';
 import { config } from '@/shared/config';
 

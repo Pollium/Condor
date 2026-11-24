@@ -1,11 +1,10 @@
 {
-  "extends": "../../shared/readable/tsconfig.base.json",
+  "extends": "../tsconfig.api.base.json",
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"],
-      "@readable/*": ["../../shared/readable/lib/*"],
       "@tests/*": ["./tests/*"]
     }
   },
-  "include": ["src", "tests", "scripts", "../../shared/readable/lib/auth/fastify.d.ts"]
+  "include": ["src", "tests", "scripts"]
 }

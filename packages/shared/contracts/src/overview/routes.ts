@@ -1,4 +1,4 @@
-import { get } from '../shared/routing';
+import { get } from '@pollium/readable-contracts/routing';
 import { Breakdown, Engagement, HourCell, LiveSnapshot, Summary, Vital } from './domain';
 
 export const overviewRoutes = {

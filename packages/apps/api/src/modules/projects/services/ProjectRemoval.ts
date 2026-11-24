@@ -5,7 +5,7 @@ import Person from '@/modules/sessions/models/Person';
 import ReplayChunk from '@/modules/sessions/models/ReplayChunk';
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
-import { objectStorage } from '@readable/storage/ObjectStorage';
+import { objectStorage } from '@pollium/readable/storage/ObjectStorage';
 import { EntityManager } from 'typeorm';
 
 export default class ProjectRemovalService{

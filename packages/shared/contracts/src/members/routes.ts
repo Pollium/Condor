@@ -1,4 +1,4 @@
-import { del, get, patch, post } from '../shared/routing';
+import { del, get, patch, post } from '@pollium/readable-contracts/routing';
 import { AuthSession } from '../auth/domain';
 import { CreatedInvitation, Invitation, InvitationPreview, Member } from './domain';
 import { AcceptInvitationInput, InviteInput, UpdateMemberInput } from './http';

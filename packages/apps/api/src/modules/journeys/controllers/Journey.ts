@@ -1,10 +1,8 @@
 import JourneyService from '../services/Journey';
 import Project from '@/modules/projects/models/Project';
-import BaseController from '@readable/controllers/BaseController';
-import { Controller } from '@readable/decorators/controllers/Controller';
-import { Query } from '@readable/decorators/controllers/RequestParams';
-import { Route } from '@readable/decorators/controllers/Route';
-import { Middleware } from '@readable/decorators/middleware/Middleware';
+import BaseController, { Controller, Route } from '@pollium/readable/http/Controller';
+import { Query } from '@pollium/readable/http/params';
+import { Middleware } from '@pollium/readable/http/middleware';
 import { journeyRoutes } from '@condor/contracts/journeys/routes';
 import { CurrentProject } from '@/modules/projects/middlewares/CurrentProject';
 import { MemberRoute } from '@/shared/access/role-route';

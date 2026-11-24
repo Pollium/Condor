@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 import createApp from '@/core/Application';
 import User from '@/modules/users/models/User';
-import PasswordService from '@readable/auth/PasswordService';
+import { PasswordService } from '@pollium/readable/auth/credentials';
 
 const [email, password] = process.argv.slice(2);
 

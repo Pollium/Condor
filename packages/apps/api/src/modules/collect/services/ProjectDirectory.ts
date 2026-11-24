@@ -1,5 +1,5 @@
 import Project from '@/modules/projects/models/Project';
-import { eventBus } from '@readable/events/EventBus';
+import { eventBus } from '@pollium/readable/events/EventBus';
 import { IngestProject } from '@/modules/projects/contracts/domain/project';
 import { IngestError } from '../contracts/domain/errors';
 

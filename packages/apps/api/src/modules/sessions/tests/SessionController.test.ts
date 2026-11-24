@@ -1,10 +1,10 @@
 import ReplayChunk from '../models/ReplayChunk';
 import Project from '@/modules/projects/models/Project';
 import Session from '../models/Session';
-import { objectStorage } from '@readable/storage/ObjectStorage';
+import { objectStorage } from '@pollium/readable/storage/ObjectStorage';
 import { SessionSummary } from '@condor/contracts/sessions/domain';
 import { sessionRoutes } from '@condor/contracts/sessions/routes';
-import { ApiResponse } from '@condor/contracts/shared/http';
+import { ApiResponse } from '@pollium/readable-contracts/http';
 import { useApp } from '@tests/harness';
 import { expectError, request } from '@tests/request';
 import { actor } from '@tests/roles';

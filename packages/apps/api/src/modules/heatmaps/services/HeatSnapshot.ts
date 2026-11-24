@@ -1,6 +1,6 @@
 import HeatEvents from './HeatEvents';
 import ReplayChunk from '@/modules/sessions/models/ReplayChunk';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { HeatSnapshot } from '@condor/contracts/heatmaps/domain';
 import { HeatScope } from '../contracts/domain/heatmap';
 

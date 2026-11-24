@@ -1,4 +1,4 @@
-import { ApiError as ApiErrorPayload } from '@condor/contracts/shared/http';
+import { ApiError as ApiErrorPayload } from '@pollium/readable-contracts/http';
 import { ApiError } from '../services/ApiError';
 import { endSession, isSessionExpired } from '../services/end-session';
 import { unwrap } from './unwrap';

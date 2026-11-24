@@ -1,9 +1,7 @@
 import CollectService from '../services/Collect';
-import BaseController from '@readable/controllers/BaseController';
-import { Controller } from '@readable/decorators/controllers/Controller';
-import { Body, Query, Reply, Req } from '@readable/decorators/controllers/RequestParams';
-import { Route } from '@readable/decorators/controllers/Route';
-import { RateLimit } from '@readable/decorators/middleware/RateLimit';
+import BaseController, { Controller, Route } from '@pollium/readable/http/Controller';
+import { Body, Query, Reply, Req } from '@pollium/readable/http/params';
+import { RateLimit } from '@pollium/readable/http/middleware';
 import { ingestRoutes } from '@condor/contracts/ingest/routes';
 import { WireBatch, WireReplayChunk } from '@condor/contracts/ingest/wire';
 import { FastifyReply, FastifyRequest } from 'fastify';

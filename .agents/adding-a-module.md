@@ -76,11 +76,10 @@ declare their inputs with parameter decorators (`@CurrentUser`, `@Body`, `@Numer
 than touching `req` — see conventions.md.
 
 ```ts
-import AuthenticatedController from '@readable/auth/AuthenticatedController';
-import { Route } from '@/shared/controllers/Route';
-import { Status } from '@/shared/controllers/Status';
-import { Body } from '@/shared/controllers/RequestParams';
-import { CurrentUser } from '@/modules/auth/middlewares/CurrentUser';
+import { AuthenticatedController } from '@pollium/readable/auth/guards';
+import { CurrentUser } from '@pollium/readable/auth/params';
+import { Route, Status } from '@pollium/readable/http/Controller';
+import { Body } from '@pollium/readable/http/params';
 import PollService from '../services/Poll';
 import { CreatePollInput } from '../contracts/http/poll';
 

@@ -5,7 +5,6 @@ RUN npm install -g pnpm@10
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/shared/readable/package.json packages/shared/readable/
 COPY packages/shared/contracts/package.json packages/shared/contracts/
 COPY packages/shared/ui/package.json packages/shared/ui/
 COPY packages/sdk/browser/package.json packages/sdk/browser/

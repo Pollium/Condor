@@ -1,4 +1,4 @@
-import { ApiResponse, PageOf } from '@condor/contracts/shared/http';
+import { ApiResponse, PageOf } from '@pollium/readable-contracts/http';
 
 export const unwrap = (payload: unknown): unknown => {
     const body = payload as ApiResponse<unknown> | undefined;

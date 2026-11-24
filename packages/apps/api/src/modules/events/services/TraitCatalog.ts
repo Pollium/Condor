@@ -1,6 +1,6 @@
 import Project from '@/modules/projects/models/Project';
 import Person from '@/modules/sessions/models/Person';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { TraitSummary } from '@condor/contracts/events/domain';
 
 const HIDDEN = ['name', 'email'];

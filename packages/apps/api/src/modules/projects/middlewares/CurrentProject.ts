@@ -1,7 +1,6 @@
 import Project from '../models/Project';
-import { createParamDecorator } from '@readable/decorators/controllers/Params';
-import { parseId } from '@readable/utils/controllers/parse-id';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
+import { createParamDecorator, parseId } from '@pollium/readable/http/params';
+import { findOrThrow } from '@pollium/readable/database/queries';
 import { ProjectError } from '../contracts/domain/errors';
 
 export const CurrentProject = (): ParameterDecorator => createParamDecorator((req) => {

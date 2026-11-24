@@ -1,4 +1,4 @@
-import { del, get, patch, post } from '../shared/routing';
+import { del, get, patch, post } from '@pollium/readable-contracts/routing';
 import { Funnel, FunnelResult } from './domain';
 import { CreateFunnelInput, UpdateFunnelInput } from './http';
 

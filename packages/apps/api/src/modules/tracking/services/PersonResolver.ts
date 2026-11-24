@@ -1,6 +1,6 @@
 import Person from '@/modules/sessions/models/Person';
 import Session from '@/modules/sessions/models/Session';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { IngestBatchJob } from '@/modules/tracking/contracts/domain/queue';
 import { Traits } from '@condor/contracts/shared/analytics';
 import { eventsOfType } from '../contracts/domain/ingest';

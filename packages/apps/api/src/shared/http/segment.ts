@@ -1,4 +1,4 @@
-import ValidationError from '@readable/errors/Validation';
+import { ValidationError } from '@pollium/readable/app/errors';
 import { Segment } from '@condor/contracts/shared/segment';
 import { parseText } from './query-params';
 

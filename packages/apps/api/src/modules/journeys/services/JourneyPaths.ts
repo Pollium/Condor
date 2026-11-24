@@ -1,6 +1,6 @@
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { JOURNEY_OTHER } from '@condor/contracts/journeys/domain';
 import { JourneyFilter, JourneyRows } from '../contracts/domain/journey';
 

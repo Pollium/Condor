@@ -9,9 +9,12 @@ into with one script tag. pnpm monorepo with two apps:
 | `packages/apps/web` (`@condor/web`) | the IBM Carbon web console | 5190 |
 | `packages/sdk/browser` (`@condor/browser`) | the tracker: pageviews, clicks (rage/dead), errors, web vitals, custom events, identify, rrweb replay. Ships as an npm ESM module and as `condor.js`, served by the api at `/i/condor.js` | — |
 | `packages/sdk/node` (`@condor/node`) | the server SDK: `track` and `identify` from any Node backend, batched per user with retries. Events land in the user's live browser session when there is one | — |
-| `packages/shared/readable` (`@condor/readable`) | the HTTP/WS/queue framework: `Application`, module discovery, decorators, errors, `BaseModel`, JWT, queues, object storage | — |
 | `packages/shared/contracts` (`@condor/contracts`) | every wire type and route table, one folder per domain | — |
 | `packages/shared/ui` (`@condor/ui`) | the frontend plumbing: api client (`call`), `useQuery`/`useMutation`, socket channel, session and theme stores, route discovery | — |
+
+The api is built on [`@pollium/readable`](https://github.com/Pollium/Readable), the HTTP/WS/queue
+framework from npm: `Application`, module discovery, decorators, errors, `BaseModel`, JWT, queues,
+object storage.
 
 Modules are auto-discovered from the filesystem by folder convention — there is no registry file
 to edit. Modules talk to each other through services, models and `eventBus`; nothing in Condor
@@ -80,6 +83,8 @@ The guides were written for the framework, so some examples name modules Condor 
   (`rm -rf packages/apps/api/node_modules/.cache/unplugin_typia`) and restart the web dev server.
 - **`BaseModel` ids default to Postgres 18's `uuidv7()`.** The compose image is `postgres:18-alpine`;
   an older Postgres fails at `synchronize`.
+- **`createdAt` and `updatedAt` are `timestamptz`.** `config.database` sets `timestamptz: true` for
+  readable; without it `synchronize` drops and re-adds both columns on every table, losing them.
 - **The SDK posts `text/plain`.** `navigator.sendBeacon` and a no-preflight `fetch` cannot send
   `application/json` cross-origin, so the api registers a `text/plain` parser that reads JSON.
 

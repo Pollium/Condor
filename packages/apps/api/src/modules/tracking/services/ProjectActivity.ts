@@ -1,5 +1,5 @@
 import Project from '@/modules/projects/models/Project';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 
 const TOUCH_INTERVAL_MS = 60_000;
 

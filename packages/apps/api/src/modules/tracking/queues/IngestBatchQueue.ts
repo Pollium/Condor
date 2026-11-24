@@ -1,5 +1,5 @@
 import BatchIngestionService from '../services/BatchIngestion';
-import BaseQueue from '@readable/queues/BaseQueue';
+import BaseQueue from '@pollium/readable/queues/BaseQueue';
 import { IngestBatchJob, ingestQueues } from '@/modules/tracking/contracts/domain/queue';
 import { config } from '@/shared/config';
 

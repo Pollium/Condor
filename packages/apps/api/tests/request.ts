@@ -1,1 +1,1 @@
-export { request, route, expectError, authHeader } from '@readable/testing/request';
+export { request, route, expectError, authHeader } from '@pollium/readable/testing/request';

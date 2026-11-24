@@ -5,7 +5,7 @@ import ProjectActivityService from './ProjectActivity';
 import SessionTallyService from './SessionTally';
 import SessionWriterService from './SessionWriter';
 import Project from '@/modules/projects/models/Project';
-import { eventBus } from '@readable/events/EventBus';
+import { eventBus } from '@pollium/readable/events/EventBus';
 import { IngestBatchJob } from '@/modules/tracking/contracts/domain/queue';
 import { EntityManager } from 'typeorm';
 

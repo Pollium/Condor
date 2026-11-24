@@ -1,6 +1,6 @@
 import IngestBatchQueue from '@/modules/tracking/queues/IngestBatchQueue';
 import { secondsAgo, trackingSeed } from '@/modules/tracking/tests/TrackingSeed';
-import JWTService from '@readable/auth/JWTService';
+import { JWTService } from '@pollium/readable/auth/sessions';
 import { liveGateway, LiveFrame } from '@condor/contracts/live/gateway';
 import User from '@/modules/users/models/User';
 import { useApp } from '@tests/harness';

@@ -1,4 +1,4 @@
-import ValidationError from '@readable/errors/Validation';
+import { ValidationError } from '@pollium/readable/app/errors';
 
 export interface IntegerRange<F extends number | null = number>{
     min: number;

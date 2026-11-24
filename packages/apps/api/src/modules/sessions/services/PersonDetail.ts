@@ -3,7 +3,7 @@ import Session from '../models/Session';
 import PersonMapper from './PersonMapper';
 import SessionSummariesService from './SessionSummaries';
 import Project from '@/modules/projects/models/Project';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
+import { findOrThrow } from '@pollium/readable/database/queries';
 import { PersonDetail } from '@condor/contracts/sessions/domain';
 import { SessionError } from '../contracts/domain/errors';
 

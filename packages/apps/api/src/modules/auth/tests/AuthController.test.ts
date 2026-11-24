@@ -1,5 +1,5 @@
 import User from '@/modules/users/models/User';
-import { rateLimitStore } from '@readable/decorators/middleware/RateLimit';
+import { rateLimitStore } from '@pollium/readable/testing/rate-limit';
 import { authRoutes } from '@condor/contracts/auth/routes';
 import { seed, SEED_PASSWORD } from '@tests/Seed';
 import { useApp } from '@tests/harness';
@@ -82,7 +82,7 @@ describe('AuthController', () => {
 
     it('limits sign-in attempts', async () => {
         const member = await seed.user();
-        vi.mocked(rateLimitStore.hit).mockResolvedValueOnce({ count: 6, resetMs: 30_000 });
+        vi.mocked(rateLimitStore.incr).mockImplementationOnce((_key, done) => done(null, { current: 6, ttl: 30_000 }));
 
         const res = await request(ctx.app, authRoutes.signIn, { body: { email: member.email, password: SEED_PASSWORD } });
 

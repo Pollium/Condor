@@ -10,9 +10,9 @@ import Person from '@/modules/sessions/models/Person';
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
 import BatchIngestionService from '@/modules/tracking/services/BatchIngestion';
-import { eventBus } from '@readable/events/EventBus';
-import { createDataSource } from '@readable/http/data-source';
-import { discoverFrom } from '@readable/http/discover';
+import { eventBus } from '@pollium/readable/events/EventBus';
+import { createDataSource } from '@pollium/readable/database/data-source';
+import { discoverFrom } from '@pollium/readable/app/discovery';
 import { IngestBatchJob } from '@/modules/tracking/contracts/domain/queue';
 import { config } from '@/shared/config';
 import { DEMO_HOST, HISTORY_DAYS, MILESTONES } from './demo/store';
@@ -57,7 +57,7 @@ const ingestAll = async (jobs: IngestBatchJob[]) => {
 };
 
 const seed = async () => {
-    const discovered = await discoverFrom(import.meta.url, ['src/modules']);
+    const discovered = await discoverFrom(import.meta.url, (url) => import(url), ['src/modules']);
     const dataSource = createDataSource(config.database, discovered.entities);
     await dataSource.initialize();
 

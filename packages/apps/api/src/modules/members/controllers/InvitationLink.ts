@@ -1,8 +1,6 @@
 import InvitationService from '../services/Invitation';
-import BaseController from '@readable/controllers/BaseController';
-import { Body, Param } from '@readable/decorators/controllers/RequestParams';
-import { Route } from '@readable/decorators/controllers/Route';
-import { Status } from '@readable/decorators/controllers/Status';
+import BaseController, { Route, Status } from '@pollium/readable/http/Controller';
+import { Body, Param } from '@pollium/readable/http/params';
 import { AcceptInvitationInput } from '@condor/contracts/members/http';
 import { memberRoutes } from '@condor/contracts/members/routes';
 

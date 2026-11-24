@@ -10,8 +10,8 @@ decorator in the codebase (`@Route`, `@Middleware`, `@DefineEventGroup`, `@Event
 `@Hidden`, and the WebSocket set `@Channel`/`@OnMessage`/`@OnConnect`/`@OnDisconnect`) follows
 this shape, and they all store through one helper:
 
-`@readable/utils/ClassMetadata.ts` — an append-only multimap keyed by constructor (it lives in
-`shared/` because every decorator stores through it, and `shared/` may not import `core/`):
+`ClassMetadata` (`@pollium/readable/app/metadata`) — an append-only multimap keyed by constructor,
+which every decorator stores through:
 
 ```ts
 export default class ClassMetadata<T>{
@@ -32,7 +32,7 @@ accessor.
 `src/server.ts` is tiny: import `reflect-metadata` and `dotenv/config`, then
 `listen(createApp())`. `createApp` is a factory around readable `Application`.
 
-`Application.build()` (in `@readable/http/Application`) runs, in order:
+`Application.build()` (in `@pollium/readable/app/Application`) runs, in order:
 
 1. Register CORS. Paths in `publicPaths` (`/i/`, the collector) answer any origin without
    credentials; every other path only answers `corsOrigins`. Then run the app's `plugins`
@@ -109,21 +109,15 @@ Two things to internalize here:
 
 ### Rate limiting
 
-`@RateLimit({ max, window })` (`src/shared/middlewares/RateLimit.ts`) caps a single handler
-per client per fixed window. It builds a `MiddlewareFn` and registers it through the same
-`Middleware(...)` binding path as any other guard — no bespoke pipeline. The key is
-`route:ip` by default (`by: 'ip'` switches to a per-client budget shared across routes), the
-N+1th hit gets `429 RateLimit::TooManyRequests` with `Retry-After`, and every response
+`@RateLimit({ max, window })` (`@pollium/readable/http/middleware`) caps a single handler
+per client per fixed window, through `@fastify/rate-limit`. Each route has its own budget per
+client, the N+1th hit gets `429 RateLimit::TooManyRequests` with `Retry-After`, and every response
 carries `X-RateLimit-Limit` / `X-RateLimit-Remaining`.
 
-Counters live behind the `RateLimitStore` interface (`src/shared/contracts/rateLimit.ts`).
-The default `MemoryRateLimitStore` is an in-process fixed-window counter: correct for a
-single instance, but counts are **not shared across instances** — before scaling the api
-horizontally, swap the store singleton in `RateLimit.ts` for a Redis-backed implementation
-(`INCR` + `PEXPIRE`); the decorator does not change. `req.ip` honours `X-Forwarded-For` only
-from peers on loopback, link-local or private networks (`trustProxy` in readable's
-`Application`), so a request through the compose network's proxies is keyed by the first public
-address in the chain, and a client that connects directly cannot pick its own key.
+Counters live in Redis, so every instance of the api shares them. `req.ip` honours
+`X-Forwarded-For` only from peers on loopback, link-local or private networks (`trustProxy` in
+readable's `Application`), so a request through the compose network's proxies is keyed by the first
+public address in the chain, and a client that connects directly cannot pick its own key.
 
 ## The layers, and the one hard boundary
 

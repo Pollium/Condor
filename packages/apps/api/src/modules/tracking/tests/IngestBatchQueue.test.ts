@@ -3,7 +3,7 @@ import Event from '../models/Event';
 import Project from '@/modules/projects/models/Project';
 import Person from '@/modules/sessions/models/Person';
 import Session from '@/modules/sessions/models/Session';
-import { eventBus } from '@readable/events/EventBus';
+import { eventBus } from '@pollium/readable/events/EventBus';
 import { useApp } from '@tests/harness';
 import { DEFAULT_SETTINGS } from '@tests/Seed';
 import { secondsAgo, trackingSeed } from './TrackingSeed';

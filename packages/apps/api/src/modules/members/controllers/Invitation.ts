@@ -1,10 +1,9 @@
 import InvitationService from '../services/Invitation';
-import AuthenticatedController from '@readable/auth/AuthenticatedController';
-import { CurrentUser } from '@readable/auth/CurrentUser';
-import { Body, IdParam } from '@readable/decorators/controllers/RequestParams';
-import { Route } from '@readable/decorators/controllers/Route';
-import { Status } from '@readable/decorators/controllers/Status';
-import { Middleware } from '@readable/decorators/middleware/Middleware';
+import { AuthenticatedController } from '@pollium/readable/auth/guards';
+import { CurrentUser } from '@pollium/readable/auth/params';
+import { Body, IdParam } from '@pollium/readable/http/params';
+import { Route, Status } from '@pollium/readable/http/Controller';
+import { Middleware } from '@pollium/readable/http/middleware';
 import { InviteInput } from '@condor/contracts/members/http';
 import { memberRoutes } from '@condor/contracts/members/routes';
 import { RoleRoute } from '@/shared/access/role-route';

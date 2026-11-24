@@ -1,7 +1,7 @@
 import GeoService, { GeoLocation } from './Geo';
-import QueueProducer from '@readable/queues/QueueProducer';
-import RawResponse from '@readable/controllers/responses/Raw';
-import { objectStorage } from '@readable/storage/ObjectStorage';
+import QueueProducer from '@pollium/readable/queues/QueueProducer';
+import { RawResponse } from '@pollium/readable/http/responses';
+import { objectStorage } from '@pollium/readable/storage/ObjectStorage';
 import { IngestProject } from '@/modules/projects/contracts/domain/project';
 import { RemoteConfig } from '@condor/contracts/ingest/config';
 import { EnrichedContext, IngestBatchJob, IngestEvent, IngestReplayJob, ingestQueues, replayStorageKey } from '@/modules/tracking/contracts/domain/queue';

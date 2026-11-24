@@ -3,8 +3,8 @@ import Person from '@/modules/sessions/models/Person';
 import ReplayChunk from '@/modules/sessions/models/ReplayChunk';
 import Session from '@/modules/sessions/models/Session';
 import Event from '../models/Event';
-import { objectStorage } from '@readable/storage/ObjectStorage';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { objectStorage } from '@pollium/readable/storage/ObjectStorage';
+import { tableRef } from '@pollium/readable/database/queries';
 import { In, LessThan } from 'typeorm';
 
 const DAY_MS = 86_400_000;

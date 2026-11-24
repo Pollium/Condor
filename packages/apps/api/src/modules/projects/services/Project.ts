@@ -1,7 +1,7 @@
 import Project from '../models/Project';
 import ProjectRemovalService from './ProjectRemoval';
 import ProjectSettingsService from './ProjectSettings';
-import { eventBus } from '@readable/events/EventBus';
+import { eventBus } from '@pollium/readable/events/EventBus';
 import { CreateProjectInput, UpdateProjectInput, UpdateSettingsInput } from '@condor/contracts/projects/http';
 import { randomBytes } from 'node:crypto';
 

@@ -1,7 +1,7 @@
 import Issue from '../models/Issue';
 import IssueActivityQuery from './IssueActivity';
 import Project from '@/modules/projects/models/Project';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
+import { findOrThrow } from '@pollium/readable/database/queries';
 import { IssueState } from '@condor/contracts/issues/domain';
 import { UpdateIssueInput } from '@condor/contracts/issues/http';
 import { Period } from '@condor/contracts/shared/period';

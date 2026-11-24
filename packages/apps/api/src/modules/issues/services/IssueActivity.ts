@@ -1,6 +1,6 @@
 import Session from '@/modules/sessions/models/Session';
 import Event from '@/modules/tracking/models/Event';
-import { tableRef } from '@readable/utils/models/table-ref';
+import { tableRef } from '@pollium/readable/database/queries';
 import { BUCKET_FORMAT, seriesOf } from '@/shared/time/bucket-series';
 import { PeriodWindow } from '@/shared/time/period-window';
 import { IssueActivity } from '../contracts/domain/issue';

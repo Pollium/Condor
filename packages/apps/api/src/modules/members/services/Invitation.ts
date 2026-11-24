@@ -1,9 +1,8 @@
 import User from '@/modules/users/models/User';
 import Invitation from '../models/Invitation';
 import SessionService from '@/modules/auth/services/Session';
-import PasswordService from '@readable/auth/PasswordService';
-import { findOrThrow } from '@readable/utils/models/find-or-throw';
-import { isUniqueViolation } from '@readable/utils/models/is-unique-violation';
+import { PasswordService } from '@pollium/readable/auth/credentials';
+import { findOrThrow, isUniqueViolation } from '@pollium/readable/database/queries';
 import { InvitationPreview } from '@condor/contracts/members/domain';
 import { AcceptInvitationInput, InviteInput } from '@condor/contracts/members/http';
 import { AuthError } from '@/modules/auth/contracts/domain/errors';

@@ -1,4 +1,4 @@
-import ValidationError from '@readable/errors/Validation';
+import { ValidationError } from '@pollium/readable/app/errors';
 import { ProjectSettings } from '@condor/contracts/projects/domain';
 import { UpdateSettingsInput } from '@condor/contracts/projects/http';
 
