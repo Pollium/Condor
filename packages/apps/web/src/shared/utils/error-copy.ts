@@ -1,5 +1,5 @@
 import { ApiError } from '@condor/ui/services/ApiError';
-import { baseCodeOf } from '@condor/contracts/shared/errors';
+import { baseCodeOf } from '@pollium/readable-contracts/errors';
 import { copy } from '@/shared/i18n';
 
 const SHARED: Record<string, string> = {

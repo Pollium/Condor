@@ -1,4 +1,4 @@
-import { get, post } from '../shared/routing';
+import { get, post } from '@pollium/readable-contracts/routing';
 import { RemoteConfig } from './config';
 import { IngestReceipt, WireBatch, WireReplayChunk } from './wire';
 

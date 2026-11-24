@@ -1,4 +1,4 @@
-import { get } from '../shared/routing';
+import { get } from '@pollium/readable-contracts/routing';
 import { EventDetail, EventSummary, PropertyBreakdown, TraitSummary } from './domain';
 
 export const eventRoutes = {

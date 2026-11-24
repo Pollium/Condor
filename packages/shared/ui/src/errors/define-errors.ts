@@ -1,4 +1,4 @@
-import { ErrorTable } from '@condor/contracts/shared/errors';
+import { ErrorTable } from '@pollium/readable-contracts/errors';
 import { ClientErrorFactory } from '../contracts/errors';
 import { ClientError } from './ClientError';
 

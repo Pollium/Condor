@@ -1,4 +1,4 @@
-import { get, patch } from '../shared/routing';
+import { get, patch } from '@pollium/readable-contracts/routing';
 import { Issue, IssueDetail } from './domain';
 import { UpdateIssueInput } from './http';
 

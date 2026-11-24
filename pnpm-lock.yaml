@@ -26,6 +26,9 @@ importers:
       '@pollium/readable':
         specifier: ^0.2.0
         version: 0.2.0(@types/node@26.6.6)(fastify@5.12.7)(pg@8.23.1)(typeorm@1.1.2(ioredis@5.11.1)(pg@8.23.1))(typescript@6.0.3)(vitest@4.1.12(@types/node@26.6.6)(happy-dom@20.14.6)(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0)))
+      '@pollium/readable-contracts':
+        specifier: ^0.2.0
+        version: 0.2.0
       bowser:
         specifier: 2.14.1
         version: 2.14.1
@@ -105,6 +108,9 @@ importers:
       '@fontsource/ibm-plex-sans':
         specifier: ^5.3.0
         version: 5.3.0
+      '@pollium/readable-contracts':
+        specifier: ^0.2.0
+        version: 0.2.0
       '@rrweb/replay':
         specifier: 2.1.7
         version: 2.1.7
@@ -209,6 +215,9 @@ importers:
 
   packages/shared/contracts:
     dependencies:
+      '@pollium/readable-contracts':
+        specifier: ^0.2.0
+        version: 0.2.0
       typia:
         specifier: ^12.1.1
         version: 12.2.1(@types/node@26.6.6)(typescript@6.0.3)
@@ -225,6 +234,9 @@ importers:
       '@condor/contracts':
         specifier: workspace:*
         version: link:../contracts
+      '@pollium/readable-contracts':
+        specifier: ^0.2.0
+        version: 0.2.0
       alova:
         specifier: ^3.5.2
         version: 3.5.5

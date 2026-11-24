@@ -1,5 +1,5 @@
 import { SessionDetail } from '@condor/contracts/sessions/domain';
-import { baseCodeOf } from '@condor/contracts/shared/errors';
+import { baseCodeOf } from '@pollium/readable-contracts/errors';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
 import { useMemo } from 'react';
 import type { Mark } from '@/modules/sessions/components/ReplayControls';

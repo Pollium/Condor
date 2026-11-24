@@ -1,4 +1,4 @@
-import { ErrorCode, ErrorTable } from '../shared/errors';
+import { ErrorCode, ErrorTable } from '@pollium/readable-contracts/errors';
 
 export const IssueErrors = {
     domain: 'Issue',

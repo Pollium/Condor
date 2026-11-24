@@ -18,6 +18,7 @@
     "@condor/ui": "workspace:*",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@pollium/readable-contracts": "^0.2.0",
     "@rrweb/replay": "2.1.7",
     "alova": "^3.5.2",
     "react": "19.2.7",

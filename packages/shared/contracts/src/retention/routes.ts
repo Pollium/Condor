@@ -1,4 +1,4 @@
-import { get } from '../shared/routing';
+import { get } from '@pollium/readable-contracts/routing';
 import { Retention } from './domain';
 
 export const retentionRoutes = {
