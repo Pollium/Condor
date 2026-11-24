@@ -232,64 +232,6 @@ importers:
         specifier: ~6.0.2
         version: 6.0.3
 
-  packages/shared/readable:
-    dependencies:
-      '@aws-sdk/client-s3':
-        specifier: ^3.1089.0
-        version: 3.1159.0
-      '@condor/contracts':
-        specifier: workspace:*
-        version: link:../contracts
-      '@fastify/cors':
-        specifier: ^11.3.0
-        version: 11.3.1
-      '@fastify/websocket':
-        specifier: 11.3.0
-        version: 11.3.0
-      bullmq:
-        specifier: ^5.80.6
-        version: 5.81.5
-      fastify:
-        specifier: ^5.12.5
-        version: 5.12.7
-      ioredis:
-        specifier: ^5.11.1
-        version: 5.11.1
-      jsonwebtoken:
-        specifier: ^9.0.3
-        version: 9.0.3
-      pino:
-        specifier: ^10.3.1
-        version: 10.4.0
-      typeorm:
-        specifier: ^1.1.0
-        version: 1.1.2(ioredis@5.11.1)(pg@8.23.1)
-      typia:
-        specifier: ^12.1.1
-        version: 12.2.1(@types/node@26.6.6)(typescript@6.0.3)
-      uuid:
-        specifier: ^14.0.2
-        version: 14.0.3
-    devDependencies:
-      '@types/jsonwebtoken':
-        specifier: ^9.0.10
-        version: 9.0.10
-      '@types/node':
-        specifier: ^26.1.1
-        version: 26.6.6
-      oxlint:
-        specifier: ^1.71.0
-        version: 1.90.0
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-      typescript:
-        specifier: ~6.0.2
-        version: 6.0.3
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.12(@types/node@26.6.6)(happy-dom@20.14.6)(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0))
-
   packages/shared/ui:
     dependencies:
       '@condor/contracts':
@@ -1063,12 +1005,6 @@ packages:
 
   '@types/estree@1.0.10':
     resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
-
-  '@types/jsonwebtoken@9.0.10':
-    resolution: {integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==}
-
-  '@types/ms@2.1.0':
-    resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
   '@types/node@26.6.6':
     resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
@@ -3421,13 +3357,6 @@ snapshots:
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.10': {}
-
-  '@types/jsonwebtoken@9.0.10':
-    dependencies:
-      '@types/ms': 2.1.0
-      '@types/node': 26.6.6
-
-  '@types/ms@2.1.0': {}
 
   '@types/node@26.6.6':
     dependencies:
