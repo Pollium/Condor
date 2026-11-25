@@ -13,7 +13,6 @@ COPY packages/apps/web/package.json packages/apps/web/
 RUN pnpm install --frozen-lockfile --filter @condor/web...
 
 COPY packages/shared/contracts packages/shared/contracts
-COPY packages/apps/tsconfig.app.base.json packages/apps/tsconfig.node.base.json packages/apps/
 COPY packages/apps/web packages/apps/web
 
 ARG VITE_API_URL=

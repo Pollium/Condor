@@ -145,9 +145,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.3.0(@types/react@19.3.0)
-      '@typia/unplugin':
-        specifier: ^12.1.1
-        version: 12.1.1(typia@12.2.1(@types/node@26.6.6)(typescript@6.0.3))(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0))
       '@vitejs/plugin-react':
         specifier: ^6.0.3
         version: 6.1.2(vite@8.3.5(@types/node@26.6.6)(jiti@2.7.0))
