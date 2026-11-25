@@ -1,17 +1,17 @@
 import { Button, Dropdown, InlineNotification, Modal, TextInput } from '@carbon/react';
 import { Add } from '@carbon/icons-react';
 import { Funnel } from '@condor/contracts/funnels/domain';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
+import { funnelRoutes } from '@condor/contracts/funnels/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { createPortal } from 'react-dom';
 import { useState } from 'react';
-import { funnelsApi } from '@/modules/funnels/api/api';
 import FunnelStepField, { type StepDraft } from '@/modules/funnels/components/FunnelStepField';
 import { useKnownTargets } from '@/modules/funnels/hooks/use-known-targets';
 import { copy } from '@/modules/funnels/i18n';
 import { windowChoices } from '@/modules/funnels/utils/funnel-copy';
+import { funnelError } from '@/modules/funnels/utils/funnel-error';
 import { copy as shared } from '@/shared/i18n';
 import { translate } from '@/shared/utils/carbon-translate';
-import { errorCopy } from '@/shared/utils/error-copy';
 
 const MIN_STEPS = 2;
 const MAX_STEPS = 8;
@@ -34,8 +34,6 @@ const filled = (draft: StepDraft): boolean => draft.whereKey.trim() !== '' && dr
 
 const halfFilled = (draft: StepDraft): boolean => (draft.whereKey.trim() === '') !== (draft.whereValue.trim() === '');
 
-const failure = errorCopy({ 'Funnel::NotFound': copy.errors.notFound });
-
 interface FunnelEditorProps{
     projectId: string;
     funnel: Funnel | null;
@@ -48,10 +46,10 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
     const [hours, setHours] = useState(String(funnel?.windowHours ?? 24));
     const [drafts, setDrafts] = useState(() => draftsOf(funnel));
     const known = useKnownTargets(projectId);
-    const create = useMutation(funnelsApi.create);
-    const update = useMutation(funnelsApi.update);
+    const create = useMutation(funnelRoutes.create, { path: { projectId } });
+    const update = useMutation(funnelRoutes.update, { path: { projectId, funnelId: funnel?.id } });
     const saving = create.loading || update.loading;
-    const error = failure(create.error ?? update.error);
+    const error = funnelError(create.error ?? update.error);
     const choices = windowChoices(Number(hours));
     const valid = name.trim() !== '' && drafts.length >= MIN_STEPS && drafts.every((draft) => draft.match.trim() !== '' && !halfFilled(draft));
 
@@ -70,7 +68,7 @@ const FunnelEditor = ({ projectId, funnel, onClose, onSaved }: FunnelEditorProps
                 ...(draft.kind === 'event' && filled(draft) ? { where: { key: draft.whereKey.trim(), value: draft.whereValue.trim() } } : {})
             }))
         };
-        const saved = funnel ? update.run(projectId, funnel.id, body) : create.run(projectId, body);
+        const saved = funnel ? update.run({ body }) : create.run({ body });
         saved.then(onSaved, () => undefined);
     };
 

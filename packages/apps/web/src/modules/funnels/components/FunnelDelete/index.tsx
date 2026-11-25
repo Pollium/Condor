@@ -1,11 +1,11 @@
 import { InlineNotification, Modal } from '@carbon/react';
 import { Funnel } from '@condor/contracts/funnels/domain';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
+import { funnelRoutes } from '@condor/contracts/funnels/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { createPortal } from 'react-dom';
-import { funnelsApi } from '@/modules/funnels/api/api';
 import { copy } from '@/modules/funnels/i18n';
+import { funnelError } from '@/modules/funnels/utils/funnel-error';
 import { copy as shared } from '@/shared/i18n';
-import { errorCopy } from '@/shared/utils/error-copy';
 
 interface FunnelDeleteProps{
     projectId: string;
@@ -15,8 +15,8 @@ interface FunnelDeleteProps{
 }
 
 const FunnelDelete = ({ projectId, funnel, onClose, onDeleted }: FunnelDeleteProps) => {
-    const remove = useMutation(funnelsApi.remove);
-    const error = errorCopy({ 'Funnel::NotFound': copy.errors.notFound })(remove.error);
+    const remove = useMutation(funnelRoutes.remove, { path: { projectId, funnelId: funnel.id } });
+    const error = funnelError(remove.error);
 
     return createPortal(
         <Modal
@@ -29,7 +29,7 @@ const FunnelDelete = ({ projectId, funnel, onClose, onDeleted }: FunnelDeletePro
             primaryButtonDisabled={remove.loading}
             closeButtonLabel={shared.close}
             onRequestClose={onClose}
-            onRequestSubmit={() => remove.run(projectId, funnel.id).then(onDeleted, () => undefined)}
+            onRequestSubmit={() => remove.run().then(onDeleted, () => undefined)}
         >
             <div className='flex flex-col gap-4'>
                 <p className='text-[0.875rem] text-label-2'>{copy.deleteDialog.body}</p>
