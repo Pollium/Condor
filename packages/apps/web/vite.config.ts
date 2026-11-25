@@ -33,7 +33,7 @@ export default defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
         },
-        dedupe: ['react', 'react-dom', 'react-router', 'react-router-dom', 'zustand', 'alova']
+        dedupe: ['react', 'react-dom', 'react-router', 'react-router-dom', 'zustand']
     },
     build: {
         chunkSizeWarningLimit: 2000

@@ -8,7 +8,6 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../../shared/contracts" },
-    { "path": "../../shared/ui" }
+    { "path": "../../shared/contracts" }
   ]
 }
