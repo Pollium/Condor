@@ -1,7 +1,6 @@
 import { Button, InlineLoading, InlineNotification, ProgressIndicator, ProgressStep } from '@carbon/react';
 import { ingestRoutes } from '@condor/contracts/ingest/routes';
 import { WireBatch } from '@condor/contracts/ingest/wire';
-import { env } from '@condor/ui/config/env';
 import { useLive } from '@/modules/live/hooks/use-live';
 import ProjectMark from '@/modules/projects/components/ProjectMark';
 import { useProject, useWorkspace } from '@/modules/projects/hooks/use-workspace';
@@ -10,6 +9,7 @@ import { httpSnippet, identifySnippet, npmSnippet, platformLabel, scriptSnippet 
 import Code from '@/shared/components/Code';
 import { PageHeader } from '@/shared/components/Page';
 import Segmented from '@/shared/components/Segmented';
+import { env } from '@/shared/utils/env';
 import { useEffect, useState } from 'react';
 
 type Install = 'script' | 'npm';

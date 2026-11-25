@@ -1,4 +1,4 @@
-import { Theme } from '@condor/ui/contracts/theme';
+import { Theme } from '@/shared/store/theme';
 
 export type ThemePreference = Theme | 'system';
 

@@ -1,5 +1,4 @@
 import { Accordion, AccordionItem, Button } from '@carbon/react';
-import { env } from '@condor/ui/config/env';
 import RotateKey from '@/modules/projects/components/RotateKey';
 import { Group, Row } from '@/modules/projects/components/SettingsRows';
 import { useCopy } from '@/modules/projects/hooks/use-copy';
@@ -9,6 +8,7 @@ import { httpSnippet, npmSnippet, scriptSnippet } from '@/modules/projects/utils
 import Code from '@/shared/components/Code';
 import Segmented from '@/shared/components/Segmented';
 import { copy as shared } from '@/shared/i18n';
+import { env } from '@/shared/utils/env';
 import { useState } from 'react';
 
 type Variant = 'script' | 'npm' | 'http';

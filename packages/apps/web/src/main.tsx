@@ -1,8 +1,8 @@
 import '@/assets/styles/index.css';
-import { initLocale } from '@condor/ui/utils/session/locale';
-import { initTheme } from '@condor/ui/utils/session/theme';
 import { mount } from '@pollium/readable-react/app/mount';
 import ConsoleLayout from '@/app/layouts/ConsoleLayout';
+import { initLocale } from '@/shared/i18n/locale';
+import { initTheme } from '@/shared/store/theme';
 import { appCopy } from '@/shared/utils/error-copy';
 
 initTheme();
