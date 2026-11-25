@@ -1,10 +1,11 @@
 import { HeatMode, HeatWidth, Heatmap } from '@condor/contracts/heatmaps/domain';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { heatmapRoutes } from '@condor/contracts/heatmaps/routes';
+import { describeError } from '@pollium/readable-react/errors/copy';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { InlineNotification } from '@carbon/react';
 import { Cursor_1 } from '@carbon/icons-react';
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { heatmapsApi } from '@/modules/heatmaps/api/api';
 import HeatFrame from '@/modules/heatmaps/components/HeatFrame';
 import HeatPanel from '@/modules/heatmaps/components/HeatPanel';
 import { copy } from '@/modules/heatmaps/i18n';
@@ -15,7 +16,6 @@ import type { Choice } from '@/shared/components/Segmented';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
 import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
-import { errorCopy } from '@/shared/utils/error-copy';
 
 const MODES: Choice<HeatMode>[] = [
     { value: 'clicks', label: copy.modes.clicks },
@@ -38,10 +38,9 @@ const HeatmapsPage = () => {
     const [selected, setSelected] = useState<string | null>(null);
     const [shown, setShown] = useState<Heatmap | null>(null);
 
-    const pages = useQuery(heatmapsApi.pages, [project.id, period]);
+    const pages = useQuery(heatmapRoutes.pages, { path: { projectId: project.id }, query: { period } });
     const path = params.get('path') ?? pages.data?.[0]?.path;
-    const query = path ? { path, mode, width, period } : undefined;
-    const heatmap = useQuery(heatmapsApi.heatmap, [query ? project.id : undefined, query]);
+    const heatmap = useQuery(heatmapRoutes.heatmap, path ? { path: { projectId: project.id }, query: { path, mode, width, period } } : null);
     if(heatmap.data && heatmap.data !== shown) setShown(heatmap.data);
     const current = heatmap.data ?? shown;
 
@@ -57,7 +56,7 @@ const HeatmapsPage = () => {
 
     const page = pages.data?.find((entry) => entry.path === path);
     const picked = spots.find((spot) => spot.selector === selected) ?? null;
-    const failure = errorCopy()(pages.error ?? heatmap.error);
+    const failure = describeError(pages.error ?? heatmap.error);
 
     const choosePath = (next: string) => {
         setSelected(null);
