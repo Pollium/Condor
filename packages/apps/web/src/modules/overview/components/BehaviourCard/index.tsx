@@ -1,6 +1,6 @@
 import { SkeletonText } from '@carbon/react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { overviewApi } from '@/modules/overview/api/api';
+import { overviewRoutes } from '@condor/contracts/overview/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import Loaded from '@/modules/overview/components/Loaded';
 import RangeBars from '@/modules/overview/components/RangeBars';
 import Stats from '@/modules/overview/components/Stats';
@@ -13,7 +13,7 @@ import { fmt } from '@/shared/utils/format';
 
 const BehaviourCard = () => {
     const { projectId, period } = useScope();
-    const engagement = useQuery(overviewApi.engagement, [projectId, period]);
+    const engagement = useQuery(overviewRoutes.engagement, { path: { projectId }, query: { period } });
 
     return (
         <Tabbed

@@ -1,6 +1,6 @@
 import { SkeletonPlaceholder } from '@carbon/react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { overviewApi } from '@/modules/overview/api/api';
+import { overviewRoutes } from '@condor/contracts/overview/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import AcquisitionCard from '@/modules/overview/components/AcquisitionCard';
 import AudienceCard from '@/modules/overview/components/AudienceCard';
 import BehaviourCard from '@/modules/overview/components/BehaviourCard';
@@ -22,7 +22,7 @@ const ROW = 'grid gap-x-12 gap-y-10 lg:grid-cols-2';
 const OverviewPage = () => {
     const project = useProject();
     const period = usePeriodStore((state) => state.period);
-    const summary = useQuery(overviewApi.summary, [project.id, period]);
+    const summary = useQuery(overviewRoutes.summary, { path: { projectId: project.id }, query: { period } });
 
     return (
         <>

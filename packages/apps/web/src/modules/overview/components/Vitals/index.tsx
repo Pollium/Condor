@@ -1,7 +1,7 @@
 import { SkeletonText } from '@carbon/react';
 import { VitalName, VitalRating } from '@condor/contracts/shared/analytics';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { overviewApi } from '@/modules/overview/api/api';
+import { overviewRoutes } from '@condor/contracts/overview/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import Loaded from '@/modules/overview/components/Loaded';
 import { useScope } from '@/modules/overview/hooks/use-scope';
 import { copy } from '@/modules/overview/i18n';
@@ -28,7 +28,7 @@ const RATING: Record<VitalRating, { label: string; dot: string }> = {
 
 const Vitals = () => {
     const { projectId, period } = useScope();
-    const query = useQuery(overviewApi.vitals, [projectId, period]);
+    const query = useQuery(overviewRoutes.vitals, { path: { projectId }, query: { period } });
 
     return (
         <Loaded query={query} skeleton={<SkeletonText paragraph lineCount={3} />}>
