@@ -1,24 +1,22 @@
 import { Button, ButtonSet, Form, InlineNotification, TextInput } from '@carbon/react';
 import { Platform } from '@condor/contracts/projects/domain';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
-import { projectsApi } from '@/modules/projects/api/api';
+import { projectRoutes } from '@condor/contracts/projects/routes';
+import { describeError } from '@pollium/readable-react/errors/copy';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { useWorkspace } from '@/modules/projects/hooks/use-workspace';
 import { copy } from '@/modules/projects/i18n';
 import { PLATFORMS } from '@/modules/projects/utils/snippets';
 import Modal from '@/shared/components/Modal';
 import Segmented from '@/shared/components/Segmented';
-import { errorCopy } from '@/shared/utils/error-copy';
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const createError = errorCopy();
 
 const cleanHost = (host: string): string => host.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
 
 const AddApp = () => {
     const navigate = useNavigate();
-    const { adding, setAdding, reload, replace } = useWorkspace();
-    const create = useMutation(projectsApi.create);
+    const { adding, setAdding, replace } = useWorkspace();
+    const create = useMutation(projectRoutes.create);
     const [name, setName] = useState('');
     const [host, setHost] = useState('');
     const [platform, setPlatform] = useState<Platform>('web');
@@ -28,14 +26,15 @@ const AddApp = () => {
         event.preventDefault();
         if(!ready) return;
         const project = await create.run({
-            name: name.trim(),
-            host: cleanHost(host),
-            platform,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            body: {
+                name: name.trim(),
+                host: cleanHost(host),
+                platform,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            }
         }).catch(() => null);
         if(project === null) return;
         replace(project);
-        reload();
         setName('');
         setHost('');
         setAdding(false);
@@ -58,7 +57,7 @@ const AddApp = () => {
                     value={host}
                     onChange={(event) => setHost(event.target.value)}
                 />
-                {create.error ? <InlineNotification kind='error' lowContrast hideCloseButton title={createError(create.error) ?? ''} /> : null}
+                {create.error ? <InlineNotification kind='error' lowContrast hideCloseButton title={describeError(create.error) ?? ''} /> : null}
                 <ButtonSet className='justify-end'>
                     <Button kind='secondary' onClick={() => setAdding(false)}>
                         {copy.cancel}

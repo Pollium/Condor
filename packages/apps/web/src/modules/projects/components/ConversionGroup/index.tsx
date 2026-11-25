@@ -1,17 +1,17 @@
 import { ComboBox } from '@carbon/react';
+import { overviewRoutes } from '@condor/contracts/overview/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { Group } from '@/modules/projects/components/SettingsRows';
-import { projectsApi } from '@/modules/projects/api/api';
 import { useSaveProject } from '@/modules/projects/hooks/use-save-project';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import { copy } from '@/modules/projects/i18n';
 import { translate } from '@/shared/utils/carbon-translate';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
 
 const ConversionGroup = ({ disabled }: { disabled: boolean }) => {
     const project = useProject();
     const current = project.settings.conversionEvent;
     const { status, error, settings } = useSaveProject();
-    const events = useQuery(projectsApi.events, [project.id], { select: (breakdown) => breakdown.slices.map((slice) => slice.label) });
+    const events = useQuery(overviewRoutes.breakdown, { path: { projectId: project.id }, query: { dimension: 'event', period: '90d', limit: 50 } }, { select: (breakdown) => breakdown.slices.map((slice) => slice.label) });
     const items = events.data ?? [];
 
     const commit = (value: string | null | undefined) => {

@@ -1,20 +1,19 @@
 import { Button, Modal, TextInput } from '@carbon/react';
 import Portal from '@/shared/components/Portal';
 import { Group, Row } from '@/modules/projects/components/SettingsRows';
-import { projectsApi } from '@/modules/projects/api/api';
-import { useProject, useWorkspace } from '@/modules/projects/hooks/use-workspace';
+import { useProject } from '@/modules/projects/hooks/use-workspace';
 import { copy } from '@/modules/projects/i18n';
 import { copy as shared } from '@/shared/i18n';
-import { errorCopy } from '@/shared/utils/error-copy';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
+import { projectRoutes } from '@condor/contracts/projects/routes';
+import { describeError } from '@pollium/readable-react/errors/copy';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DangerZone = ({ disabled }: { disabled: boolean }) => {
     const project = useProject();
-    const { reload } = useWorkspace();
     const navigate = useNavigate();
-    const remove = useMutation(projectsApi.remove);
+    const remove = useMutation(projectRoutes.remove, { path: { projectId: project.id } });
     const [open, setOpen] = useState(false);
     const [typed, setTyped] = useState('');
     const matches = typed.trim() === project.name;
@@ -27,11 +26,10 @@ const DangerZone = ({ disabled }: { disabled: boolean }) => {
     const submit = async () => {
         if(!matches) return;
         try{
-            await remove.run(project.id);
+            await remove.run();
         }catch{
             return;
         }
-        reload();
         navigate('/');
     };
 
@@ -67,7 +65,7 @@ const DangerZone = ({ disabled }: { disabled: boolean }) => {
                             autoComplete='off'
                             data-modal-primary-focus
                         />
-                        {remove.error ? <p className='text-danger'>{errorCopy()(remove.error)}</p> : null}
+                        {remove.error ? <p className='text-danger'>{describeError(remove.error)}</p> : null}
                     </div>
                 </Modal>
             </Portal>
