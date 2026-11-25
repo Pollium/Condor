@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@pollium/readable-contracts": "^0.2.0",
+    "@pollium/readable-contracts": "^0.4.0",
     "typia": "^12.1.1"
   },
   "devDependencies": {
