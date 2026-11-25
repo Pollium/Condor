@@ -46,8 +46,8 @@ signIn(@Body() body: SignInInput){
     route, with request/response types as phantom generics
     (`create: post<CreateRoadmapInput, Roadmap>('/roadmaps')`). The api mounts rows with
     `@Route(roadmapRoutes.create)` — registration asserts the path matches the module's
-    discovery prefix, so a drifted table fails the boot — and the web calls them through
-    `call(roadmapRoutes.create, { body })` (`@/shared/api/call`). Routes whose wire types are
+    discovery prefix, so a drifted table fails the boot — and the web hands them to
+    `@pollium/readable-react` (`useMutation(roadmapRoutes.create)`, `useQuery(roadmapRoutes.list)`). Routes whose wire types are
     not in contracts yet (workspace files, roadmap completions, league, server-only
     modules) keep the `@Route(path, method)` string form.
   - `<name>/gateway.ts` — the module's websocket frames, when it has a gateway. Both
@@ -524,8 +524,8 @@ Three things this does **not** change:
 - **Exports keep their own casing.** Only the filename is kebab-case; `useSession` is still
   exported as `useSession` from `use-session.ts`.
 - **`pages/` is exempt, and this is load-bearing.** Every page file must be named `index.tsx`
-  because `app/routes.ts` discovers routes with `import.meta.glob` on
-  `pages/{guest,protected,admin}/**/index.tsx` — rename one and it silently stops being a route,
+  because `main.tsx` hands `mount()` the page files from `import.meta.glob` on
+  `pages/**/{index,layout}.tsx` — rename one and it silently stops being a route,
   with no error. The `PascalCase` folders under `pages/` are the *input* to `toSegment`/`toKebab`,
   which turn `pages/protected/Settings/Providers/index.tsx` into `/settings/providers`. They are
   not an inconsistency to tidy.

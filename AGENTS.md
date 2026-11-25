@@ -9,12 +9,13 @@ into with one script tag. pnpm monorepo with two apps:
 | `packages/apps/web` (`@condor/web`) | the IBM Carbon web console | 5190 |
 | `packages/sdk/browser` (`@condor/browser`) | the tracker: pageviews, clicks (rage/dead), errors, web vitals, custom events, identify, rrweb replay. Ships as an npm ESM module and as `condor.js`, served by the api at `/i/condor.js` | — |
 | `packages/sdk/node` (`@condor/node`) | the server SDK: `track` and `identify` from any Node backend, batched per user with retries. Events land in the user's live browser session when there is one | — |
-| `packages/shared/contracts` (`@condor/contracts`) | every wire type and route table, one folder per domain | — |
-| `packages/shared/ui` (`@condor/ui`) | the frontend plumbing: api client (`call`), `useQuery`/`useMutation`, socket channel, session and theme stores, route discovery | — |
+| `packages/shared/contracts` (`@condor/contracts`) | every wire type, route table, error table and gateway, one folder per domain | — |
 
 The api is built on [`@pollium/readable`](https://github.com/Pollium/Readable), the HTTP/WS/queue
 framework from npm: `Application`, module discovery, decorators, errors, `BaseModel`, JWT, queues,
-object storage.
+object storage. The web is built on `@pollium/readable-react`, its web side: pages found by folder,
+queries and mutations typed by the contracts, the session, the live gateway and error copy. Its guide
+ships with it, at `packages/apps/web/node_modules/@pollium/readable-react/AGENTS.md`.
 
 Modules are auto-discovered from the filesystem by folder convention — there is no registry file
 to edit. Modules talk to each other through services, models and `eventBus`; nothing in Condor
@@ -77,8 +78,8 @@ The guides were written for the framework, so some examples name modules Condor 
 - **Vitest runs inside the package.** Running it from the repo root picks up every package's config
   at once. `cd packages/apps/api && npx vitest run`.
 - **Never `tsc -b` in the api.** It sets no `outDir`; typecheck with `tsc --noEmit`.
-  `tsc -b` is correct in `packages/apps/web` (its `build` script) and rebuilds the contracts'
-  declarations the web reads from `packages/shared/contracts/dist`.
+  `tsc -b` is correct in `packages/apps/web` (its `typecheck` and `build` scripts), whose
+  tsconfig is the one `@pollium/readable-react` ships.
 - **After editing contracts**, clear the api's typia cache
   (`rm -rf packages/apps/api/node_modules/.cache/unplugin_typia`) and restart the web dev server.
 - **`BaseModel` ids default to Postgres 18's `uuidv7()`.** The compose image is `postgres:18-alpine`;
