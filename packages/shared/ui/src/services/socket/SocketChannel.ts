@@ -1,5 +1,5 @@
 import { env } from '../../config/env';
-import { useSessionStore } from '../../store/session';
+import { session } from '@pollium/readable-react/session/session';
 import { ChannelStatus, ErrorHandler, MessageHandler, OutboundFrame, StatusHandler } from '../../contracts/channel';
 
 const INITIAL_BACKOFF_MS = 500;
@@ -69,7 +69,7 @@ export default class SocketChannel{
         this.#setStatus(this.#attempts === 0 ? 'connecting' : 'reconnecting');
 
         const url = `${env.apiUrl.replace(/^http/, 'ws').replace(/\/+$/, '')}${this.#path.startsWith('/') ? this.#path : `/${this.#path}`}`;
-        const token = useSessionStore.getState().token;
+        const token = session.token;
         const socket = token ? new WebSocket(url, token) : new WebSocket(url);
         this.#socket = socket;
 

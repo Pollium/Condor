@@ -1,6 +1,6 @@
-import { useSessionStore } from '../store/session';
+import { session } from '@pollium/readable-react/session/session';
 
 export const requestAuth = (): Record<string, string> => {
-    const token = useSessionStore.getState().token;
+    const token = session.token;
     return token ? { Authorization: `Bearer ${token}` } : {};
 };

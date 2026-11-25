@@ -1,10 +1,10 @@
 import { Button, Form, InlineLoading, InlineNotification, PasswordInput, SkeletonText, Stack, TextInput } from '@carbon/react';
 import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { session } from '@pollium/readable-react/session/session';
 import AuthFrame from '@/modules/auth/components/AuthFrame';
 import { authApi } from '@/modules/auth/api/api';
 import { copy } from '@/modules/auth/i18n';
-import { startSession } from '@/modules/auth/utils/start-session';
 import { ROLE_LABEL } from '@/modules/team/utils/roles';
 import { errorCopy } from '@/shared/utils/error-copy';
 import { FormEvent, useState } from 'react';
@@ -27,10 +27,8 @@ const AcceptInvitationPage = () => {
     const submit = async (event: FormEvent) => {
         event.preventDefault();
         if(token === undefined) return;
-        const session = await accept.run({ token, name, password }).catch(() => null);
-        if(session === null) return;
-        await startSession(session);
-        navigate('/', { replace: true });
+        const started = await accept.run({ token, name, password }).catch(() => null);
+        if(started !== null) session.start(started.token);
     };
 
     if(preview.error){

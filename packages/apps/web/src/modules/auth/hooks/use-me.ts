@@ -1,11 +1,11 @@
 import { AuthUser } from '@condor/contracts/auth/domain';
 import { Query } from '@condor/ui/contracts/api';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { useSessionStore } from '@condor/ui/store/session';
+import { useSession } from '@pollium/readable-react/session/session';
 import { authApi } from '@/modules/auth/api/api';
 
 export const useMe = (): Query<AuthUser> => {
-    const token = useSessionStore((state) => state.token);
+    const token = useSession();
     return useQuery(authApi.me, [], { enabled: token !== null });
 };
 

@@ -1,18 +1,17 @@
 import { Button, Form, InlineLoading, InlineNotification, PasswordInput, Stack, TextInput } from '@carbon/react';
 import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { session } from '@pollium/readable-react/session/session';
 import AuthFrame from '@/modules/auth/components/AuthFrame';
 import { authApi } from '@/modules/auth/api/api';
 import { copy } from '@/modules/auth/i18n';
-import { startSession } from '@/modules/auth/utils/start-session';
 import { errorCopy, fieldErrors } from '@/shared/utils/error-copy';
 import { FormEvent, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 const setupError = errorCopy({ 'Auth::SetupClosed': copy.errors.setupClosed });
 
 const SetupPage = () => {
-    const navigate = useNavigate();
     const status = useQuery(authApi.setupStatus, []);
     const setup = useMutation(authApi.setup);
     const [name, setName] = useState('');
@@ -24,10 +23,8 @@ const SetupPage = () => {
 
     const submit = async (event: FormEvent) => {
         event.preventDefault();
-        const session = await setup.run({ name, email, password }).catch(() => null);
-        if(session === null) return;
-        await startSession(session);
-        navigate('/', { replace: true });
+        const started = await setup.run({ name, email, password }).catch(() => null);
+        if(started !== null) session.start(started.token);
     };
 
     return (

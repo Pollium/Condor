@@ -1,6 +1,7 @@
 import { ApiError as ApiErrorPayload } from '@pollium/readable-contracts/http';
 import { ApiError } from '../services/ApiError';
-import { endSession, isSessionExpired } from '../services/end-session';
+import { isSessionExpired } from '../services/end-session';
+import { session } from '@pollium/readable-react/session/session';
 import { unwrap } from './unwrap';
 
 export const NETWORK_FAILED = 'Network request failed';
@@ -12,7 +13,7 @@ export const answerOf = async (status: number, statusText: string, payload: unkn
     if(status >= SUCCESS_FLOOR && status < SUCCESS_CEILING) return unwrap(payload);
 
     const message = (payload as ApiErrorPayload | undefined)?.error ?? statusText;
-    if(isSessionExpired(status, message)) await endSession();
+    if(isSessionExpired(status, message)) session.end();
 
     throw new ApiError(status, message, payload);
 };

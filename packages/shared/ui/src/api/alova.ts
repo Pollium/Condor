@@ -4,7 +4,8 @@ import { env } from '../config/env';
 import { ApiError } from '../services/ApiError';
 import { answerOf, NETWORK_FAILED } from './answer';
 import { requestAuth } from './request-auth';
-import { createAlova } from 'alova';
+import { session } from '@pollium/readable-react/session/session';
+import { createAlova, invalidateCache } from 'alova';
 
 export const createClient = (baseURL: string) => createAlova({
     baseURL,
@@ -38,3 +39,7 @@ export const createClient = (baseURL: string) => createAlova({
 });
 
 export const alova = createClient(env.apiUrl);
+
+session.onEnd(() => {
+    void invalidateCache();
+});
