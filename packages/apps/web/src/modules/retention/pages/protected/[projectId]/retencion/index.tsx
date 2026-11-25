@@ -1,12 +1,14 @@
 import { Button, InlineLoading } from '@carbon/react';
 import { Calendar, WarningAlt } from '@carbon/icons-react';
+import { overviewRoutes } from '@condor/contracts/overview/routes';
 import { RetentionGrain } from '@condor/contracts/retention/domain';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { retentionRoutes } from '@condor/contracts/retention/routes';
+import { describeError } from '@pollium/readable-react/errors/copy';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { useState } from 'react';
 import SegmentMenu from '@/modules/events/components/SegmentMenu';
 import { useSegmentQuery } from '@/modules/events/hooks/use-segment';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
-import { retentionApi } from '@/modules/retention/api/api';
 import CohortGrid from '@/modules/retention/components/CohortGrid';
 import RetentionStats from '@/modules/retention/components/RetentionStats';
 import { copy } from '@/modules/retention/i18n';
@@ -17,7 +19,6 @@ import { PageHeader, Section, Stack } from '@/shared/components/Page';
 import type { Choice } from '@/shared/components/Segmented';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
 import { copy as shared } from '@/shared/i18n';
-import { errorCopy } from '@/shared/utils/error-copy';
 import { fmt } from '@/shared/utils/format';
 
 const GRAINS: Choice<RetentionGrain>[] = [
@@ -33,9 +34,9 @@ const RetentionPage = () => {
     const project = useProject();
     const [grain, setGrain] = useState<RetentionGrain>('week');
     const [returnEvent, setReturnEvent] = useState(ANY_VISIT);
-    const events = useQuery(retentionApi.events, [project.id]);
+    const events = useQuery(overviewRoutes.breakdown, { path: { projectId: project.id }, query: { dimension: 'event', period: '90d', limit: 100 } });
     const segment = useSegmentQuery(project.id);
-    const retention = useQuery(retentionApi.retention, [project.id, { grain, cohorts: COHORTS[grain], returnEvent: returnEvent || undefined, ...segment }]);
+    const retention = useQuery(retentionRoutes.retention, { path: { projectId: project.id }, query: { grain, cohorts: COHORTS[grain], returnEvent: returnEvent || undefined, ...segment } });
     const returns: Choice<string>[] = [
         { value: ANY_VISIT, label: copy.page.anyVisit },
         ...(events.data?.slices ?? []).map((slice) => ({ value: slice.id, label: slice.label }))
@@ -45,7 +46,7 @@ const RetentionPage = () => {
     const body = () => {
         if(retention.error && !retention.data){
             return (
-                <EmptyState icon={WarningAlt} title={copy.page.failed} description={errorCopy()(retention.error) ?? undefined}>
+                <EmptyState icon={WarningAlt} title={copy.page.failed} description={describeError(retention.error) ?? undefined}>
                     <Button kind='tertiary' size='sm' onClick={retention.reload}>{copy.page.retry}</Button>
                 </EmptyState>
             );
