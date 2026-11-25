@@ -1,29 +1,27 @@
 import { Modal } from '@carbon/react';
 import Portal from '@/shared/components/Portal';
 import { Member } from '@condor/contracts/members/domain';
-import { teamApi } from '@/modules/team/api/api';
+import { memberRoutes } from '@condor/contracts/members/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { copy } from '@/modules/team/i18n';
 import { teamError } from '@/modules/team/utils/team-error';
 import { copy as shared } from '@/shared/i18n';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 
 interface RemoveMemberProps{
     member: Member | null;
     onClose: () => void;
-    onRemoved: () => void;
 }
 
-const RemoveMember = ({ member, onClose, onRemoved }: RemoveMemberProps) => {
-    const remove = useMutation(teamApi.remove);
+const RemoveMember = ({ member, onClose }: RemoveMemberProps) => {
+    const remove = useMutation(memberRoutes.remove);
 
     const submit = async () => {
         if(member === null) return;
         try{
-            await remove.run(member.id);
+            await remove.run({ path: { userId: member.id } });
         }catch{
             return;
         }
-        onRemoved();
         onClose();
     };
 
