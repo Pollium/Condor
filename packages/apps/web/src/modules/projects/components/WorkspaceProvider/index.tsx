@@ -1,6 +1,6 @@
 import { Project } from '@condor/contracts/projects/domain';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { projectsApi } from '@/modules/projects/api/api';
+import { projectRoutes } from '@condor/contracts/projects/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { WorkspaceContext } from '@/modules/projects/hooks/use-workspace';
 import { rememberProject } from '@/modules/projects/utils/last-project';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
@@ -15,7 +15,7 @@ const projectIdOf = (pathname: string): string | null => {
 
 const WorkspaceProvider = ({ children }: { children: ReactNode }) => {
     const { pathname } = useLocation();
-    const query = useQuery(projectsApi.list, []);
+    const query = useQuery(projectRoutes.list);
     const [replaced, setReplaced] = useState<Record<string, Project>>({});
     const [adding, setAdding] = useState(false);
     const projectId = projectIdOf(pathname);
@@ -35,7 +35,6 @@ const WorkspaceProvider = ({ children }: { children: ReactNode }) => {
         project,
         loading: query.loading,
         error: query.error,
-        reload: query.reload,
         replace: (next: Project) => setReplaced((current) => ({ ...current, [next.id]: next })),
         adding,
         setAdding

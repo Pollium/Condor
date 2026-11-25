@@ -1,7 +1,7 @@
 import { SkeletonPlaceholder } from '@carbon/react';
 import { HourCell } from '@condor/contracts/overview/domain';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { overviewApi } from '@/modules/overview/api/api';
+import { overviewRoutes } from '@condor/contracts/overview/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import Loaded from '@/modules/overview/components/Loaded';
 import Stats from '@/modules/overview/components/Stats';
 import { useScope } from '@/modules/overview/hooks/use-scope';
@@ -42,7 +42,7 @@ const rhythm = (cells: HeatCell[]) => {
 
 const WeekRhythm = () => {
     const { projectId, period } = useScope();
-    const query = useQuery(overviewApi.hours, [projectId, period]);
+    const query = useQuery(overviewRoutes.hours, { path: { projectId }, query: { period } });
 
     return (
         <Loaded query={query} skeleton={<SkeletonPlaceholder className='h-64 w-full max-w-none' />}>

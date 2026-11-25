@@ -1,23 +1,22 @@
 import { Button, InlineLoading, TextInput } from '@carbon/react';
 import { AuthUser } from '@condor/contracts/auth/domain';
+import { authRoutes } from '@condor/contracts/auth/routes';
+import { ApiError } from '@pollium/readable-react/http/ApiError';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { copy } from '@/modules/account/i18n';
 import { accountError } from '@/modules/account/utils/account-error';
-import { authApi } from '@/modules/auth/api/api';
-import { fieldErrors } from '@/shared/utils/error-copy';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useState, type FormEvent } from 'react';
 
 interface ProfileFormProps{
     user: AuthUser;
-    onSaved: () => void;
 }
 
-const ProfileForm = ({ user, onSaved }: ProfileFormProps) => {
-    const update = useMutation(authApi.updateProfile);
+const ProfileForm = ({ user }: ProfileFormProps) => {
+    const update = useMutation(authRoutes.updateProfile);
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [saved, setSaved] = useState(false);
-    const fields = fieldErrors(update.error);
+    const fields = update.error instanceof ApiError ? update.error.fields : {};
     const changed = name.trim() !== user.name || email.trim() !== user.email;
 
     const submit = async (event: FormEvent) => {
@@ -27,9 +26,8 @@ const ProfileForm = ({ user, onSaved }: ProfileFormProps) => {
             ...(name.trim() !== user.name ? { name: name.trim() } : {}),
             ...(email.trim() !== user.email ? { email: email.trim() } : {})
         };
-        if(await update.run(body).then(() => true, () => false)){
+        if(await update.run({ body }).then(() => true, () => false)){
             setSaved(true);
-            onSaved();
         }
     };
 

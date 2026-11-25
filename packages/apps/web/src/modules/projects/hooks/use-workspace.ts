@@ -1,5 +1,5 @@
 import { Workspace } from '@/modules/projects/contracts/workspace';
-import { defineErrors } from '@condor/ui/errors/define-errors';
+import { defineErrors } from '@pollium/readable-contracts/errors';
 import { createContext, useContext } from 'react';
 
 const WorkspaceError = defineErrors({
@@ -8,7 +8,7 @@ const WorkspaceError = defineErrors({
         MissingProvider: 500,
         NoProject: 500
     }
-} as const);
+});
 
 export const WorkspaceContext = createContext<Workspace | null>(null);
 

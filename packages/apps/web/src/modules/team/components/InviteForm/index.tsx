@@ -1,35 +1,33 @@
 import { Button, CodeSnippet, InlineNotification, TextInput } from '@carbon/react';
 import { CreatedInvitation, InvitedRole } from '@condor/contracts/members/domain';
-import { teamApi } from '@/modules/team/api/api';
+import { memberRoutes } from '@condor/contracts/members/routes';
+import { ApiError } from '@pollium/readable-react/http/ApiError';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { copy } from '@/modules/team/i18n';
 import { ROLE_HINT, ROLE_LABEL } from '@/modules/team/utils/roles';
 import { teamError } from '@/modules/team/utils/team-error';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
 import { copy as shared } from '@/shared/i18n';
 import { fmt } from '@/shared/utils/format';
-import { fieldErrors } from '@/shared/utils/error-copy';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useState, type FormEvent } from 'react';
 
 interface InviteFormProps{
     roles: InvitedRole[];
-    onInvited: () => void;
 }
 
-const InviteForm = ({ roles, onInvited }: InviteFormProps) => {
-    const invite = useMutation(teamApi.invite);
+const InviteForm = ({ roles }: InviteFormProps) => {
+    const invite = useMutation(memberRoutes.invite);
     const [email, setEmail] = useState('');
     const [role, setRole] = useState<InvitedRole>(roles[roles.length - 1]);
     const [created, setCreated] = useState<CreatedInvitation | null>(null);
-    const fields = fieldErrors(invite.error);
+    const fields = invite.error instanceof ApiError ? invite.error.fields : {};
 
     const submit = async (event: FormEvent) => {
         event.preventDefault();
-        const result = await invite.run({ email: email.trim(), role }).catch(() => null);
+        const result = await invite.run({ body: { email: email.trim(), role } }).catch(() => null);
         if(result === null) return;
         setCreated(result);
         setEmail('');
-        onInvited();
     };
 
     return (

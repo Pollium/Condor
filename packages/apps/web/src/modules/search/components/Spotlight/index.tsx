@@ -1,10 +1,10 @@
 import { ContainedList, ContainedListItem, InlineLoading, Modal, Search } from '@carbon/react';
 import { Debug, Document, Screen } from '@carbon/icons-react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { searchRoutes } from '@condor/contracts/search/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { View, viewPath } from '@/shared/utils/views';
 import ProjectMark from '@/modules/projects/components/ProjectMark';
 import { useWorkspace } from '@/modules/projects/hooks/use-workspace';
-import { searchApi } from '@/modules/search/api/api';
 import { copy } from '@/modules/search/i18n';
 import { useDebounced } from '@/shared/hooks/use-debounced';
 import { copy as shared } from '@/shared/i18n';
@@ -24,7 +24,7 @@ const Spotlight = ({ isOpen, onOpenChange, views }: SpotlightProps) => {
     const [query, setQuery] = useState('');
     const q = useDebounced(query.trim(), 200);
     const lower = q.toLowerCase();
-    const results = useQuery(searchApi.search, [project?.id, q === '' ? undefined : q]);
+    const results = useQuery(searchRoutes.search, q !== '' && { path: { projectId: project?.id }, query: { q } });
 
     const close = () => {
         setQuery('');

@@ -8,7 +8,7 @@ import { accountError } from '@/modules/account/utils/account-error';
 import { useMe } from '@/modules/auth/hooks/use-me';
 import { ROLE_HINT, ROLE_LABEL } from '@/modules/team/utils/roles';
 import { PageHeader, Section } from '@/shared/components/Page';
-import { endSession } from '@condor/ui/services/end-session';
+import { session } from '@pollium/readable-react/session/session';
 import { useNavigate } from 'react-router-dom';
 
 const AccountPage = () => {
@@ -16,8 +16,8 @@ const AccountPage = () => {
     const navigate = useNavigate();
     const user = me.data;
 
-    const signOut = async () => {
-        await endSession();
+    const signOut = () => {
+        session.end();
         navigate('/entrar');
     };
 
@@ -28,7 +28,7 @@ const AccountPage = () => {
                 {user === null ? (
                     me.error ? <p className='text-[0.875rem] text-danger'>{accountError(me.error)}</p> : <InlineLoading description={copy.loading} />
                 ) : (
-                    <ProfileForm key={`${user.name}|${user.email}`} user={user} onSaved={me.reload} />
+                    <ProfileForm key={`${user.name}|${user.email}`} user={user} />
                 )}
             </Section>
             <Section title={copy.password}>

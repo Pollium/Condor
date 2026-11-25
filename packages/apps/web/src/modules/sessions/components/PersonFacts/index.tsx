@@ -1,7 +1,7 @@
 import { SessionDetail } from '@condor/contracts/sessions/domain';
+import { sessionRoutes } from '@condor/contracts/sessions/routes';
 import { Button } from '@carbon/react';
 import { useNavigate } from 'react-router-dom';
-import { sessionsApi } from '@/modules/sessions/api/api';
 import { copy } from '@/modules/sessions/i18n';
 import { CHANNEL_LABELS, DEVICE_LABELS, join, place } from '@/modules/sessions/utils/labels';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
@@ -10,7 +10,7 @@ import { copy as shared } from '@/shared/i18n';
 import { intlLocale } from '@/shared/i18n/locale';
 import { fmt } from '@/shared/utils/format';
 import { viewPath } from '@/shared/utils/views';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 
 const day = new Intl.DateTimeFormat(intlLocale, { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -25,7 +25,7 @@ const Fact = ({ label, value }: { label: string; value: string | number | null |
 const PersonFacts = ({ session }: { session: SessionDetail }) => {
     const project = useProject();
     const navigate = useNavigate();
-    const person = useQuery(sessionsApi.person, [project.id, session.personId]);
+    const person = useQuery(sessionRoutes.person, { path: { projectId: project.id, personId: session.personId } });
     const others = (person.data?.recent ?? []).filter((entry) => entry.id !== session.id);
     const sessions = viewPath(project.id, 'sesiones');
 

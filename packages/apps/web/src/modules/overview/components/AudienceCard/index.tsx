@@ -1,5 +1,5 @@
 import { Summary } from '@condor/contracts/overview/domain';
-import { Query } from '@condor/ui/contracts/api';
+import { Query } from '@pollium/readable-react/query/useQuery';
 import Loaded from '@/modules/overview/components/Loaded';
 import Shares from '@/modules/overview/components/Shares';
 import Stats from '@/modules/overview/components/Stats';

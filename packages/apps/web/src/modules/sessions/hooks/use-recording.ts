@@ -1,9 +1,9 @@
 import { SessionDetail } from '@condor/contracts/sessions/domain';
+import { sessionRoutes } from '@condor/contracts/sessions/routes';
 import { baseCodeOf } from '@pollium/readable-contracts/errors';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { useMemo } from 'react';
 import type { Mark } from '@/modules/sessions/components/ReplayControls';
-import { sessionsApi } from '@/modules/sessions/api/api';
 import { readRecording, type Recording } from '@/modules/sessions/utils/replay';
 
 export interface SessionRecording{
@@ -16,7 +16,7 @@ export interface SessionRecording{
 const TONES = { pageview: 'strong', click: 'soft', error: 'danger' } as const;
 
 export const useRecording = (projectId: string, session: SessionDetail | null): SessionRecording => {
-    const replay = useQuery(sessionsApi.replay, [projectId, session?.hasReplay ? session.id : undefined]);
+    const replay = useQuery(sessionRoutes.replay, session?.hasReplay ? { path: { projectId, sessionId: session.id } } : null);
     const recording = useMemo(() => (replay.data ? readRecording(replay.data.events) : null), [replay.data]);
     const lead = recording && session ? recording.start - Date.parse(session.startedAt) : 0;
 

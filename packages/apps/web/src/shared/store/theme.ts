@@ -1,16 +1,18 @@
-import { Theme } from '../../contracts/theme';
+import { create } from 'zustand';
 
-const STORAGE_KEY = 'condor.theme';
+export type Theme = 'light' | 'dark';
+
+const KEY = 'condor.theme';
 
 const stored = (): string | null => {
     try{
-        return localStorage.getItem(STORAGE_KEY);
+        return localStorage.getItem(KEY);
     }catch{
         return null;
     }
 };
 
-export const resolveTheme = (): Theme => {
+const resolveTheme = (): Theme => {
     const fromQuery = new URLSearchParams(window.location.search).get('theme');
     if(fromQuery === 'light' || fromQuery === 'dark') return fromQuery;
 
@@ -20,7 +22,7 @@ export const resolveTheme = (): Theme => {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
-export const applyTheme = (theme: Theme) => {
+const applyTheme = (theme: Theme) => {
     const root = document.documentElement;
     root.classList.toggle('dark', theme === 'dark');
     root.classList.toggle('cds--g100', theme === 'dark');
@@ -29,12 +31,26 @@ export const applyTheme = (theme: Theme) => {
     root.style.colorScheme = theme;
 };
 
-export const saveTheme = (theme: Theme | 'system') => {
+const saveTheme = (theme: Theme) => {
     try{
-        localStorage.setItem(STORAGE_KEY, theme);
+        localStorage.setItem(KEY, theme);
     }catch{
         return;
     }
 };
 
 export const initTheme = () => applyTheme(resolveTheme());
+
+interface ThemeState{
+    theme: Theme;
+    set: (theme: Theme) => void;
+}
+
+export const useThemeStore = create<ThemeState>((set) => ({
+    theme: resolveTheme(),
+    set: (theme) => {
+        applyTheme(theme);
+        saveTheme(theme);
+        set({ theme });
+    }
+}));

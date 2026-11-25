@@ -1,12 +1,12 @@
 import { Button, InlineLoading, PasswordInput } from '@carbon/react';
+import { authRoutes } from '@condor/contracts/auth/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { copy } from '@/modules/account/i18n';
 import { accountError } from '@/modules/account/utils/account-error';
-import { authApi } from '@/modules/auth/api/api';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useState, type FormEvent } from 'react';
 
 const PasswordForm = () => {
-    const change = useMutation(authApi.changePassword);
+    const change = useMutation(authRoutes.changePassword);
     const [current, setCurrent] = useState('');
     const [next, setNext] = useState('');
     const [done, setDone] = useState(false);
@@ -15,7 +15,7 @@ const PasswordForm = () => {
     const submit = async (event: FormEvent) => {
         event.preventDefault();
         setDone(false);
-        if(await change.run({ current, next }).then(() => true, () => false)){
+        if(await change.run({ body: { current, next } }).then(() => true, () => false)){
             setCurrent('');
             setNext('');
             setDone(true);

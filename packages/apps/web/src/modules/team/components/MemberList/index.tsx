@@ -2,14 +2,14 @@ import { IconButton, InlineLoading } from '@carbon/react';
 import { TrashCan } from '@carbon/icons-react';
 import { Role } from '@condor/contracts/auth/domain';
 import { Member } from '@condor/contracts/members/domain';
+import { memberRoutes } from '@condor/contracts/members/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import RemoveMember from '@/modules/team/components/RemoveMember';
-import { teamApi } from '@/modules/team/api/api';
 import { copy } from '@/modules/team/i18n';
 import { ROLE_HINT, ROLE_LABEL } from '@/modules/team/utils/roles';
 import { teamError } from '@/modules/team/utils/team-error';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
 import { fmt } from '@/shared/utils/format';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 import { useState } from 'react';
 
 const ROLES: Role[] = ['owner', 'admin', 'viewer'];
@@ -18,18 +18,17 @@ interface MemberListProps{
     members: Member[];
     selfId: string | undefined;
     manage: boolean;
-    onChanged: () => void;
 }
 
-const MemberList = ({ members, selfId, manage, onChanged }: MemberListProps) => {
-    const update = useMutation(teamApi.update);
+const MemberList = ({ members, selfId, manage }: MemberListProps) => {
+    const update = useMutation(memberRoutes.update);
     const [removing, setRemoving] = useState<Member | null>(null);
     const [pending, setPending] = useState<string | null>(null);
 
     const changeRole = (member: Member, role: Role) => {
         if(role === member.role) return;
         setPending(member.id);
-        void update.run(member.id, { role }).then(onChanged, () => null).finally(() => setPending(null));
+        void update.run({ path: { userId: member.id }, body: { role } }).catch(() => null).finally(() => setPending(null));
     };
 
     return (
@@ -72,7 +71,7 @@ const MemberList = ({ members, selfId, manage, onChanged }: MemberListProps) => 
                 })}
             </ul>
             {update.error ? <p className='pt-2 text-[0.75rem] text-danger'>{teamError(update.error)}</p> : null}
-            <RemoveMember member={removing} onClose={() => setRemoving(null)} onRemoved={onChanged} />
+            <RemoveMember member={removing} onClose={() => setRemoving(null)} />
         </div>
     );
 };

@@ -1,26 +1,24 @@
 import { Button } from '@carbon/react';
 import { Link, Screen } from '@carbon/icons-react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { sessionRoutes } from '@condor/contracts/sessions/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import ReplayPanel from '@/modules/sessions/components/ReplayPanel';
 import ReplayView from '@/modules/sessions/components/ReplayView';
 import SessionStats from '@/modules/sessions/components/SessionStats';
-import { sessionsApi } from '@/modules/sessions/api/api';
 import { useRecording } from '@/modules/sessions/hooks/use-recording';
 import { useReplayer } from '@/modules/sessions/hooks/use-replayer';
 import { copy } from '@/modules/sessions/i18n';
 import { DEVICE_LABELS, join, personName, place } from '@/modules/sessions/utils/labels';
+import { sessionError } from '@/modules/sessions/utils/session-error';
 import { pageAt } from '@/modules/sessions/utils/timeline';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
 import { copy as shared } from '@/shared/i18n';
-import { errorCopy } from '@/shared/utils/error-copy';
 import { fmt } from '@/shared/utils/format';
 import { viewPath } from '@/shared/utils/views';
-
-const failure = errorCopy({ 'Session::NotFound': copy.errors.notFound });
 
 const IGNORED = 'input, textarea, select, button, a, [contenteditable], [role="listbox"], [role="combobox"], [role="menu"], [role="tab"], [role="dialog"]';
 
@@ -28,7 +26,7 @@ const ReplayPage = () => {
     const project = useProject();
     const { sessionId } = useParams();
     const [params] = useSearchParams();
-    const detail = useQuery(sessionsApi.get, [project.id, sessionId]);
+    const detail = useQuery(sessionRoutes.get, { path: { projectId: project.id, sessionId } });
     const session = detail.data;
     const { recording, state, lead, marks } = useRecording(project.id, session);
     const player = useReplayer(recording, Math.max(0, Number(params.get('t')) || 0) * 1000);
@@ -51,7 +49,7 @@ const ReplayPage = () => {
         return (
             <div className='w-full'>
                 <PageHeader back={back} title={copy.session.title} />
-                {detail.error ? <EmptyState icon={Screen} title={copy.session.openFailed} description={failure(detail.error) ?? undefined} /> : null}
+                {detail.error ? <EmptyState icon={Screen} title={copy.session.openFailed} description={sessionError(detail.error) ?? undefined} /> : null}
             </div>
         );
     }

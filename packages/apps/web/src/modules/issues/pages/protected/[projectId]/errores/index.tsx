@@ -1,15 +1,17 @@
 import { IssueStatus } from '@condor/contracts/issues/domain';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { issueRoutes } from '@condor/contracts/issues/routes';
+import { describeError } from '@pollium/readable-react/errors/copy';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { InlineNotification, Search } from '@carbon/react';
 import { Debug } from '@carbon/icons-react';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { canEdit, useMe } from '@/modules/auth/hooks/use-me';
-import { issuesApi } from '@/modules/issues/api/api';
 import IssueDetail from '@/modules/issues/components/IssueDetail';
 import { copy } from '@/modules/issues/i18n';
 import { FILTERS, IssueFilter, issueTitle, sessionCount } from '@/modules/issues/utils/issue-copy';
+import { issueError } from '@/modules/issues/utils/issue-error';
 import { useProject } from '@/modules/projects/hooks/use-workspace';
 import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
@@ -18,10 +20,7 @@ import ToolbarMenu from '@/shared/components/ToolbarMenu';
 import { useDebounced } from '@/shared/hooks/use-debounced';
 import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
-import { errorCopy } from '@/shared/utils/error-copy';
 import { fmt } from '@/shared/utils/format';
-
-const failureCopy = errorCopy({ 'Issue::NotFound': copy.errors.notFound });
 
 const IssuesPage = () => {
     const project = useProject();
@@ -32,20 +31,18 @@ const IssuesPage = () => {
     const [query, setQuery] = useState('');
     const search = useDebounced(query.trim(), 250);
 
-    const list = useQuery(issuesApi.list, [project.id, { period, ...(filter === 'all' ? {} : { status: filter }), ...(search ? { search } : {}) }]);
+    const list = useQuery(issueRoutes.list, {
+        path: { projectId: project.id },
+        query: { period, status: filter === 'all' ? undefined : filter, search: search || undefined }
+    });
     const rows = list.data ?? [];
     const issueId = params.get('issue') ?? rows[0]?.id;
-    const detail = useQuery(issuesApi.get, [issueId ? project.id : undefined, issueId]);
-    const update = useMutation(issuesApi.update, {
-        onSuccess: () => {
-            list.reload();
-            detail.reload();
-        }
-    });
+    const detail = useQuery(issueRoutes.get, { path: { projectId: project.id, issueId } });
+    const update = useMutation(issueRoutes.update, { path: { projectId: project.id, issueId } });
 
     const open = rows.filter((issue) => issue.status === 'open');
     const hint = list.data ? copy.page.hint(open.length, open.reduce((sum, issue) => sum + issue.sessions, 0)) : undefined;
-    const failure = failureCopy(list.error ?? detail.error);
+    const failure = issueError(list.error ?? detail.error);
 
     const select = (id: string) => setParams((previous) => {
         const next = new URLSearchParams(previous);
@@ -54,7 +51,7 @@ const IssuesPage = () => {
     }, { replace: true });
 
     const changeStatus = (status: IssueStatus) => {
-        if(issueId) update.run(project.id, issueId, { status }).catch(() => undefined);
+        if(issueId) update.run({ body: { status } }).catch(() => undefined);
     };
 
     const empty = search || filter !== 'all'
@@ -89,7 +86,7 @@ const IssuesPage = () => {
                         issue={detail.data}
                         editable={canEdit(me.data)}
                         busy={update.loading}
-                        failure={errorCopy()(update.error)}
+                        failure={describeError(update.error)}
                         onStatus={changeStatus}
                     />
                 ) : null}

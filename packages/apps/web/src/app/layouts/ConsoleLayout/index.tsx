@@ -16,8 +16,7 @@ import {
 } from '@carbon/react';
 import { Asleep, Light, Search, UserAvatar } from '@carbon/icons-react';
 import { Period, PERIODS as PERIOD_VALUES } from '@condor/contracts/shared/period';
-import { endSession } from '@condor/ui/services/end-session';
-import { useThemeStore } from '@condor/ui/store/theme';
+import { session } from '@pollium/readable-react/session/session';
 import { copy } from '@/app/i18n';
 import Sidebar from '@/app/layouts/Sidebar';
 import { useMe } from '@/modules/auth/hooks/use-me';
@@ -29,6 +28,7 @@ import { useWorkspace } from '@/modules/projects/hooks/use-workspace';
 import Spotlight from '@/modules/search/components/Spotlight';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
 import { usePeriodStore } from '@/shared/store/period';
+import { useThemeStore } from '@/shared/store/theme';
 import { useToolbarStore } from '@/shared/store/toolbar';
 import { SETTINGS_VIEW, VIEWS, viewPath } from '@/shared/utils/views';
 import { useEffect, useState } from 'react';
@@ -127,7 +127,7 @@ const Shell = () => {
                         ) : null}
                         <SwitcherItem aria-label={copy.addApp} onClick={() => { setAccount(false); setAdding(true); }}>{copy.addAppEllipsis}</SwitcherItem>
                         <SwitcherDivider />
-                        <SwitcherItem aria-label={copy.signOut} onClick={() => { setAccount(false); void endSession(); }}>{copy.signOut}</SwitcherItem>
+                        <SwitcherItem aria-label={copy.signOut} onClick={() => { setAccount(false); session.end(); }}>{copy.signOut}</SwitcherItem>
                     </Switcher>
                 </HeaderPanel>
                 <Sidebar projectId={project?.id ?? null} expanded={nav} onNavigate={() => setNav(false)} />

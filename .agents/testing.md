@@ -45,15 +45,12 @@ and on a **cold** typia cache that exceeds the 10s default and fails files with
 cold on every CI run and after every reinstall. Don't lower it back: the symptom looks like a
 hanging test but is just a one-time compile.
 
-The `web` package runs the same command through its own `vite.config.ts` (`happy-dom`
-environment, `src/**/tests/*.test.{ts,tsx}`). It covers the shared primitives that everything
-else builds on — `useQuery`/`useMutation` in `src/shared/hooks/api/tests/` — mounted with the
-`renderHook`/`deferred` helpers in `src/shared/tests/`. No component-testing stack: a probe
-component rendering the hook is all these need. Do not add page, chrome, or `*.test.tsx`
-component suites. `src/shared/tests/setup.ts` installs an in-memory `localStorage` because the
-global one in this environment is an empty object, so the `condor.*`-backed primitives
-(session token, theme, recents) are testable — a store that reads storage in its initialiser
-is re-hydrated in a test with `vi.resetModules()` plus a dynamic import.
+The `web` package has no suite of its own: its queries, mutations, session and gateway are
+`@pollium/readable-react`'s, tested there. Its `vite.config.ts` is `readableConfig(...)`, which runs
+Vitest in `happy-dom` over `src/**/*.test.{ts,tsx}` with `tests/setup.ts` when it exists, and starts
+the workers with `--no-experimental-webstorage` so a test reads the browser's `localStorage`. A web
+test configures readable-react first (`configure({ name: 'condor', apiUrl: 'http://api.test' })`)
+and stubs `fetch` with `vi.stubGlobal`. Do not add page, chrome, or `*.test.tsx` component suites.
 
 ## Layout
 

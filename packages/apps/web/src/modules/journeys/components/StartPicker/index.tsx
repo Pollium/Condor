@@ -1,6 +1,6 @@
 import { ComboBox } from '@carbon/react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { journeysApi } from '@/modules/journeys/api/api';
+import { overviewRoutes } from '@condor/contracts/overview/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { copy } from '@/modules/journeys/i18n';
 import { usePeriodStore } from '@/shared/store/period';
 import { translate } from '@/shared/utils/carbon-translate';
@@ -13,7 +13,7 @@ interface StartPickerProps{
 
 const StartPicker = ({ projectId, value, onChange }: StartPickerProps) => {
     const period = usePeriodStore((state) => state.period);
-    const pages = useQuery(journeysApi.pages, [projectId, period]);
+    const pages = useQuery(overviewRoutes.breakdown, { path: { projectId }, query: { dimension: 'page', period, limit: 100 } });
     const paths = pages.data?.slices.map((slice) => slice.id) ?? [];
 
     return (

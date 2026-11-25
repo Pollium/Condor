@@ -1,5 +1,5 @@
-import { useQuery } from '@condor/ui/hooks/api/use-query';
-import { eventsApi } from '@/modules/events/api/api';
+import { eventRoutes } from '@condor/contracts/events/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { copy } from '@/modules/events/i18n';
 import type { Choice } from '@/shared/components/Segmented';
 import ToolbarMenu from '@/shared/components/ToolbarMenu';
@@ -9,7 +9,7 @@ const EVERYONE = '';
 const SEPARATOR = '\u0000';
 
 const SegmentMenu = ({ projectId }: { projectId: string }) => {
-    const traits = useQuery(eventsApi.traits, [projectId]);
+    const traits = useQuery(eventRoutes.traits, { path: { projectId } });
     const segment = useSegmentStore((state) => state.byProject[projectId]);
     const setSegment = useSegmentStore((state) => state.setSegment);
     const current = segment ? `${segment.key}${SEPARATOR}${segment.value}` : EVERYONE;

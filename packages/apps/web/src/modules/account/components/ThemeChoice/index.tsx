@@ -1,7 +1,7 @@
 import { copy } from '@/modules/account/i18n';
 import { readPreference, rememberSystem, systemTheme, type ThemePreference } from '@/modules/account/utils/theme-preference';
 import Segmented from '@/shared/components/Segmented';
-import { useThemeStore } from '@condor/ui/store/theme';
+import { useThemeStore } from '@/shared/store/theme';
 import { useState } from 'react';
 
 const CHOICES: { value: ThemePreference; label: string }[] = [

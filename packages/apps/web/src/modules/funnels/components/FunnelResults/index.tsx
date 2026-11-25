@@ -1,21 +1,19 @@
 import { Button, InlineLoading } from '@carbon/react';
 import { Filter, WarningAlt } from '@carbon/icons-react';
 import { FunnelResult } from '@condor/contracts/funnels/domain';
-import { Query } from '@condor/ui/contracts/api';
+import { Query } from '@pollium/readable-react/query/useQuery';
 import FunnelBreakdown from '@/modules/funnels/components/FunnelBreakdown';
 import FunnelChart from '@/modules/funnels/components/FunnelChart';
 import FunnelStats from '@/modules/funnels/components/FunnelStats';
 import { copy } from '@/modules/funnels/i18n';
+import { funnelError } from '@/modules/funnels/utils/funnel-error';
 import EmptyState from '@/shared/components/EmptyState';
 import { Section, Stack } from '@/shared/components/Page';
-import { errorCopy } from '@/shared/utils/error-copy';
 
-const failure = errorCopy({ 'Funnel::NotFound': copy.errors.notFound });
-
-const FunnelResults = ({ query }: { query: Query<FunnelResult> }) => {
+const FunnelResults = ({ query }: { query: Pick<Query<FunnelResult>, 'data' | 'error' | 'reload'> }) => {
     if(query.error && !query.data){
         return (
-            <EmptyState icon={WarningAlt} title={copy.results.failed} description={failure(query.error) ?? undefined}>
+            <EmptyState icon={WarningAlt} title={copy.results.failed} description={funnelError(query.error) ?? undefined}>
                 <Button kind='tertiary' size='sm' onClick={query.reload}>{copy.results.retry}</Button>
             </EmptyState>
         );

@@ -6,7 +6,6 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/shared/contracts/package.json packages/shared/contracts/
-COPY packages/shared/ui/package.json packages/shared/ui/
 COPY packages/sdk/browser/package.json packages/sdk/browser/
 COPY packages/apps/api/package.json packages/apps/api/
 COPY packages/apps/web/package.json packages/apps/web/
@@ -14,8 +13,6 @@ COPY packages/apps/web/package.json packages/apps/web/
 RUN pnpm install --frozen-lockfile --filter @condor/web...
 
 COPY packages/shared/contracts packages/shared/contracts
-COPY packages/shared/ui packages/shared/ui
-COPY packages/apps/tsconfig.app.base.json packages/apps/tsconfig.node.base.json packages/apps/
 COPY packages/apps/web packages/apps/web
 
 ARG VITE_API_URL=

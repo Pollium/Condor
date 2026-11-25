@@ -5,7 +5,6 @@ export interface Workspace{
     project: Project | null;
     loading: boolean;
     error: Error | undefined;
-    reload: () => void;
     replace: (project: Project) => void;
     adding: boolean;
     setAdding: (adding: boolean) => void;

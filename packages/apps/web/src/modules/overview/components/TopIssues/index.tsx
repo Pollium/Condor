@@ -1,6 +1,6 @@
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { issueRoutes } from '@condor/contracts/issues/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { useNavigate } from 'react-router-dom';
-import { issuesApi } from '@/modules/issues/api/api';
 import Loaded from '@/modules/overview/components/Loaded';
 import { useScope } from '@/modules/overview/hooks/use-scope';
 import { copy } from '@/modules/overview/i18n';
@@ -10,7 +10,7 @@ import { fmt } from '@/shared/utils/format';
 const TopIssues = () => {
     const navigate = useNavigate();
     const { projectId, period } = useScope();
-    const query = useQuery(issuesApi.list, [projectId, { period, status: 'open' }]);
+    const query = useQuery(issueRoutes.list, { path: { projectId }, query: { period, status: 'open' } });
 
     return (
         <Loaded query={query}>

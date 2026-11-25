@@ -1,15 +1,15 @@
 import { HeatSnapshot } from '@condor/contracts/heatmaps/domain';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { sessionRoutes } from '@condor/contracts/sessions/routes';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { Replayer } from '@rrweb/replay';
 import { useEffect, useState } from 'react';
-import { heatmapsApi } from '@/modules/heatmaps/api/api';
 
 type ReplayEvents = ConstructorParameters<typeof Replayer>[0];
 
 export const useSnapshot = (projectId: string, snapshot: HeatSnapshot | null, width: number, height: number) => {
     const [root, setRoot] = useState<HTMLDivElement | null>(null);
     const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
-    const replay = useQuery(heatmapsApi.replay, [snapshot ? projectId : undefined, snapshot?.sessionId]);
+    const replay = useQuery(sessionRoutes.replay, snapshot !== null && { path: { projectId, sessionId: snapshot.sessionId } });
     const events = replay.data?.sessionId === snapshot?.sessionId ? replay.data?.events : undefined;
 
     useEffect(() => {

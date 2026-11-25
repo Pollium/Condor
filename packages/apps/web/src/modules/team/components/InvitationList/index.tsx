@@ -1,21 +1,20 @@
 import { Button } from '@carbon/react';
 import { Invitation } from '@condor/contracts/members/domain';
-import { teamApi } from '@/modules/team/api/api';
+import { memberRoutes } from '@condor/contracts/members/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
 import { copy } from '@/modules/team/i18n';
 import { ROLE_LABEL } from '@/modules/team/utils/roles';
 import { teamError } from '@/modules/team/utils/team-error';
 import { fmt } from '@/shared/utils/format';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
 
 interface InvitationListProps{
     invitations: Invitation[];
-    onChanged: () => void;
 }
 
 const expiry = (iso: string): string => new Date(iso).getTime() < Date.now() ? copy.invitationList.expired(fmt.day(iso)) : copy.invitationList.expires(fmt.day(iso));
 
-const InvitationList = ({ invitations, onChanged }: InvitationListProps) => {
-    const revoke = useMutation(teamApi.revoke);
+const InvitationList = ({ invitations }: InvitationListProps) => {
+    const revoke = useMutation(memberRoutes.revoke);
 
     return (
         <div className='flex flex-col'>
@@ -28,7 +27,7 @@ const InvitationList = ({ invitations, onChanged }: InvitationListProps) => {
                                 {ROLE_LABEL[invitation.role]} · {expiry(invitation.expiresAt)}
                             </p>
                         </div>
-                        <Button kind='ghost' size='sm' disabled={revoke.loading} onClick={() => void revoke.run(invitation.id).then(onChanged, () => null)} className='-mr-4 shrink-0'>
+                        <Button kind='ghost' size='sm' disabled={revoke.loading} onClick={() => void revoke.run({ path: { invitationId: invitation.id } }).catch(() => null)} className='-mr-4 shrink-0'>
                             {copy.invitationList.revoke}
                         </Button>
                     </li>
