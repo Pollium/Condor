@@ -1,29 +1,28 @@
 import { Button, Form, InlineLoading, InlineNotification, PasswordInput, Stack, TextInput } from '@carbon/react';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { authRoutes } from '@condor/contracts/auth/routes';
+import { ApiError } from '@pollium/readable-react/http/ApiError';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { session } from '@pollium/readable-react/session/session';
 import AuthFrame from '@/modules/auth/components/AuthFrame';
-import { authApi } from '@/modules/auth/api/api';
 import { copy } from '@/modules/auth/i18n';
-import { errorCopy, fieldErrors } from '@/shared/utils/error-copy';
+import { authError } from '@/modules/auth/utils/auth-error';
 import { FormEvent, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const setupError = errorCopy({ 'Auth::SetupClosed': copy.errors.setupClosed });
-
 const SetupPage = () => {
-    const status = useQuery(authApi.setupStatus, []);
-    const setup = useMutation(authApi.setup);
+    const status = useQuery(authRoutes.setupStatus);
+    const setup = useMutation(authRoutes.setup);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const invalid = fieldErrors(setup.error);
+    const invalid = setup.error instanceof ApiError ? setup.error.fields : {};
 
     if(status.data?.needsOwner === false) return <Navigate to='/entrar' replace />;
 
     const submit = async (event: FormEvent) => {
         event.preventDefault();
-        const started = await setup.run({ name, email, password }).catch(() => null);
+        const started = await setup.run({ body: { name, email, password } }).catch(() => null);
         if(started !== null) session.start(started.token);
     };
 
@@ -46,7 +45,7 @@ const SetupPage = () => {
                         invalidText={copy.fields.passwordShort}
                         required
                     />
-                    {setup.error && Object.keys(invalid).length === 0 ? <InlineNotification kind='error' lowContrast hideCloseButton title={setupError(setup.error) ?? ''} /> : null}
+                    {setup.error && Object.keys(invalid).length === 0 ? <InlineNotification kind='error' lowContrast hideCloseButton title={authError(setup.error) ?? ''} /> : null}
                     <Button type='submit' disabled={setup.loading || password.length < 8}>
                         {setup.loading ? <InlineLoading description={copy.setup.submitting} /> : copy.setup.submit}
                     </Button>

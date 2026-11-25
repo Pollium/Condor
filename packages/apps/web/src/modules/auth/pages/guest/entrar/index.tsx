@@ -1,19 +1,17 @@
 import { Button, Form, InlineLoading, InlineNotification, PasswordInput, Stack, TextInput } from '@carbon/react';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { authRoutes } from '@condor/contracts/auth/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { session } from '@pollium/readable-react/session/session';
 import AuthFrame from '@/modules/auth/components/AuthFrame';
-import { authApi } from '@/modules/auth/api/api';
 import { copy } from '@/modules/auth/i18n';
-import { errorCopy } from '@/shared/utils/error-copy';
+import { authError } from '@/modules/auth/utils/auth-error';
 import { FormEvent, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const signInError = errorCopy({ 'Auth::InvalidCredentials': copy.errors.invalidCredentials });
-
 const SignInPage = () => {
-    const setup = useQuery(authApi.setupStatus, []);
-    const signIn = useMutation(authApi.signIn);
+    const setup = useQuery(authRoutes.setupStatus);
+    const signIn = useMutation(authRoutes.signIn);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -21,7 +19,7 @@ const SignInPage = () => {
 
     const submit = async (event: FormEvent) => {
         event.preventDefault();
-        const started = await signIn.run({ email, password }).catch(() => null);
+        const started = await signIn.run({ body: { email, password } }).catch(() => null);
         if(started !== null) session.start(started.token);
     };
 
@@ -40,7 +38,7 @@ const SignInPage = () => {
                         onChange={(event) => setPassword(event.target.value)}
                         required
                     />
-                    {signIn.error ? <InlineNotification kind='error' lowContrast hideCloseButton title={signInError(signIn.error) ?? ''} /> : null}
+                    {signIn.error ? <InlineNotification kind='error' lowContrast hideCloseButton title={authError(signIn.error) ?? ''} /> : null}
                     <Button type='submit' disabled={signIn.loading || email === '' || password === ''}>
                         {signIn.loading ? <InlineLoading description={copy.signIn.submitting} /> : copy.signIn.submit}
                     </Button>

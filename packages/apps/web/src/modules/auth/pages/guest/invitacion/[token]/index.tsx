@@ -1,33 +1,27 @@
 import { Button, Form, InlineLoading, InlineNotification, PasswordInput, SkeletonText, Stack, TextInput } from '@carbon/react';
-import { useMutation } from '@condor/ui/hooks/api/use-mutation';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { memberRoutes } from '@condor/contracts/members/routes';
+import { useMutation } from '@pollium/readable-react/query/useMutation';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { session } from '@pollium/readable-react/session/session';
 import AuthFrame from '@/modules/auth/components/AuthFrame';
-import { authApi } from '@/modules/auth/api/api';
 import { copy } from '@/modules/auth/i18n';
+import { invitationError } from '@/modules/auth/utils/auth-error';
 import { ROLE_LABEL } from '@/modules/team/utils/roles';
-import { errorCopy } from '@/shared/utils/error-copy';
 import { FormEvent, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
-const invitationError = errorCopy({
-    'Invitation::NotFound': copy.errors.invitationNotFound,
-    'Invitation::Expired': copy.errors.invitationExpired,
-    'Invitation::AlreadyMember': copy.errors.alreadyMember
-});
 
 const AcceptInvitationPage = () => {
     const { token } = useParams<{ token: string }>();
     const navigate = useNavigate();
-    const preview = useQuery(authApi.previewInvitation, [token]);
-    const accept = useMutation(authApi.acceptInvitation);
+    const preview = useQuery(memberRoutes.preview, { path: { token } });
+    const accept = useMutation(memberRoutes.accept);
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
 
     const submit = async (event: FormEvent) => {
         event.preventDefault();
         if(token === undefined) return;
-        const started = await accept.run({ token, name, password }).catch(() => null);
+        const started = await accept.run({ body: { token, name, password } }).catch(() => null);
         if(started !== null) session.start(started.token);
     };
 
