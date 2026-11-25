@@ -35,7 +35,6 @@ const WorkspaceProvider = ({ children }: { children: ReactNode }) => {
         project,
         loading: query.loading,
         error: query.error,
-        reload: query.reload,
         replace: (next: Project) => setReplaced((current) => ({ ...current, [next.id]: next })),
         adding,
         setAdding

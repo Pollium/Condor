@@ -1,9 +1,11 @@
 import { Button, InlineLoading, InlineNotification, ProgressIndicator, ProgressStep } from '@carbon/react';
 import { ingestRoutes } from '@condor/contracts/ingest/routes';
 import { WireBatch } from '@condor/contracts/ingest/wire';
+import { projectRoutes } from '@condor/contracts/projects/routes';
+import { invalidate } from '@pollium/readable-react/query/useMutation';
 import { useLive } from '@/modules/live/hooks/use-live';
 import ProjectMark from '@/modules/projects/components/ProjectMark';
-import { useProject, useWorkspace } from '@/modules/projects/hooks/use-workspace';
+import { useProject } from '@/modules/projects/hooks/use-workspace';
 import { copy } from '@/modules/projects/i18n';
 import { httpSnippet, identifySnippet, npmSnippet, platformLabel, scriptSnippet } from '@/modules/projects/utils/snippets';
 import Code from '@/shared/components/Code';
@@ -26,7 +28,6 @@ const testBatch = (key: string): WireBatch => ({
 
 const ConnectApp = () => {
     const project = useProject();
-    const { reload } = useWorkspace();
     const live = useLive(project.id);
     const [install, setInstall] = useState<Install>('script');
     const [testing, setTesting] = useState(false);
@@ -35,8 +36,8 @@ const ConnectApp = () => {
     const web = project.platform === 'web';
 
     useEffect(() => {
-        if(live !== null && live.count > 0) reload();
-    }, [live, reload]);
+        if(live !== null && live.count > 0) void invalidate(projectRoutes.list);
+    }, [live]);
 
     const sendTest = async () => {
         setTesting(true);
@@ -51,7 +52,7 @@ const ConnectApp = () => {
             setFailed(true);
             return;
         }
-        window.setTimeout(reload, 1500);
+        window.setTimeout(() => void invalidate(projectRoutes.list), 1500);
     };
 
     return (

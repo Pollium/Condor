@@ -29,8 +29,9 @@ shared/                 never imports app/ or modules/
   Search) as its children.
 - Data: components pass the contract endpoint straight to the hooks, `useQuery(issueRoutes.list, { path: { projectId }, query })`
   and `useMutation(issueRoutes.update, { path: { projectId, issueId } })`. There is no `api.ts`. A mutation refreshes the
-  queries on its branch of the path; never call `reload()` after one. `reload()` is for a retry button, a "check again"
-  button and the project list after the connection test. Route tables, error tables and wire types come from
+  queries on its branch of the path; never call `reload()` after one. `reload()` is for a retry or "check again" button.
+  `reload` and `set` are new on every render, so never put them in an effect's dependencies: the connection screen refreshes
+  the project list with `invalidate(projectRoutes.list)` instead. Route tables, error tables and wire types come from
   `@condor/contracts/<domain>/**`. Never hard-code a URL, never fake data.
 - Live: `useLive(projectId, onSession?)` from `@/modules/live/hooks/use-live` joins `liveGateway` from
   `@condor/contracts/live/gateway` with `useChannel` and answers the project's snapshot (count, pages); `live.session` frames go to
