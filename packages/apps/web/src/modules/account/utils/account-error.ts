@@ -1,8 +1,11 @@
+import { AuthErrors } from '@condor/contracts/auth/errors';
+import { copyFor } from '@pollium/readable-react/errors/copy';
 import { copy } from '@/modules/account/i18n';
-import { errorCopy } from '@/shared/utils/error-copy';
+import { authFallback } from '@/shared/utils/error-copy';
 
-export const accountError = errorCopy({
-    'Auth::EmailTaken': copy.errors.emailTaken,
-    'Auth::WrongPassword': copy.errors.wrongPassword,
-    'Auth::InvalidCredentials': copy.errors.wrongPassword
+export const accountError = copyFor(AuthErrors, {
+    ...authFallback,
+    EmailTaken: copy.errors.emailTaken,
+    WrongPassword: copy.errors.wrongPassword,
+    InvalidCredentials: copy.errors.wrongPassword
 });

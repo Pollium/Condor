@@ -28,7 +28,7 @@ const AccountPage = () => {
                 {user === null ? (
                     me.error ? <p className='text-[0.875rem] text-danger'>{accountError(me.error)}</p> : <InlineLoading description={copy.loading} />
                 ) : (
-                    <ProfileForm key={`${user.name}|${user.email}`} user={user} onSaved={me.reload} />
+                    <ProfileForm key={`${user.name}|${user.email}`} user={user} />
                 )}
             </Section>
             <Section title={copy.password}>
