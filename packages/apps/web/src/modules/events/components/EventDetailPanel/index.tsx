@@ -1,10 +1,10 @@
 import { InlineLoading } from '@carbon/react';
 import { EventDetail } from '@condor/contracts/events/domain';
+import { eventRoutes } from '@condor/contracts/events/routes';
 import { PeriodQuery } from '@condor/contracts/shared/period';
 import { SegmentQuery } from '@condor/contracts/shared/segment';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { useState } from 'react';
-import { eventsApi } from '@/modules/events/api/api';
 import { copy } from '@/modules/events/i18n';
 import { bucketLabel } from '@/modules/overview/utils/kpis';
 import { people } from '@/modules/retention/utils/cohort-copy';
@@ -30,7 +30,7 @@ const changeOf = (current: number, previous: number): string =>
 const EventDetailPanel = ({ projectId, detail, query }: EventDetailPanelProps) => {
     const [picked, setPicked] = useState<{ event: string; key: string } | null>(null);
     const key = picked?.event === detail.name ? picked.key : detail.properties[0]?.key ?? null;
-    const breakdown = useQuery(eventsApi.property, [key === null ? undefined : projectId, detail.name, key ?? '', query]);
+    const breakdown = useQuery(eventRoutes.property, key !== null && { path: { projectId, name: detail.name, key }, query });
     const values = breakdown.data?.key === key ? breakdown.data : undefined;
 
     return (

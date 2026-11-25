@@ -1,8 +1,9 @@
 import { InlineNotification } from '@carbon/react';
 import { ChartMultitype } from '@carbon/icons-react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { eventRoutes } from '@condor/contracts/events/routes';
+import { describeError } from '@pollium/readable-react/errors/copy';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { useSearchParams } from 'react-router-dom';
-import { eventsApi } from '@/modules/events/api/api';
 import EventDetailPanel from '@/modules/events/components/EventDetailPanel';
 import SegmentMenu from '@/modules/events/components/SegmentMenu';
 import { useSegmentQuery } from '@/modules/events/hooks/use-segment';
@@ -14,7 +15,6 @@ import { PageHeader } from '@/shared/components/Page';
 import { RowList } from '@/shared/components/RowList';
 import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
-import { errorCopy } from '@/shared/utils/error-copy';
 import { fmt } from '@/shared/utils/format';
 
 const EventsPage = () => {
@@ -23,12 +23,12 @@ const EventsPage = () => {
     const segment = useSegmentQuery(project.id);
     const query = { period, ...segment };
     const [params, setParams] = useSearchParams();
-    const list = useQuery(eventsApi.list, [project.id, query]);
+    const list = useQuery(eventRoutes.list, { path: { projectId: project.id }, query });
     const rows = list.data ?? [];
     const name = params.get('evento') ?? rows[0]?.name;
-    const detail = useQuery(eventsApi.detail, [name ? project.id : undefined, name ?? '', query]);
+    const detail = useQuery(eventRoutes.detail, name ? { path: { projectId: project.id, name }, query } : null);
     const busiest = rows[0]?.count ?? 0;
-    const failure = errorCopy()(list.error ?? detail.error);
+    const failure = describeError(list.error ?? detail.error);
 
     const select = (id: string) => setParams((previous) => {
         const next = new URLSearchParams(previous);
