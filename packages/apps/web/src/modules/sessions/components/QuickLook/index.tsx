@@ -1,9 +1,9 @@
 import { SessionSummary } from '@condor/contracts/sessions/domain';
+import { sessionRoutes } from '@condor/contracts/sessions/routes';
 import { Button } from '@carbon/react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { createPortal } from 'react-dom';
 import ReplayView from '@/modules/sessions/components/ReplayView';
-import { sessionsApi } from '@/modules/sessions/api/api';
 import { useRecording } from '@/modules/sessions/hooks/use-recording';
 import { useReplayer } from '@/modules/sessions/hooks/use-replayer';
 import { copy } from '@/modules/sessions/i18n';
@@ -21,7 +21,7 @@ interface QuickLookProps{
 }
 
 const QuickLook = ({ projectId, host, session, onClose, onOpen }: QuickLookProps) => {
-    const detail = useQuery(sessionsApi.get, [projectId, session.id]);
+    const detail = useQuery(sessionRoutes.get, { path: { projectId, sessionId: session.id } });
     const { recording, state, lead, marks } = useRecording(projectId, detail.data);
     const player = useReplayer(recording);
 

@@ -1,7 +1,9 @@
 import { SessionSummary } from '@condor/contracts/sessions/domain';
+import { sessionRoutes } from '@condor/contracts/sessions/routes';
 import { Button, InlineLoading, Pagination } from '@carbon/react';
 import { Screen } from '@carbon/icons-react';
-import { useQuery } from '@condor/ui/hooks/api/use-query';
+import { describeError } from '@pollium/readable-react/errors/copy';
+import { useQuery } from '@pollium/readable-react/query/useQuery';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import SegmentMenu from '@/modules/events/components/SegmentMenu';
@@ -9,7 +11,6 @@ import { useSegmentQuery } from '@/modules/events/hooks/use-segment';
 import QuickLook from '@/modules/sessions/components/QuickLook';
 import SessionList from '@/modules/sessions/components/SessionList';
 import SessionToolbar from '@/modules/sessions/components/SessionToolbar';
-import { sessionsApi } from '@/modules/sessions/api/api';
 import { copy } from '@/modules/sessions/i18n';
 import { countryName } from '@/modules/sessions/utils/labels';
 import { isNarrowed, PAGE_SIZES, readState, toQuery, writeState, type ListState } from '@/modules/sessions/utils/query';
@@ -19,10 +20,7 @@ import EmptyState from '@/shared/components/EmptyState';
 import { PageHeader } from '@/shared/components/Page';
 import { copy as shared } from '@/shared/i18n';
 import { usePeriodStore } from '@/shared/store/period';
-import { errorCopy } from '@/shared/utils/error-copy';
 import { viewPath } from '@/shared/utils/views';
-
-const failure = errorCopy();
 
 const SessionsPage = () => {
     const project = useProject();
@@ -32,7 +30,7 @@ const SessionsPage = () => {
     const state = useMemo(() => readState(params), [params]);
     const segment = useSegmentQuery(project.id);
     const query = useMemo(() => ({ ...toQuery(state, period), ...segment }), [state, period, segment]);
-    const list = useQuery(sessionsApi.list, [project.id, query]);
+    const list = useQuery(sessionRoutes.list, { path: { projectId: project.id }, query });
     const key = JSON.stringify([project.id, query]);
     const [live, setLive] = useState<{ key: string; rows: SessionSummary[] }>({ key, rows: [] });
     const [peek, setPeek] = useState<SessionSummary | null>(null);
@@ -88,7 +86,7 @@ const SessionsPage = () => {
             ) : null}
 
             {list.error && !list.data ? (
-                <EmptyState icon={Screen} title={copy.list.loadFailed} description={failure(list.error) ?? undefined}>
+                <EmptyState icon={Screen} title={copy.list.loadFailed} description={describeError(list.error) ?? undefined}>
                     <Button kind='tertiary' size='sm' onClick={list.reload}>
                         {copy.list.retry}
                     </Button>
